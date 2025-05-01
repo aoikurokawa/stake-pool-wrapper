@@ -155,3 +155,4 @@ You are always welcome to discuss and propose improvements to this guideline.
 This project follows the [All Contributors specification](https://allcontributors.org/). To add yourself to the table of contributors in the README file, please use the [bot](https://allcontributors.org/docs/en/bot/overview) or the [CLI](https://allcontributors.org/docs/en/cli/overview) as part of your PR.
 
 If you've already added yourself to the list and are making a new type of contribution, you can run it again and select the new contribution type.
+
