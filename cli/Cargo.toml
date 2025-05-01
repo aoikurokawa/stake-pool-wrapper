@@ -1,0 +1,29 @@
+[package]
+name = "stake-pool-wrapper-cli"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "stake-pool-wrapper-cli"
+path = "src/bin/main.rs"
+
+[dependencies]
+anyhow = { workspace = true }
+base64 = { workspace = true }
+borsh = { workspace = true }
+bytemuck = { workspace = true }
+chrono = { workspace = true }
+clap = { workspace = true }
+clap-markdown = { workspace = true }
+env_logger = { workspace = true }
+log = { workspace = true }
+solana-account-decoder = { workspace = true }
+solana-cli-config = { workspace = true }
+solana-program = { workspace = true }
+solana-remote-wallet = { workspace = true }
+solana-rpc-client = { workspace = true }
+solana-rpc-client-api = { workspace = true }
+solana-sdk = { workspace = true }
+spl-associated-token-account = { workspace = true }
+spl-token = { workspace = true }
+stake-pool-wrapper-sdk = { workspace = true }

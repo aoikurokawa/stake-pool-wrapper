@@ -1,8 +1,9 @@
 use borsh::BorshDeserialize;
 use solana_program::{
-    account_info::{AccountInfo, next_account_info},
+    account_info::{next_account_info, AccountInfo},
     declare_id,
     entrypoint::ProgramResult,
+    msg,
     program::invoke,
     program_error::ProgramError,
     pubkey::Pubkey,
@@ -28,6 +29,8 @@ pub fn process_instruction(
 
     match instruction {
         StakePoolWrapperInstruction::DepositSol(lamports_in) => {
+            msg!("Instruction: Deposit SOL");
+
             let account_info_iter = &mut accounts.iter();
             let stake_pool_info = next_account_info(account_info_iter)?;
             let withdraw_authority_info = next_account_info(account_info_iter)?;
@@ -68,6 +71,7 @@ pub fn process_instruction(
                     pool_mint_info.clone(),
                     system_program_info.clone(),
                     token_program_info.clone(),
+                    stake_pool_program.clone(),
                 ],
             )?;
         }
