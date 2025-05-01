@@ -1,0 +1,135 @@
+use std::str::FromStr;
+
+use solana_sdk::{
+    instruction::{AccountMeta, Instruction},
+    pubkey::Pubkey,
+    signer::Signer,
+};
+use stake_pool_wrapper_sdk::instruction::StakePoolWrapperInstruction;
+
+use crate::{
+    cli_config::CliConfig,
+    stake_pool_wrapper::{StakePoolWrapperActions, StakePoolWrapperCommands},
+    CliHandler,
+};
+
+pub struct StakePoolWrapperCliHandler {
+    /// The configuration of CLI
+    cli_config: CliConfig,
+
+    /// This will print out the raw TX instead of running it
+    print_tx: bool,
+}
+
+impl CliHandler for StakePoolWrapperCliHandler {
+    fn cli_config(&self) -> &CliConfig {
+        &self.cli_config
+    }
+
+    fn print_tx(&self) -> bool {
+        self.print_tx
+    }
+}
+
+/// Handle Vault Whitelist
+impl StakePoolWrapperCliHandler {
+    pub const fn new(cli_config: CliConfig, print_tx: bool) -> Self {
+        Self {
+            cli_config,
+            print_tx,
+        }
+    }
+
+    pub fn handle(&self, action: StakePoolWrapperCommands) -> anyhow::Result<()> {
+        match action {
+            StakePoolWrapperCommands::StakePoolWrapper {
+                action: StakePoolWrapperActions::DepositSol,
+            } => self.deposit_sol(),
+        }
+    }
+}
+
+/// Handle Stake Pool Wrapper
+impl StakePoolWrapperCliHandler {
+    /// Deposit SOL
+    pub fn deposit_sol(&self) -> anyhow::Result<()> {
+        let signer = self.signer()?;
+        let admin = signer.pubkey();
+
+        let stake_pool = Pubkey::from_str("Jito4APyf642JPZPx3hGc6WWJ8zPKtRbRs4P815Awbb").unwrap();
+        let stake_pool_withdraw_authority =
+            Pubkey::from_str("6iQKfEyhr3bZMotVkW6beNZz5CPAkiwvgV2CTje9pVSS").unwrap();
+        let reserve_stake_pool =
+            Pubkey::from_str("rrWBQqRqBXYZw3CmPCCcjFxQ2Ds4JFJd7oRQJ997dhz").unwrap();
+        let depositer = admin;
+        let user = Pubkey::from_str("22Mjmaea25LDrpEQyJonfV6ybkrDcxGDsoCqUH39Cw9m").unwrap();
+        let fee = Pubkey::from_str("DH7tmjoQ5zjqcgfYJU22JqmXhP5EY1tkbYpgVWUS2oNo").unwrap();
+        let referral_fee =
+            Pubkey::from_str("22Mjmaea25LDrpEQyJonfV6ybkrDcxGDsoCqUH39Cw9m").unwrap();
+        let pool_mint = Pubkey::from_str("J1toso1uCk3RLmjorhTtrVwY9HJ7X8V9yYac6Y7kGCPn").unwrap();
+        let system_program = Pubkey::from_str("11111111111111111111111111111111").unwrap();
+        let token_program =
+            Pubkey::from_str("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA").unwrap();
+        let stake_pool_program =
+            Pubkey::from_str("SPoo1Ku8WFXoNDMHPsrGSTSG1Y47rzgn41SLUNakuHy").unwrap();
+
+        let accounts = vec![
+            AccountMeta::new(stake_pool, false),
+            AccountMeta::new_readonly(stake_pool_withdraw_authority, false),
+            AccountMeta::new(reserve_stake_pool, false),
+            AccountMeta::new(depositer, true),
+            AccountMeta::new(user, false),
+            AccountMeta::new(fee, false),
+            AccountMeta::new(referral_fee, false),
+            AccountMeta::new(pool_mint, false),
+            AccountMeta::new_readonly(system_program, false),
+            AccountMeta::new_readonly(token_program, false),
+            AccountMeta::new_readonly(stake_pool_program, false),
+        ];
+
+        let ix = Instruction {
+            program_id: Pubkey::from_str("BVeDMMWtnCUD2mXyyoXQ6bHnA2vrTvnavisnFZXAsRPr").unwrap(),
+            accounts,
+            data: borsh::to_vec(&StakePoolWrapperInstruction::DepositSol(1)).unwrap(),
+        };
+
+        // let whitelist = jito_vault_whitelist_core::whitelist::Whitelist::find_program_address(
+        //     &self.vault_whitelist_program_id,
+        //     &vault,
+        // )
+        // .0;
+
+        // let vault_whitelist_metas =
+        //     read_json_from_file::<Vec<VaultWhitelistMeta>>(&whitelist_file_path)?;
+        // let merkle_tree = GeneratedMerkleTree::new(&signer.pubkey(), &vault_whitelist_metas);
+
+        // let mut ix_builder = InitializeWhitelistBuilder::new();
+        // ix_builder
+        //     .config(
+        //         jito_vault_whitelist_core::config::Config::find_program_address(
+        //             &self.vault_whitelist_program_id,
+        //         )
+        //         .0,
+        //     )
+        //     .whitelist(whitelist)
+        //     .vault(vault)
+        //     .vault_admin(admin)
+        //     .meta_merkle_root(merkle_tree.merkle_root.to_bytes());
+
+        // let mut ix = ix_builder.instruction();
+        // ix.program_id = self.vault_whitelist_program_id;
+
+        // log::info!("Initializing Whitelist at address: {}", whitelist);
+
+        let ixs = [ix];
+        self.process_transaction(&ixs, &signer.pubkey(), &[signer])?;
+
+        // if !self.print_tx {
+        //     let account =
+        //         self.get_account::<jito_vault_whitelist_client::accounts::Whitelist>(&whitelist)?;
+        //     log::info!("{}", account.pretty_display());
+        // }
+
+        Ok(())
+    }
+}
