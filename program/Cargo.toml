@@ -1,6 +1,25 @@
 [package]
 name = "stake-pool-wrapper-program"
 version = "0.1.0"
-edition = "2024"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "stake_pool_wrapper_program"
+
+[features]
+no-entrypoint = []
+no-idl = []
+no-log-ix-name = []
+cpi = ["no-entrypoint"]
+default = []
+mainnet-beta = []
+testnet = []
+devnet = []
+localhost = []
 
 [dependencies]
+borsh = { workspace = true }
+solana-program = { workspace = true }
+spl-stake-pool = { workspace = true }
+stake-pool-wrapper-sdk = { workspace = true }

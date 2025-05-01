@@ -5,4 +5,11 @@ members = [
 	"sdk"
 ]
 
+resolver = "2"
+
 [workspace.dependencies]
+borsh = "1.5.7"
+shank = "0.4.2"
+solana-program = "2.2.1"
+spl-stake-pool = { version = "2.0.1", features = ["no-entrypoint"] }
+stake-pool-wrapper-sdk = { path = "./sdk" }
