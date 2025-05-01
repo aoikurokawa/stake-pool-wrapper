@@ -13,4 +13,7 @@ pub enum StakePoolWrapperCommands {
 pub enum StakePoolWrapperActions {
     /// Deposit SOL
     DepositSol,
+
+    /// Update Stake Pool Balance
+    UpdateStakePoolBalance,
 }

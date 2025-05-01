@@ -5385,6 +5385,7 @@ dependencies = [
  "solana-rpc-client-api",
  "solana-sdk",
  "spl-associated-token-account",
+ "spl-stake-pool",
  "spl-token 7.0.0",
  "stake-pool-wrapper-sdk",
 ]
