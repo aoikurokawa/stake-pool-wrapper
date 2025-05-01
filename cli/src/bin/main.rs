@@ -5,7 +5,7 @@ use clap::Parser;
 use clap_markdown::MarkdownOptions;
 use env_logger::Env;
 use solana_cli_config::Config;
-use solana_sdk::{commitment_config::CommitmentConfig, pubkey::Pubkey};
+use solana_sdk::commitment_config::CommitmentConfig;
 use stake_pool_wrapper_cli::{
     cli_args::{Cli, ProgramCommand},
     cli_config::CliConfig,
@@ -105,20 +105,9 @@ fn main() -> anyhow::Result<()> {
 
     let cli_config = get_cli_config(&args)?;
 
-    // let vault_program_id = if let Some(vault_program_id) = &args.vault_program_id {
-    //     Pubkey::from_str(vault_program_id)?
-    // } else {
-    //     JITO_VAULT_ID
-    // };
-    // let vault_whitelist_program_id = if let Some(vault_program_id) = &args.vault_program_id {
-    //     Pubkey::from_str(vault_program_id)?
-    // } else {
-    //     JITO_VAULT_WHITELIST_ID
-    // };
-
     match args.command.expect("Command not found") {
         ProgramCommand::VaultWhitelist { action } => {
-            StakePoolWrapperCliHandler::new(cli_config, args.print_tx).handle(action)?;
+            StakePoolWrapperCliHandler::new(cli_config).handle(action)?;
         }
     }
     Ok(())

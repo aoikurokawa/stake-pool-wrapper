@@ -1,6 +1,5 @@
 use ::log::info;
 use anyhow::anyhow;
-use borsh::BorshDeserialize;
 use cli_config::CliConfig;
 use cli_signer::CliSigner;
 use solana_rpc_client::rpc_client::RpcClient;
@@ -16,8 +15,6 @@ pub mod stake_pool_wrapper_handler;
 
 pub(crate) trait CliHandler {
     fn cli_config(&self) -> &CliConfig;
-
-    fn print_tx(&self) -> bool;
 
     fn signer(&self) -> anyhow::Result<&CliSigner> {
         self.cli_config()

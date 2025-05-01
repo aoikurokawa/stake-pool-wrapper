@@ -16,28 +16,18 @@ use crate::{
 pub struct StakePoolWrapperCliHandler {
     /// The configuration of CLI
     cli_config: CliConfig,
-
-    /// This will print out the raw TX instead of running it
-    print_tx: bool,
 }
 
 impl CliHandler for StakePoolWrapperCliHandler {
     fn cli_config(&self) -> &CliConfig {
         &self.cli_config
     }
-
-    fn print_tx(&self) -> bool {
-        self.print_tx
-    }
 }
 
 /// Handle Vault Whitelist
 impl StakePoolWrapperCliHandler {
-    pub const fn new(cli_config: CliConfig, print_tx: bool) -> Self {
-        Self {
-            cli_config,
-            print_tx,
-        }
+    pub const fn new(cli_config: CliConfig) -> Self {
+        Self { cli_config }
     }
 
     pub fn handle(&self, action: StakePoolWrapperCommands) -> anyhow::Result<()> {

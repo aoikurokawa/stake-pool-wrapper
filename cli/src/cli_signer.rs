@@ -1,10 +1,5 @@
-use solana_remote_wallet::{
-    ledger::get_ledger_from_info,
-    remote_keypair::RemoteKeypair,
-    remote_wallet::{initialize_wallet_manager, RemoteWalletType},
-};
+use solana_remote_wallet::remote_keypair::RemoteKeypair;
 use solana_sdk::{
-    derivation_path::DerivationPath,
     pubkey::Pubkey,
     signature::{read_keypair_file, Keypair, Signature, Signer, SignerError},
 };
@@ -36,48 +31,6 @@ impl CliSigner {
             None,
         )
     }
-
-    // Will only work with Ledger devices as
-    // pub fn new_ledger(path: &str) -> Self {
-    //     println!("\nConnecting to Ledger Device");
-    //     println!("- This will only work with Ledger devices.");
-    //     println!("- It will use the first account on the first connected Ledger.");
-    //     println!("- The Ledger must be unlocked and the Solana app open.\n");
-
-    //     println!("Searching for wallets...");
-    //     let wallet_manager =
-    //         initialize_wallet_manager().expect("Could not initialize wallet manager");
-    //     let device_count = wallet_manager
-    //         .update_devices()
-    //         .expect("Could not fetch devices");
-    //     println!("Wallet found with {} device(s) connected", device_count);
-
-    //     let devices = wallet_manager.list_devices();
-    //     let device = devices.first().expect("No devices found");
-    //     let ledger = get_ledger_from_info(device.clone(), "Signer", &wallet_manager)
-    //         .expect("This CLI only supports Ledger devices");
-    //     let derivation_path = DerivationPath::from_uri_key_query(
-    //         &uriparse::URIReference::try_from(path).expect("Could not create URIReference"),
-    //     )
-    //     .expect("Could not create derivation path from str")
-    //     .expect("Could not create derivation path from str");
-
-    //     let path = format!("{}{}", ledger.pretty_path, derivation_path.get_query());
-    //     let confirm_key = true;
-    //     let remote_keypair = RemoteKeypair::new(
-    //         RemoteWalletType::Ledger(ledger),
-    //         derivation_path,
-    //         confirm_key,
-    //         path.clone(),
-    //     )
-    //     .expect("Could not create remote keypair");
-    //     println!(
-    //         "\nConnected to Ledger wallet specified by path and pubkey\n- {}\n- {}\n",
-    //         path, remote_keypair.pubkey
-    //     );
-
-    //     Self::new(None, Some(remote_keypair))
-    // }
 }
 
 impl Signer for CliSigner {

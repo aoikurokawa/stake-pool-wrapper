@@ -1,7 +1,4 @@
-use std::path::PathBuf;
-
 use clap::{command, Subcommand};
-use solana_sdk::pubkey::Pubkey;
 
 #[derive(Subcommand)]
 pub enum StakePoolWrapperCommands {
