@@ -9,3 +9,8 @@ stats.json
 npm-debug.log
 .idea
 .awcache
+
+
+# Added by cargo
+
+/target

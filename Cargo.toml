@@ -1,0 +1,8 @@
+[workspace]
+members = [ 
+	"core",
+	"program",
+	"sdk"
+]
+
+[workspace.dependencies]
