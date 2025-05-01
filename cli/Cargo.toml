@@ -26,4 +26,5 @@ solana-rpc-client-api = { workspace = true }
 solana-sdk = { workspace = true }
 spl-associated-token-account = { workspace = true }
 spl-token = { workspace = true }
+spl-stake-pool = { workspace = true }
 stake-pool-wrapper-sdk = { workspace = true }
