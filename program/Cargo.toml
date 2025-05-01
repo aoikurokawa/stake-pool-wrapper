@@ -4,3 +4,7 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+borsh = { workspace = true }
+solana-program = { workspace = true }
+spl-stake-pool = { workspace = true }
+stake-pool-wrapper-sdk = { workspace = true }
