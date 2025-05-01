@@ -1,6 +1,6 @@
 # Stake Pool Wrapper
 
-## Deploy
+## Deploy a Program
 
 ```bash
 solana program deploy ./target/sbf-solana-solana/release/stake_pool_wrapper_program.so --program-id ./credentials/program_id.json
