@@ -2,6 +2,7 @@ use std::str::FromStr;
 
 use solana_sdk::{
     instruction::{AccountMeta, Instruction},
+    native_token::LAMPORTS_PER_SOL,
     pubkey::Pubkey,
     signer::Signer,
 };
@@ -81,7 +82,7 @@ impl StakePoolWrapperCliHandler {
             &referral_fee,
             &pool_mint,
             &token_program,
-            1,
+            1 * LAMPORTS_PER_SOL,
         );
 
         let ixs = [ix];
