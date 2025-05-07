@@ -14,6 +14,9 @@ pub enum StakePoolWrapperActions {
     /// Deposit SOL
     DepositSol,
 
+    /// Deposit SOL
+    WrapperDepositSol,
+
     /// Update Stake Pool Balance
     UpdateStakePoolBalance,
 }
