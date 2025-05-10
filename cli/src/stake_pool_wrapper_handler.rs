@@ -129,7 +129,10 @@ impl StakePoolWrapperCliHandler {
         let ix = Instruction {
             program_id: Pubkey::from_str("BVeDMMWtnCUD2mXyyoXQ6bHnA2vrTvnavisnFZXAsRPr").unwrap(),
             accounts,
-            data: borsh::to_vec(&StakePoolWrapperInstruction::DepositSol(1)).unwrap(),
+            data: borsh::to_vec(&StakePoolWrapperInstruction::DepositSol(
+                1 * LAMPORTS_PER_SOL,
+            ))
+            .unwrap(),
         };
 
         let ixs = [ix];
