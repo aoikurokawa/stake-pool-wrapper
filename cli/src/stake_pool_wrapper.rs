@@ -12,10 +12,10 @@ pub enum StakePoolWrapperCommands {
 #[derive(Subcommand)]
 pub enum StakePoolWrapperActions {
     /// Deposit SOL
-    DepositSol,
+    DepositSol { amount: u64 },
 
     /// Deposit SOL
-    WrapperDepositSol,
+    WrapperDepositSol { amount: u64 },
 
     /// Update Stake Pool Balance
     UpdateStakePoolBalance,
