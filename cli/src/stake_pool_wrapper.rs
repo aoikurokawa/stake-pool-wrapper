@@ -14,6 +14,9 @@ pub enum StakePoolWrapperActions {
     /// Deposit SOL
     DepositSol { amount: u64 },
 
+    /// Fail deposit SOL
+    FailDepositSol { amount: u64 },
+
     /// Deposit SOL
     WrapperDepositSol { amount: u64 },
 
