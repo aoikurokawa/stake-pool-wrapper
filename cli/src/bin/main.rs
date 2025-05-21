@@ -16,7 +16,7 @@ use stake_pool_wrapper_cli::{
 pub fn get_cli_config(args: &Cli) -> Result<CliConfig, anyhow::Error> {
     let cli_config = if let Some(config_file) = &args.config_file {
         let config = Config::load(config_file.as_os_str().to_str().unwrap())?;
-        let signer = if let Some(ledger) = &args.ledger {
+        let signer = if let Some(_ledger) = &args.ledger {
             // CliSigner::new_ledger(ledger)
             // CliSigner::new_keypair_from_path(keypair_path)
             CliSigner::new_keypair_from_path(&config.keypair_path)
@@ -36,7 +36,7 @@ pub fn get_cli_config(args: &Cli) -> Result<CliConfig, anyhow::Error> {
             .as_ref()
             .ok_or_else(|| anyhow!("unable to get config file path"))?;
         if let Ok(config) = Config::load(config_file) {
-            let signer = if let Some(ledger) = &args.ledger {
+            let signer = if let Some(_ledger) = &args.ledger {
                 // CliSigner::new_ledger(ledger)
                 CliSigner::new_keypair_from_path(&config.keypair_path)
             } else if let Some(keypair_path) = &args.keypair {
