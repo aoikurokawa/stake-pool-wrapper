@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "program": {
     "kind": "programNode",
-    "projectName": "stake-pool",
+    "name": "stake-pool",
     "publicKey": "DPoo15wWDqpPJJtS2MUZ49aRxqz5ZaaJCJP4z8bLuib",
     "version": "2.0.1",
     "accounts": [
@@ -305,78 +305,6 @@
               "type": {
                 "kind": "definedTypeLinkNode",
                 "name": "vec"
-              }
-            }
-          ]
-        }
-      },
-      {
-        "kind": "accountNode",
-        "name": "validatorStakeInfo",
-        "data": {
-          "kind": "structTypeNode",
-          "fields": [
-            {
-              "kind": "structFieldTypeNode",
-              "name": "activeStakeLamports",
-              "type": {
-                "kind": "definedTypeLinkNode",
-                "name": "podU64"
-              }
-            },
-            {
-              "kind": "structFieldTypeNode",
-              "name": "transientStakeLamports",
-              "type": {
-                "kind": "definedTypeLinkNode",
-                "name": "podU64"
-              }
-            },
-            {
-              "kind": "structFieldTypeNode",
-              "name": "lastUpdateEpoch",
-              "type": {
-                "kind": "definedTypeLinkNode",
-                "name": "podU64"
-              }
-            },
-            {
-              "kind": "structFieldTypeNode",
-              "name": "transientSeedSuffix",
-              "type": {
-                "kind": "definedTypeLinkNode",
-                "name": "podU64"
-              }
-            },
-            {
-              "kind": "structFieldTypeNode",
-              "name": "unused",
-              "type": {
-                "kind": "definedTypeLinkNode",
-                "name": "podU32"
-              }
-            },
-            {
-              "kind": "structFieldTypeNode",
-              "name": "validatorSeedSuffix",
-              "type": {
-                "kind": "definedTypeLinkNode",
-                "name": "podU32"
-              }
-            },
-            {
-              "kind": "structFieldTypeNode",
-              "name": "status",
-              "type": {
-                "kind": "definedTypeLinkNode",
-                "name": "podStakeStatus"
-              }
-            },
-            {
-              "kind": "structFieldTypeNode",
-              "name": "voteAccountAddress",
-              "type": {
-                "kind": "publicKeyTypeNode"
               }
             }
           ]
@@ -3202,6 +3130,78 @@
       },
       {
         "kind": "definedTypeNode",
+        "name": "validatorStakeInfo",
+        "type": {
+          "kind": "structTypeNode",
+          "fields": [
+            {
+              "kind": "structFieldTypeNode",
+              "name": "activeStakeLamports",
+              "type": {
+                "kind": "definedTypeLinkNode",
+                "name": "podU64"
+              }
+            },
+            {
+              "kind": "structFieldTypeNode",
+              "name": "transientStakeLamports",
+              "type": {
+                "kind": "definedTypeLinkNode",
+                "name": "podU64"
+              }
+            },
+            {
+              "kind": "structFieldTypeNode",
+              "name": "lastUpdateEpoch",
+              "type": {
+                "kind": "definedTypeLinkNode",
+                "name": "podU64"
+              }
+            },
+            {
+              "kind": "structFieldTypeNode",
+              "name": "transientSeedSuffix",
+              "type": {
+                "kind": "definedTypeLinkNode",
+                "name": "podU64"
+              }
+            },
+            {
+              "kind": "structFieldTypeNode",
+              "name": "unused",
+              "type": {
+                "kind": "definedTypeLinkNode",
+                "name": "podU32"
+              }
+            },
+            {
+              "kind": "structFieldTypeNode",
+              "name": "validatorSeedSuffix",
+              "type": {
+                "kind": "definedTypeLinkNode",
+                "name": "podU32"
+              }
+            },
+            {
+              "kind": "structFieldTypeNode",
+              "name": "status",
+              "type": {
+                "kind": "definedTypeLinkNode",
+                "name": "podStakeStatus"
+              }
+            },
+            {
+              "kind": "structFieldTypeNode",
+              "name": "voteAccountAddress",
+              "type": {
+                "kind": "publicKeyTypeNode"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "kind": "definedTypeNode",
         "name": "futureEpoch",
         "type": {
           "kind": "enumTypeNode",
@@ -3378,7 +3378,7 @@
           }
         }
       },
-            {
+      {
         "name": "Lockup",
         "type": {
           "kind": "struct",

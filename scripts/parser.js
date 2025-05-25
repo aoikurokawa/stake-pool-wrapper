@@ -6,11 +6,11 @@ const { visit } = require("@codama/visitors-core");
 const { renderVisitor } = require("@codama/renderers-vixen-parser");
 
 const project = "program-parser"; // folder name
-const idl = readJson(path.join(__dirname, "idl_copy.json"));
+const idl = readJson(path.join(__dirname, "token_2022.json"));
 
 // Use the appropriate node constructor based on your IDL type:
-const node = rootNodeFromAnchor(idl); // for Anchor
-// const node = rootNode(idl.program); // for non-Anchor
+// const node = rootNodeFromAnchor(idl); // for Anchor
+const node = rootNode(idl.program); // for non-Anchor
 
 visit(
   node,
