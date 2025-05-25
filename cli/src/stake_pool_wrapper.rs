@@ -11,6 +11,9 @@ pub enum StakePoolWrapperCommands {
 /// Stake Pool Wrapper commands
 #[derive(Subcommand)]
 pub enum StakePoolWrapperActions {
+    /// Get
+    Get,
+
     /// Deposit SOL
     DepositSol { amount: u64 },
 

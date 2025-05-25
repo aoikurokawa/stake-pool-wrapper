@@ -1,0 +1,26 @@
+[package]
+name = "stake-pool-client"
+description = "Jito Vault Whitelist Program Client"
+version = { workspace = true }
+edition = { workspace = true }
+
+[features]
+serde = []
+anchor = []
+anchor-idl-build = []
+idl-build = ["anchor-lang/idl-build"]
+fetch = []
+
+[dependencies]
+anchor-lang = { workspace = true }
+borsh = { workspace = true }
+bytemuck = { workspace = true }
+jito-restaking-client-common = { workspace = true }
+num-derive = { workspace = true }
+num-traits = { workspace = true }
+serde = { workspace = true }
+serde_with = { workspace = true }
+solana-client = { workspace = true }
+solana-program = { workspace = true }
+solana-sdk = { workspace = true }
+thiserror = { workspace = true }
