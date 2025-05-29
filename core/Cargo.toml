@@ -2,5 +2,8 @@
 name = "stake-pool-wrapper-core"
 version = "0.1.0"
 edition = "2021"
+description = ""
+license = "Apache-2.0"
+readme = "README.md"
 
 [dependencies]
