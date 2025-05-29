@@ -5392,7 +5392,7 @@ dependencies = [
 
 [[package]]
 name = "stake-pool-wrapper-core"
-version = "0.1.1"
+version = "0.1.2"
 
 [[package]]
 name = "stake-pool-wrapper-program"
