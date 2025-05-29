@@ -5406,7 +5406,7 @@ dependencies = [
 
 [[package]]
 name = "stake-pool-wrapper-sdk"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "borsh 1.5.7",
  "shank",
