@@ -2,7 +2,7 @@
 name = "stake-pool-wrapper-program"
 version = "0.1.0"
 edition = "2021"
-description = ""
+description = "Stake Pool Wrapper Program"
 license = "Apache-2.0"
 readme = "README.md"
 repository = "https://github.com/aoikurokawa/stake-pool-wrapper"
