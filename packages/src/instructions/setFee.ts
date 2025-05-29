@@ -8,12 +8,10 @@
 
 import {
   combineCodec,
-  fixDecoderSize,
-  fixEncoderSize,
-  getBytesDecoder,
-  getBytesEncoder,
   getStructDecoder,
   getStructEncoder,
+  getU8Decoder,
+  getU8Encoder,
   transformEncoder,
   type Address,
   type Codec,
@@ -25,7 +23,6 @@ import {
   type IInstructionWithAccounts,
   type IInstructionWithData,
   type ReadonlySignerAccount,
-  type ReadonlyUint8Array,
   type TransactionSigner,
   type WritableAccount,
 } from '@solana/kit';
@@ -38,12 +35,10 @@ import {
   type FeeTypeArgs,
 } from '../types';
 
-export const SET_FEE_DISCRIMINATOR = new Uint8Array([
-  18, 154, 24, 18, 237, 214, 19, 80,
-]);
+export const SET_FEE_DISCRIMINATOR = 12;
 
 export function getSetFeeDiscriminatorBytes() {
-  return fixEncoderSize(getBytesEncoder(), 8).encode(SET_FEE_DISCRIMINATOR);
+  return getU8Encoder().encode(SET_FEE_DISCRIMINATOR);
 }
 
 export type SetFeeInstruction<
@@ -66,17 +61,14 @@ export type SetFeeInstruction<
     ]
   >;
 
-export type SetFeeInstructionData = {
-  discriminator: ReadonlyUint8Array;
-  fee: FeeType;
-};
+export type SetFeeInstructionData = { discriminator: number; fee: FeeType };
 
 export type SetFeeInstructionDataArgs = { fee: FeeTypeArgs };
 
 export function getSetFeeInstructionDataEncoder(): Encoder<SetFeeInstructionDataArgs> {
   return transformEncoder(
     getStructEncoder([
-      ['discriminator', fixEncoderSize(getBytesEncoder(), 8)],
+      ['discriminator', getU8Encoder()],
       ['fee', getFeeTypeEncoder()],
     ]),
     (value) => ({ ...value, discriminator: SET_FEE_DISCRIMINATOR })
@@ -85,7 +77,7 @@ export function getSetFeeInstructionDataEncoder(): Encoder<SetFeeInstructionData
 
 export function getSetFeeInstructionDataDecoder(): Decoder<SetFeeInstructionData> {
   return getStructDecoder([
-    ['discriminator', fixDecoderSize(getBytesDecoder(), 8)],
+    ['discriminator', getU8Decoder()],
     ['fee', getFeeTypeDecoder()],
   ]);
 }

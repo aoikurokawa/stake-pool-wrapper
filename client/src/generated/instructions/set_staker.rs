@@ -16,7 +16,7 @@ pub struct SetStaker {
           pub stake_pool: solana_program::pubkey::Pubkey,
           
               
-          pub set_staker_authority: solana_program::pubkey::Pubkey,
+          pub manager: solana_program::pubkey::Pubkey,
           
               
           pub new_staker: solana_program::pubkey::Pubkey,
@@ -35,7 +35,7 @@ impl SetStaker {
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-            self.set_staker_authority,
+            self.manager,
             true
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new_readonly(
@@ -56,13 +56,13 @@ impl SetStaker {
 #[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
  pub struct SetStakerInstructionData {
-            discriminator: [u8; 8],
+            discriminator: u8,
       }
 
 impl SetStakerInstructionData {
   pub fn new() -> Self {
     Self {
-                        discriminator: [149, 203, 114, 28, 80, 138, 17, 131],
+                        discriminator: 13,
                   }
   }
 }
@@ -80,12 +80,12 @@ impl Default for SetStakerInstructionData {
 /// ### Accounts:
 ///
                 ///   0. `[writable]` stake_pool
-                ///   1. `[signer]` set_staker_authority
+                ///   1. `[signer]` manager
           ///   2. `[]` new_staker
 #[derive(Clone, Debug, Default)]
 pub struct SetStakerBuilder {
             stake_pool: Option<solana_program::pubkey::Pubkey>,
-                set_staker_authority: Option<solana_program::pubkey::Pubkey>,
+                manager: Option<solana_program::pubkey::Pubkey>,
                 new_staker: Option<solana_program::pubkey::Pubkey>,
                 __remaining_accounts: Vec<solana_program::instruction::AccountMeta>,
 }
@@ -100,8 +100,8 @@ impl SetStakerBuilder {
                     self
     }
             #[inline(always)]
-    pub fn set_staker_authority(&mut self, set_staker_authority: solana_program::pubkey::Pubkey) -> &mut Self {
-                        self.set_staker_authority = Some(set_staker_authority);
+    pub fn manager(&mut self, manager: solana_program::pubkey::Pubkey) -> &mut Self {
+                        self.manager = Some(manager);
                     self
     }
             #[inline(always)]
@@ -125,7 +125,7 @@ impl SetStakerBuilder {
   pub fn instruction(&self) -> solana_program::instruction::Instruction {
     let accounts = SetStaker {
                               stake_pool: self.stake_pool.expect("stake_pool is not set"),
-                                        set_staker_authority: self.set_staker_authority.expect("set_staker_authority is not set"),
+                                        manager: self.manager.expect("manager is not set"),
                                         new_staker: self.new_staker.expect("new_staker is not set"),
                       };
     
@@ -140,7 +140,7 @@ impl SetStakerBuilder {
               pub stake_pool: &'b solana_program::account_info::AccountInfo<'a>,
                 
                     
-              pub set_staker_authority: &'b solana_program::account_info::AccountInfo<'a>,
+              pub manager: &'b solana_program::account_info::AccountInfo<'a>,
                 
                     
               pub new_staker: &'b solana_program::account_info::AccountInfo<'a>,
@@ -155,7 +155,7 @@ pub struct SetStakerCpi<'a, 'b> {
           pub stake_pool: &'b solana_program::account_info::AccountInfo<'a>,
           
               
-          pub set_staker_authority: &'b solana_program::account_info::AccountInfo<'a>,
+          pub manager: &'b solana_program::account_info::AccountInfo<'a>,
           
               
           pub new_staker: &'b solana_program::account_info::AccountInfo<'a>,
@@ -169,7 +169,7 @@ impl<'a, 'b> SetStakerCpi<'a, 'b> {
     Self {
       __program: program,
               stake_pool: accounts.stake_pool,
-              set_staker_authority: accounts.set_staker_authority,
+              manager: accounts.manager,
               new_staker: accounts.new_staker,
                 }
   }
@@ -199,7 +199,7 @@ impl<'a, 'b> SetStakerCpi<'a, 'b> {
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-            *self.set_staker_authority.key,
+            *self.manager.key,
             true
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new_readonly(
@@ -223,7 +223,7 @@ impl<'a, 'b> SetStakerCpi<'a, 'b> {
     let mut account_infos = Vec::with_capacity(4 + remaining_accounts.len());
     account_infos.push(self.__program.clone());
                   account_infos.push(self.stake_pool.clone());
-                        account_infos.push(self.set_staker_authority.clone());
+                        account_infos.push(self.manager.clone());
                         account_infos.push(self.new_staker.clone());
               remaining_accounts.iter().for_each(|remaining_account| account_infos.push(remaining_account.0.clone()));
 
@@ -240,7 +240,7 @@ impl<'a, 'b> SetStakerCpi<'a, 'b> {
 /// ### Accounts:
 ///
                 ///   0. `[writable]` stake_pool
-                ///   1. `[signer]` set_staker_authority
+                ///   1. `[signer]` manager
           ///   2. `[]` new_staker
 #[derive(Clone, Debug)]
 pub struct SetStakerCpiBuilder<'a, 'b> {
@@ -252,7 +252,7 @@ impl<'a, 'b> SetStakerCpiBuilder<'a, 'b> {
     let instruction = Box::new(SetStakerCpiBuilderInstruction {
       __program: program,
               stake_pool: None,
-              set_staker_authority: None,
+              manager: None,
               new_staker: None,
                                 __remaining_accounts: Vec::new(),
     });
@@ -264,8 +264,8 @@ impl<'a, 'b> SetStakerCpiBuilder<'a, 'b> {
                     self
     }
       #[inline(always)]
-    pub fn set_staker_authority(&mut self, set_staker_authority: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
-                        self.instruction.set_staker_authority = Some(set_staker_authority);
+    pub fn manager(&mut self, manager: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+                        self.instruction.manager = Some(manager);
                     self
     }
       #[inline(always)]
@@ -300,7 +300,7 @@ impl<'a, 'b> SetStakerCpiBuilder<'a, 'b> {
                   
           stake_pool: self.instruction.stake_pool.expect("stake_pool is not set"),
                   
-          set_staker_authority: self.instruction.set_staker_authority.expect("set_staker_authority is not set"),
+          manager: self.instruction.manager.expect("manager is not set"),
                   
           new_staker: self.instruction.new_staker.expect("new_staker is not set"),
                     };
@@ -312,7 +312,7 @@ impl<'a, 'b> SetStakerCpiBuilder<'a, 'b> {
 struct SetStakerCpiBuilderInstruction<'a, 'b> {
   __program: &'b solana_program::account_info::AccountInfo<'a>,
             stake_pool: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-                set_staker_authority: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+                manager: Option<&'b solana_program::account_info::AccountInfo<'a>>,
                 new_staker: Option<&'b solana_program::account_info::AccountInfo<'a>>,
                 /// Additional instruction accounts `(AccountInfo, is_writable, is_signer)`.
   __remaining_accounts: Vec<(&'b solana_program::account_info::AccountInfo<'a>, bool, bool)>,

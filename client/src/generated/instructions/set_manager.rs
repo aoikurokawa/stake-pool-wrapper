@@ -22,7 +22,7 @@ pub struct SetManager {
           pub new_manager: solana_program::pubkey::Pubkey,
           
               
-          pub new_fee_receiver: solana_program::pubkey::Pubkey,
+          pub new_manager_fee: solana_program::pubkey::Pubkey,
       }
 
 impl SetManager {
@@ -46,7 +46,7 @@ impl SetManager {
             true
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-            self.new_fee_receiver,
+            self.new_manager_fee,
             false
           ));
                       accounts.extend_from_slice(remaining_accounts);
@@ -63,13 +63,13 @@ impl SetManager {
 #[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
  pub struct SetManagerInstructionData {
-            discriminator: [u8; 8],
+            discriminator: u8,
       }
 
 impl SetManagerInstructionData {
   pub fn new() -> Self {
     Self {
-                        discriminator: [30, 197, 171, 92, 121, 184, 151, 165],
+                        discriminator: 11,
                   }
   }
 }
@@ -89,13 +89,13 @@ impl Default for SetManagerInstructionData {
                 ///   0. `[writable]` stake_pool
                 ///   1. `[signer]` manager
                 ///   2. `[signer]` new_manager
-          ///   3. `[]` new_fee_receiver
+          ///   3. `[]` new_manager_fee
 #[derive(Clone, Debug, Default)]
 pub struct SetManagerBuilder {
             stake_pool: Option<solana_program::pubkey::Pubkey>,
                 manager: Option<solana_program::pubkey::Pubkey>,
                 new_manager: Option<solana_program::pubkey::Pubkey>,
-                new_fee_receiver: Option<solana_program::pubkey::Pubkey>,
+                new_manager_fee: Option<solana_program::pubkey::Pubkey>,
                 __remaining_accounts: Vec<solana_program::instruction::AccountMeta>,
 }
 
@@ -119,8 +119,8 @@ impl SetManagerBuilder {
                     self
     }
             #[inline(always)]
-    pub fn new_fee_receiver(&mut self, new_fee_receiver: solana_program::pubkey::Pubkey) -> &mut Self {
-                        self.new_fee_receiver = Some(new_fee_receiver);
+    pub fn new_manager_fee(&mut self, new_manager_fee: solana_program::pubkey::Pubkey) -> &mut Self {
+                        self.new_manager_fee = Some(new_manager_fee);
                     self
     }
             /// Add an additional account to the instruction.
@@ -141,7 +141,7 @@ impl SetManagerBuilder {
                               stake_pool: self.stake_pool.expect("stake_pool is not set"),
                                         manager: self.manager.expect("manager is not set"),
                                         new_manager: self.new_manager.expect("new_manager is not set"),
-                                        new_fee_receiver: self.new_fee_receiver.expect("new_fee_receiver is not set"),
+                                        new_manager_fee: self.new_manager_fee.expect("new_manager_fee is not set"),
                       };
     
     accounts.instruction_with_remaining_accounts(&self.__remaining_accounts)
@@ -161,7 +161,7 @@ impl SetManagerBuilder {
               pub new_manager: &'b solana_program::account_info::AccountInfo<'a>,
                 
                     
-              pub new_fee_receiver: &'b solana_program::account_info::AccountInfo<'a>,
+              pub new_manager_fee: &'b solana_program::account_info::AccountInfo<'a>,
             }
 
 /// `set_manager` CPI instruction.
@@ -179,7 +179,7 @@ pub struct SetManagerCpi<'a, 'b> {
           pub new_manager: &'b solana_program::account_info::AccountInfo<'a>,
           
               
-          pub new_fee_receiver: &'b solana_program::account_info::AccountInfo<'a>,
+          pub new_manager_fee: &'b solana_program::account_info::AccountInfo<'a>,
         }
 
 impl<'a, 'b> SetManagerCpi<'a, 'b> {
@@ -192,7 +192,7 @@ impl<'a, 'b> SetManagerCpi<'a, 'b> {
               stake_pool: accounts.stake_pool,
               manager: accounts.manager,
               new_manager: accounts.new_manager,
-              new_fee_receiver: accounts.new_fee_receiver,
+              new_manager_fee: accounts.new_manager_fee,
                 }
   }
   #[inline(always)]
@@ -229,7 +229,7 @@ impl<'a, 'b> SetManagerCpi<'a, 'b> {
             true
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-            *self.new_fee_receiver.key,
+            *self.new_manager_fee.key,
             false
           ));
                       remaining_accounts.iter().for_each(|remaining_account| {
@@ -251,7 +251,7 @@ impl<'a, 'b> SetManagerCpi<'a, 'b> {
                   account_infos.push(self.stake_pool.clone());
                         account_infos.push(self.manager.clone());
                         account_infos.push(self.new_manager.clone());
-                        account_infos.push(self.new_fee_receiver.clone());
+                        account_infos.push(self.new_manager_fee.clone());
               remaining_accounts.iter().for_each(|remaining_account| account_infos.push(remaining_account.0.clone()));
 
     if signers_seeds.is_empty() {
@@ -269,7 +269,7 @@ impl<'a, 'b> SetManagerCpi<'a, 'b> {
                 ///   0. `[writable]` stake_pool
                 ///   1. `[signer]` manager
                 ///   2. `[signer]` new_manager
-          ///   3. `[]` new_fee_receiver
+          ///   3. `[]` new_manager_fee
 #[derive(Clone, Debug)]
 pub struct SetManagerCpiBuilder<'a, 'b> {
   instruction: Box<SetManagerCpiBuilderInstruction<'a, 'b>>,
@@ -282,7 +282,7 @@ impl<'a, 'b> SetManagerCpiBuilder<'a, 'b> {
               stake_pool: None,
               manager: None,
               new_manager: None,
-              new_fee_receiver: None,
+              new_manager_fee: None,
                                 __remaining_accounts: Vec::new(),
     });
     Self { instruction }
@@ -303,8 +303,8 @@ impl<'a, 'b> SetManagerCpiBuilder<'a, 'b> {
                     self
     }
       #[inline(always)]
-    pub fn new_fee_receiver(&mut self, new_fee_receiver: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
-                        self.instruction.new_fee_receiver = Some(new_fee_receiver);
+    pub fn new_manager_fee(&mut self, new_manager_fee: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+                        self.instruction.new_manager_fee = Some(new_manager_fee);
                     self
     }
             /// Add an additional account to the instruction.
@@ -338,7 +338,7 @@ impl<'a, 'b> SetManagerCpiBuilder<'a, 'b> {
                   
           new_manager: self.instruction.new_manager.expect("new_manager is not set"),
                   
-          new_fee_receiver: self.instruction.new_fee_receiver.expect("new_fee_receiver is not set"),
+          new_manager_fee: self.instruction.new_manager_fee.expect("new_manager_fee is not set"),
                     };
     instruction.invoke_signed_with_remaining_accounts(signers_seeds, &self.instruction.__remaining_accounts)
   }
@@ -350,7 +350,7 @@ struct SetManagerCpiBuilderInstruction<'a, 'b> {
             stake_pool: Option<&'b solana_program::account_info::AccountInfo<'a>>,
                 manager: Option<&'b solana_program::account_info::AccountInfo<'a>>,
                 new_manager: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-                new_fee_receiver: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+                new_manager_fee: Option<&'b solana_program::account_info::AccountInfo<'a>>,
                 /// Additional instruction accounts `(AccountInfo, is_writable, is_signer)`.
   __remaining_accounts: Vec<(&'b solana_program::account_info::AccountInfo<'a>, bool, bool)>,
 }

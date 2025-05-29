@@ -15,6 +15,8 @@ pub enum StakeStatus {
 Active,
 DeactivatingTransient,
 ReadyForRemoval,
+DeactivatingValidator,
+DeactivatingAll,
 }
 
 

@@ -8,10 +8,6 @@
 
 import {
   combineCodec,
-  fixDecoderSize,
-  fixEncoderSize,
-  getBytesDecoder,
-  getBytesEncoder,
   getStructDecoder,
   getStructEncoder,
   getU32Decoder,
@@ -30,7 +26,6 @@ import {
   type IInstructionWithData,
   type ReadonlyAccount,
   type ReadonlySignerAccount,
-  type ReadonlyUint8Array,
   type TransactionSigner,
   type WritableAccount,
 } from '@solana/kit';
@@ -38,12 +33,10 @@ import { SPL_STAKE_POOL_PROGRAM_ADDRESS } from '../programs';
 import { getAccountMetaFactory, type ResolvedAccount } from '../shared';
 import { getFeeDecoder, getFeeEncoder, type Fee, type FeeArgs } from '../types';
 
-export const INITIALIZE_DISCRIMINATOR = new Uint8Array([
-  175, 175, 109, 31, 13, 152, 155, 237,
-]);
+export const INITIALIZE_DISCRIMINATOR = 0;
 
 export function getInitializeDiscriminatorBytes() {
-  return fixEncoderSize(getBytesEncoder(), 8).encode(INITIALIZE_DISCRIMINATOR);
+  return getU8Encoder().encode(INITIALIZE_DISCRIMINATOR);
 }
 
 export type InitializeInstruction<
@@ -51,16 +44,12 @@ export type InitializeInstruction<
   TAccountStakePool extends string | IAccountMeta<string> = string,
   TAccountManager extends string | IAccountMeta<string> = string,
   TAccountStaker extends string | IAccountMeta<string> = string,
-  TAccountStakePoolWithdrawAuthority extends
-    | string
-    | IAccountMeta<string> = string,
+  TAccountWithdrawAuthority extends string | IAccountMeta<string> = string,
   TAccountValidatorList extends string | IAccountMeta<string> = string,
   TAccountReserveStake extends string | IAccountMeta<string> = string,
   TAccountPoolMint extends string | IAccountMeta<string> = string,
-  TAccountManagerPoolAccount extends string | IAccountMeta<string> = string,
-  TAccountTokenProgram extends
-    | string
-    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountManagerFee extends string | IAccountMeta<string> = string,
+  TAccountTokenProgram extends string | IAccountMeta<string> = string,
   TRemainingAccounts extends readonly IAccountMeta<string>[] = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
@@ -76,9 +65,9 @@ export type InitializeInstruction<
       TAccountStaker extends string
         ? ReadonlyAccount<TAccountStaker>
         : TAccountStaker,
-      TAccountStakePoolWithdrawAuthority extends string
-        ? ReadonlyAccount<TAccountStakePoolWithdrawAuthority>
-        : TAccountStakePoolWithdrawAuthority,
+      TAccountWithdrawAuthority extends string
+        ? ReadonlyAccount<TAccountWithdrawAuthority>
+        : TAccountWithdrawAuthority,
       TAccountValidatorList extends string
         ? WritableAccount<TAccountValidatorList>
         : TAccountValidatorList,
@@ -86,11 +75,11 @@ export type InitializeInstruction<
         ? ReadonlyAccount<TAccountReserveStake>
         : TAccountReserveStake,
       TAccountPoolMint extends string
-        ? WritableAccount<TAccountPoolMint>
+        ? ReadonlyAccount<TAccountPoolMint>
         : TAccountPoolMint,
-      TAccountManagerPoolAccount extends string
-        ? WritableAccount<TAccountManagerPoolAccount>
-        : TAccountManagerPoolAccount,
+      TAccountManagerFee extends string
+        ? ReadonlyAccount<TAccountManagerFee>
+        : TAccountManagerFee,
       TAccountTokenProgram extends string
         ? ReadonlyAccount<TAccountTokenProgram>
         : TAccountTokenProgram,
@@ -99,7 +88,7 @@ export type InitializeInstruction<
   >;
 
 export type InitializeInstructionData = {
-  discriminator: ReadonlyUint8Array;
+  discriminator: number;
   fee: Fee;
   withdrawalFee: Fee;
   depositFee: Fee;
@@ -118,7 +107,7 @@ export type InitializeInstructionDataArgs = {
 export function getInitializeInstructionDataEncoder(): Encoder<InitializeInstructionDataArgs> {
   return transformEncoder(
     getStructEncoder([
-      ['discriminator', fixEncoderSize(getBytesEncoder(), 8)],
+      ['discriminator', getU8Encoder()],
       ['fee', getFeeEncoder()],
       ['withdrawalFee', getFeeEncoder()],
       ['depositFee', getFeeEncoder()],
@@ -131,7 +120,7 @@ export function getInitializeInstructionDataEncoder(): Encoder<InitializeInstruc
 
 export function getInitializeInstructionDataDecoder(): Decoder<InitializeInstructionData> {
   return getStructDecoder([
-    ['discriminator', fixDecoderSize(getBytesDecoder(), 8)],
+    ['discriminator', getU8Decoder()],
     ['fee', getFeeDecoder()],
     ['withdrawalFee', getFeeDecoder()],
     ['depositFee', getFeeDecoder()],
@@ -154,22 +143,22 @@ export type InitializeInput<
   TAccountStakePool extends string = string,
   TAccountManager extends string = string,
   TAccountStaker extends string = string,
-  TAccountStakePoolWithdrawAuthority extends string = string,
+  TAccountWithdrawAuthority extends string = string,
   TAccountValidatorList extends string = string,
   TAccountReserveStake extends string = string,
   TAccountPoolMint extends string = string,
-  TAccountManagerPoolAccount extends string = string,
+  TAccountManagerFee extends string = string,
   TAccountTokenProgram extends string = string,
 > = {
   stakePool: Address<TAccountStakePool>;
   manager: TransactionSigner<TAccountManager>;
   staker: Address<TAccountStaker>;
-  stakePoolWithdrawAuthority: Address<TAccountStakePoolWithdrawAuthority>;
+  withdrawAuthority: Address<TAccountWithdrawAuthority>;
   validatorList: Address<TAccountValidatorList>;
   reserveStake: Address<TAccountReserveStake>;
   poolMint: Address<TAccountPoolMint>;
-  managerPoolAccount: Address<TAccountManagerPoolAccount>;
-  tokenProgram?: Address<TAccountTokenProgram>;
+  managerFee: Address<TAccountManagerFee>;
+  tokenProgram: Address<TAccountTokenProgram>;
   fee: InitializeInstructionDataArgs['fee'];
   withdrawalFee: InitializeInstructionDataArgs['withdrawalFee'];
   depositFee: InitializeInstructionDataArgs['depositFee'];
@@ -181,11 +170,11 @@ export function getInitializeInstruction<
   TAccountStakePool extends string,
   TAccountManager extends string,
   TAccountStaker extends string,
-  TAccountStakePoolWithdrawAuthority extends string,
+  TAccountWithdrawAuthority extends string,
   TAccountValidatorList extends string,
   TAccountReserveStake extends string,
   TAccountPoolMint extends string,
-  TAccountManagerPoolAccount extends string,
+  TAccountManagerFee extends string,
   TAccountTokenProgram extends string,
   TProgramAddress extends Address = typeof SPL_STAKE_POOL_PROGRAM_ADDRESS,
 >(
@@ -193,11 +182,11 @@ export function getInitializeInstruction<
     TAccountStakePool,
     TAccountManager,
     TAccountStaker,
-    TAccountStakePoolWithdrawAuthority,
+    TAccountWithdrawAuthority,
     TAccountValidatorList,
     TAccountReserveStake,
     TAccountPoolMint,
-    TAccountManagerPoolAccount,
+    TAccountManagerFee,
     TAccountTokenProgram
   >,
   config?: { programAddress?: TProgramAddress }
@@ -206,11 +195,11 @@ export function getInitializeInstruction<
   TAccountStakePool,
   TAccountManager,
   TAccountStaker,
-  TAccountStakePoolWithdrawAuthority,
+  TAccountWithdrawAuthority,
   TAccountValidatorList,
   TAccountReserveStake,
   TAccountPoolMint,
-  TAccountManagerPoolAccount,
+  TAccountManagerFee,
   TAccountTokenProgram
 > {
   // Program address.
@@ -222,17 +211,14 @@ export function getInitializeInstruction<
     stakePool: { value: input.stakePool ?? null, isWritable: true },
     manager: { value: input.manager ?? null, isWritable: false },
     staker: { value: input.staker ?? null, isWritable: false },
-    stakePoolWithdrawAuthority: {
-      value: input.stakePoolWithdrawAuthority ?? null,
+    withdrawAuthority: {
+      value: input.withdrawAuthority ?? null,
       isWritable: false,
     },
     validatorList: { value: input.validatorList ?? null, isWritable: true },
     reserveStake: { value: input.reserveStake ?? null, isWritable: false },
-    poolMint: { value: input.poolMint ?? null, isWritable: true },
-    managerPoolAccount: {
-      value: input.managerPoolAccount ?? null,
-      isWritable: true,
-    },
+    poolMint: { value: input.poolMint ?? null, isWritable: false },
+    managerFee: { value: input.managerFee ?? null, isWritable: false },
     tokenProgram: { value: input.tokenProgram ?? null, isWritable: false },
   };
   const accounts = originalAccounts as Record<
@@ -243,23 +229,17 @@ export function getInitializeInstruction<
   // Original args.
   const args = { ...input };
 
-  // Resolve default values.
-  if (!accounts.tokenProgram.value) {
-    accounts.tokenProgram.value =
-      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Address<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>;
-  }
-
   const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');
   const instruction = {
     accounts: [
       getAccountMeta(accounts.stakePool),
       getAccountMeta(accounts.manager),
       getAccountMeta(accounts.staker),
-      getAccountMeta(accounts.stakePoolWithdrawAuthority),
+      getAccountMeta(accounts.withdrawAuthority),
       getAccountMeta(accounts.validatorList),
       getAccountMeta(accounts.reserveStake),
       getAccountMeta(accounts.poolMint),
-      getAccountMeta(accounts.managerPoolAccount),
+      getAccountMeta(accounts.managerFee),
       getAccountMeta(accounts.tokenProgram),
     ],
     programAddress,
@@ -271,11 +251,11 @@ export function getInitializeInstruction<
     TAccountStakePool,
     TAccountManager,
     TAccountStaker,
-    TAccountStakePoolWithdrawAuthority,
+    TAccountWithdrawAuthority,
     TAccountValidatorList,
     TAccountReserveStake,
     TAccountPoolMint,
-    TAccountManagerPoolAccount,
+    TAccountManagerFee,
     TAccountTokenProgram
   >;
 
@@ -291,11 +271,11 @@ export type ParsedInitializeInstruction<
     stakePool: TAccountMetas[0];
     manager: TAccountMetas[1];
     staker: TAccountMetas[2];
-    stakePoolWithdrawAuthority: TAccountMetas[3];
+    withdrawAuthority: TAccountMetas[3];
     validatorList: TAccountMetas[4];
     reserveStake: TAccountMetas[5];
     poolMint: TAccountMetas[6];
-    managerPoolAccount: TAccountMetas[7];
+    managerFee: TAccountMetas[7];
     tokenProgram: TAccountMetas[8];
   };
   data: InitializeInstructionData;
@@ -325,11 +305,11 @@ export function parseInitializeInstruction<
       stakePool: getNextAccount(),
       manager: getNextAccount(),
       staker: getNextAccount(),
-      stakePoolWithdrawAuthority: getNextAccount(),
+      withdrawAuthority: getNextAccount(),
       validatorList: getNextAccount(),
       reserveStake: getNextAccount(),
       poolMint: getNextAccount(),
-      managerPoolAccount: getNextAccount(),
+      managerFee: getNextAccount(),
       tokenProgram: getNextAccount(),
     },
     data: getInitializeInstructionDataDecoder().decode(instruction.data),

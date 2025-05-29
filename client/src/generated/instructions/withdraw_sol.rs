@@ -16,22 +16,22 @@ pub struct WithdrawSol {
           pub stake_pool: solana_program::pubkey::Pubkey,
           
               
-          pub stake_pool_withdraw_authority: solana_program::pubkey::Pubkey,
+          pub withdraw_authority: solana_program::pubkey::Pubkey,
           
               
           pub user_transfer_authority: solana_program::pubkey::Pubkey,
           
               
-          pub pool_tokens_from: solana_program::pubkey::Pubkey,
+          pub burn_from_pool: solana_program::pubkey::Pubkey,
           
               
-          pub reserve_stake_account: solana_program::pubkey::Pubkey,
+          pub reserve_stake: solana_program::pubkey::Pubkey,
           
               
-          pub lamports_to: solana_program::pubkey::Pubkey,
+          pub destination_lamports: solana_program::pubkey::Pubkey,
           
               
-          pub manager_fee_account: solana_program::pubkey::Pubkey,
+          pub manager_fee: solana_program::pubkey::Pubkey,
           
               
           pub pool_mint: solana_program::pubkey::Pubkey,
@@ -40,7 +40,7 @@ pub struct WithdrawSol {
           pub clock: solana_program::pubkey::Pubkey,
           
               
-          pub sysvar_stake_history: solana_program::pubkey::Pubkey,
+          pub stake_history: solana_program::pubkey::Pubkey,
           
               
           pub stake_program: solana_program::pubkey::Pubkey,
@@ -62,7 +62,7 @@ impl WithdrawSol {
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-            self.stake_pool_withdraw_authority,
+            self.withdraw_authority,
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new_readonly(
@@ -70,19 +70,19 @@ impl WithdrawSol {
             true
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new(
-            self.pool_tokens_from,
+            self.burn_from_pool,
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new(
-            self.reserve_stake_account,
+            self.reserve_stake,
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new(
-            self.lamports_to,
+            self.destination_lamports,
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new(
-            self.manager_fee_account,
+            self.manager_fee,
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new(
@@ -94,7 +94,7 @@ impl WithdrawSol {
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-            self.sysvar_stake_history,
+            self.stake_history,
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new_readonly(
@@ -121,13 +121,13 @@ impl WithdrawSol {
 #[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
  pub struct WithdrawSolInstructionData {
-            discriminator: [u8; 8],
+            discriminator: u8,
             }
 
 impl WithdrawSolInstructionData {
   pub fn new() -> Self {
     Self {
-                        discriminator: [145, 131, 74, 136, 65, 137, 42, 38],
+                        discriminator: 16,
                                 }
   }
 }
@@ -141,7 +141,7 @@ impl Default for WithdrawSolInstructionData {
 #[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
  pub struct WithdrawSolInstructionArgs {
-                  pub arg: u64,
+                  pub args: u64,
       }
 
 
@@ -150,32 +150,32 @@ impl Default for WithdrawSolInstructionData {
 /// ### Accounts:
 ///
                 ///   0. `[writable]` stake_pool
-          ///   1. `[]` stake_pool_withdraw_authority
+          ///   1. `[]` withdraw_authority
                 ///   2. `[signer]` user_transfer_authority
-                ///   3. `[writable]` pool_tokens_from
-                ///   4. `[writable]` reserve_stake_account
-                ///   5. `[writable]` lamports_to
-                ///   6. `[writable]` manager_fee_account
+                ///   3. `[writable]` burn_from_pool
+                ///   4. `[writable]` reserve_stake
+                ///   5. `[writable]` destination_lamports
+                ///   6. `[writable]` manager_fee
                 ///   7. `[writable]` pool_mint
           ///   8. `[]` clock
-                ///   9. `[optional]` sysvar_stake_history (default to `SysvarStakeHistory1111111111111111111111111`)
+          ///   9. `[]` stake_history
           ///   10. `[]` stake_program
-                ///   11. `[optional]` token_program (default to `TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA`)
+          ///   11. `[]` token_program
 #[derive(Clone, Debug, Default)]
 pub struct WithdrawSolBuilder {
             stake_pool: Option<solana_program::pubkey::Pubkey>,
-                stake_pool_withdraw_authority: Option<solana_program::pubkey::Pubkey>,
+                withdraw_authority: Option<solana_program::pubkey::Pubkey>,
                 user_transfer_authority: Option<solana_program::pubkey::Pubkey>,
-                pool_tokens_from: Option<solana_program::pubkey::Pubkey>,
-                reserve_stake_account: Option<solana_program::pubkey::Pubkey>,
-                lamports_to: Option<solana_program::pubkey::Pubkey>,
-                manager_fee_account: Option<solana_program::pubkey::Pubkey>,
+                burn_from_pool: Option<solana_program::pubkey::Pubkey>,
+                reserve_stake: Option<solana_program::pubkey::Pubkey>,
+                destination_lamports: Option<solana_program::pubkey::Pubkey>,
+                manager_fee: Option<solana_program::pubkey::Pubkey>,
                 pool_mint: Option<solana_program::pubkey::Pubkey>,
                 clock: Option<solana_program::pubkey::Pubkey>,
-                sysvar_stake_history: Option<solana_program::pubkey::Pubkey>,
+                stake_history: Option<solana_program::pubkey::Pubkey>,
                 stake_program: Option<solana_program::pubkey::Pubkey>,
                 token_program: Option<solana_program::pubkey::Pubkey>,
-                        arg: Option<u64>,
+                        args: Option<u64>,
         __remaining_accounts: Vec<solana_program::instruction::AccountMeta>,
 }
 
@@ -189,8 +189,8 @@ impl WithdrawSolBuilder {
                     self
     }
             #[inline(always)]
-    pub fn stake_pool_withdraw_authority(&mut self, stake_pool_withdraw_authority: solana_program::pubkey::Pubkey) -> &mut Self {
-                        self.stake_pool_withdraw_authority = Some(stake_pool_withdraw_authority);
+    pub fn withdraw_authority(&mut self, withdraw_authority: solana_program::pubkey::Pubkey) -> &mut Self {
+                        self.withdraw_authority = Some(withdraw_authority);
                     self
     }
             #[inline(always)]
@@ -199,23 +199,23 @@ impl WithdrawSolBuilder {
                     self
     }
             #[inline(always)]
-    pub fn pool_tokens_from(&mut self, pool_tokens_from: solana_program::pubkey::Pubkey) -> &mut Self {
-                        self.pool_tokens_from = Some(pool_tokens_from);
+    pub fn burn_from_pool(&mut self, burn_from_pool: solana_program::pubkey::Pubkey) -> &mut Self {
+                        self.burn_from_pool = Some(burn_from_pool);
                     self
     }
             #[inline(always)]
-    pub fn reserve_stake_account(&mut self, reserve_stake_account: solana_program::pubkey::Pubkey) -> &mut Self {
-                        self.reserve_stake_account = Some(reserve_stake_account);
+    pub fn reserve_stake(&mut self, reserve_stake: solana_program::pubkey::Pubkey) -> &mut Self {
+                        self.reserve_stake = Some(reserve_stake);
                     self
     }
             #[inline(always)]
-    pub fn lamports_to(&mut self, lamports_to: solana_program::pubkey::Pubkey) -> &mut Self {
-                        self.lamports_to = Some(lamports_to);
+    pub fn destination_lamports(&mut self, destination_lamports: solana_program::pubkey::Pubkey) -> &mut Self {
+                        self.destination_lamports = Some(destination_lamports);
                     self
     }
             #[inline(always)]
-    pub fn manager_fee_account(&mut self, manager_fee_account: solana_program::pubkey::Pubkey) -> &mut Self {
-                        self.manager_fee_account = Some(manager_fee_account);
+    pub fn manager_fee(&mut self, manager_fee: solana_program::pubkey::Pubkey) -> &mut Self {
+                        self.manager_fee = Some(manager_fee);
                     self
     }
             #[inline(always)]
@@ -228,10 +228,9 @@ impl WithdrawSolBuilder {
                         self.clock = Some(clock);
                     self
     }
-            /// `[optional account, default to 'SysvarStakeHistory1111111111111111111111111']`
-#[inline(always)]
-    pub fn sysvar_stake_history(&mut self, sysvar_stake_history: solana_program::pubkey::Pubkey) -> &mut Self {
-                        self.sysvar_stake_history = Some(sysvar_stake_history);
+            #[inline(always)]
+    pub fn stake_history(&mut self, stake_history: solana_program::pubkey::Pubkey) -> &mut Self {
+                        self.stake_history = Some(stake_history);
                     self
     }
             #[inline(always)]
@@ -239,15 +238,14 @@ impl WithdrawSolBuilder {
                         self.stake_program = Some(stake_program);
                     self
     }
-            /// `[optional account, default to 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA']`
-#[inline(always)]
+            #[inline(always)]
     pub fn token_program(&mut self, token_program: solana_program::pubkey::Pubkey) -> &mut Self {
                         self.token_program = Some(token_program);
                     self
     }
                     #[inline(always)]
-      pub fn arg(&mut self, arg: u64) -> &mut Self {
-        self.arg = Some(arg);
+      pub fn args(&mut self, args: u64) -> &mut Self {
+        self.args = Some(args);
         self
       }
         /// Add an additional account to the instruction.
@@ -266,20 +264,20 @@ impl WithdrawSolBuilder {
   pub fn instruction(&self) -> solana_program::instruction::Instruction {
     let accounts = WithdrawSol {
                               stake_pool: self.stake_pool.expect("stake_pool is not set"),
-                                        stake_pool_withdraw_authority: self.stake_pool_withdraw_authority.expect("stake_pool_withdraw_authority is not set"),
+                                        withdraw_authority: self.withdraw_authority.expect("withdraw_authority is not set"),
                                         user_transfer_authority: self.user_transfer_authority.expect("user_transfer_authority is not set"),
-                                        pool_tokens_from: self.pool_tokens_from.expect("pool_tokens_from is not set"),
-                                        reserve_stake_account: self.reserve_stake_account.expect("reserve_stake_account is not set"),
-                                        lamports_to: self.lamports_to.expect("lamports_to is not set"),
-                                        manager_fee_account: self.manager_fee_account.expect("manager_fee_account is not set"),
+                                        burn_from_pool: self.burn_from_pool.expect("burn_from_pool is not set"),
+                                        reserve_stake: self.reserve_stake.expect("reserve_stake is not set"),
+                                        destination_lamports: self.destination_lamports.expect("destination_lamports is not set"),
+                                        manager_fee: self.manager_fee.expect("manager_fee is not set"),
                                         pool_mint: self.pool_mint.expect("pool_mint is not set"),
                                         clock: self.clock.expect("clock is not set"),
-                                        sysvar_stake_history: self.sysvar_stake_history.unwrap_or(solana_program::pubkey!("SysvarStakeHistory1111111111111111111111111")),
+                                        stake_history: self.stake_history.expect("stake_history is not set"),
                                         stake_program: self.stake_program.expect("stake_program is not set"),
-                                        token_program: self.token_program.unwrap_or(solana_program::pubkey!("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA")),
+                                        token_program: self.token_program.expect("token_program is not set"),
                       };
           let args = WithdrawSolInstructionArgs {
-                                                              arg: self.arg.clone().expect("arg is not set"),
+                                                              args: self.args.clone().expect("args is not set"),
                                     };
     
     accounts.instruction_with_remaining_accounts(args, &self.__remaining_accounts)
@@ -293,22 +291,22 @@ impl WithdrawSolBuilder {
               pub stake_pool: &'b solana_program::account_info::AccountInfo<'a>,
                 
                     
-              pub stake_pool_withdraw_authority: &'b solana_program::account_info::AccountInfo<'a>,
+              pub withdraw_authority: &'b solana_program::account_info::AccountInfo<'a>,
                 
                     
               pub user_transfer_authority: &'b solana_program::account_info::AccountInfo<'a>,
                 
                     
-              pub pool_tokens_from: &'b solana_program::account_info::AccountInfo<'a>,
+              pub burn_from_pool: &'b solana_program::account_info::AccountInfo<'a>,
                 
                     
-              pub reserve_stake_account: &'b solana_program::account_info::AccountInfo<'a>,
+              pub reserve_stake: &'b solana_program::account_info::AccountInfo<'a>,
                 
                     
-              pub lamports_to: &'b solana_program::account_info::AccountInfo<'a>,
+              pub destination_lamports: &'b solana_program::account_info::AccountInfo<'a>,
                 
                     
-              pub manager_fee_account: &'b solana_program::account_info::AccountInfo<'a>,
+              pub manager_fee: &'b solana_program::account_info::AccountInfo<'a>,
                 
                     
               pub pool_mint: &'b solana_program::account_info::AccountInfo<'a>,
@@ -317,7 +315,7 @@ impl WithdrawSolBuilder {
               pub clock: &'b solana_program::account_info::AccountInfo<'a>,
                 
                     
-              pub sysvar_stake_history: &'b solana_program::account_info::AccountInfo<'a>,
+              pub stake_history: &'b solana_program::account_info::AccountInfo<'a>,
                 
                     
               pub stake_program: &'b solana_program::account_info::AccountInfo<'a>,
@@ -335,22 +333,22 @@ pub struct WithdrawSolCpi<'a, 'b> {
           pub stake_pool: &'b solana_program::account_info::AccountInfo<'a>,
           
               
-          pub stake_pool_withdraw_authority: &'b solana_program::account_info::AccountInfo<'a>,
+          pub withdraw_authority: &'b solana_program::account_info::AccountInfo<'a>,
           
               
           pub user_transfer_authority: &'b solana_program::account_info::AccountInfo<'a>,
           
               
-          pub pool_tokens_from: &'b solana_program::account_info::AccountInfo<'a>,
+          pub burn_from_pool: &'b solana_program::account_info::AccountInfo<'a>,
           
               
-          pub reserve_stake_account: &'b solana_program::account_info::AccountInfo<'a>,
+          pub reserve_stake: &'b solana_program::account_info::AccountInfo<'a>,
           
               
-          pub lamports_to: &'b solana_program::account_info::AccountInfo<'a>,
+          pub destination_lamports: &'b solana_program::account_info::AccountInfo<'a>,
           
               
-          pub manager_fee_account: &'b solana_program::account_info::AccountInfo<'a>,
+          pub manager_fee: &'b solana_program::account_info::AccountInfo<'a>,
           
               
           pub pool_mint: &'b solana_program::account_info::AccountInfo<'a>,
@@ -359,7 +357,7 @@ pub struct WithdrawSolCpi<'a, 'b> {
           pub clock: &'b solana_program::account_info::AccountInfo<'a>,
           
               
-          pub sysvar_stake_history: &'b solana_program::account_info::AccountInfo<'a>,
+          pub stake_history: &'b solana_program::account_info::AccountInfo<'a>,
           
               
           pub stake_program: &'b solana_program::account_info::AccountInfo<'a>,
@@ -379,15 +377,15 @@ impl<'a, 'b> WithdrawSolCpi<'a, 'b> {
     Self {
       __program: program,
               stake_pool: accounts.stake_pool,
-              stake_pool_withdraw_authority: accounts.stake_pool_withdraw_authority,
+              withdraw_authority: accounts.withdraw_authority,
               user_transfer_authority: accounts.user_transfer_authority,
-              pool_tokens_from: accounts.pool_tokens_from,
-              reserve_stake_account: accounts.reserve_stake_account,
-              lamports_to: accounts.lamports_to,
-              manager_fee_account: accounts.manager_fee_account,
+              burn_from_pool: accounts.burn_from_pool,
+              reserve_stake: accounts.reserve_stake,
+              destination_lamports: accounts.destination_lamports,
+              manager_fee: accounts.manager_fee,
               pool_mint: accounts.pool_mint,
               clock: accounts.clock,
-              sysvar_stake_history: accounts.sysvar_stake_history,
+              stake_history: accounts.stake_history,
               stake_program: accounts.stake_program,
               token_program: accounts.token_program,
                     __args: args,
@@ -419,7 +417,7 @@ impl<'a, 'b> WithdrawSolCpi<'a, 'b> {
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-            *self.stake_pool_withdraw_authority.key,
+            *self.withdraw_authority.key,
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new_readonly(
@@ -427,19 +425,19 @@ impl<'a, 'b> WithdrawSolCpi<'a, 'b> {
             true
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new(
-            *self.pool_tokens_from.key,
+            *self.burn_from_pool.key,
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new(
-            *self.reserve_stake_account.key,
+            *self.reserve_stake.key,
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new(
-            *self.lamports_to.key,
+            *self.destination_lamports.key,
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new(
-            *self.manager_fee_account.key,
+            *self.manager_fee.key,
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new(
@@ -451,7 +449,7 @@ impl<'a, 'b> WithdrawSolCpi<'a, 'b> {
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-            *self.sysvar_stake_history.key,
+            *self.stake_history.key,
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new_readonly(
@@ -481,15 +479,15 @@ impl<'a, 'b> WithdrawSolCpi<'a, 'b> {
     let mut account_infos = Vec::with_capacity(13 + remaining_accounts.len());
     account_infos.push(self.__program.clone());
                   account_infos.push(self.stake_pool.clone());
-                        account_infos.push(self.stake_pool_withdraw_authority.clone());
+                        account_infos.push(self.withdraw_authority.clone());
                         account_infos.push(self.user_transfer_authority.clone());
-                        account_infos.push(self.pool_tokens_from.clone());
-                        account_infos.push(self.reserve_stake_account.clone());
-                        account_infos.push(self.lamports_to.clone());
-                        account_infos.push(self.manager_fee_account.clone());
+                        account_infos.push(self.burn_from_pool.clone());
+                        account_infos.push(self.reserve_stake.clone());
+                        account_infos.push(self.destination_lamports.clone());
+                        account_infos.push(self.manager_fee.clone());
                         account_infos.push(self.pool_mint.clone());
                         account_infos.push(self.clock.clone());
-                        account_infos.push(self.sysvar_stake_history.clone());
+                        account_infos.push(self.stake_history.clone());
                         account_infos.push(self.stake_program.clone());
                         account_infos.push(self.token_program.clone());
               remaining_accounts.iter().for_each(|remaining_account| account_infos.push(remaining_account.0.clone()));
@@ -507,15 +505,15 @@ impl<'a, 'b> WithdrawSolCpi<'a, 'b> {
 /// ### Accounts:
 ///
                 ///   0. `[writable]` stake_pool
-          ///   1. `[]` stake_pool_withdraw_authority
+          ///   1. `[]` withdraw_authority
                 ///   2. `[signer]` user_transfer_authority
-                ///   3. `[writable]` pool_tokens_from
-                ///   4. `[writable]` reserve_stake_account
-                ///   5. `[writable]` lamports_to
-                ///   6. `[writable]` manager_fee_account
+                ///   3. `[writable]` burn_from_pool
+                ///   4. `[writable]` reserve_stake
+                ///   5. `[writable]` destination_lamports
+                ///   6. `[writable]` manager_fee
                 ///   7. `[writable]` pool_mint
           ///   8. `[]` clock
-          ///   9. `[]` sysvar_stake_history
+          ///   9. `[]` stake_history
           ///   10. `[]` stake_program
           ///   11. `[]` token_program
 #[derive(Clone, Debug)]
@@ -528,18 +526,18 @@ impl<'a, 'b> WithdrawSolCpiBuilder<'a, 'b> {
     let instruction = Box::new(WithdrawSolCpiBuilderInstruction {
       __program: program,
               stake_pool: None,
-              stake_pool_withdraw_authority: None,
+              withdraw_authority: None,
               user_transfer_authority: None,
-              pool_tokens_from: None,
-              reserve_stake_account: None,
-              lamports_to: None,
-              manager_fee_account: None,
+              burn_from_pool: None,
+              reserve_stake: None,
+              destination_lamports: None,
+              manager_fee: None,
               pool_mint: None,
               clock: None,
-              sysvar_stake_history: None,
+              stake_history: None,
               stake_program: None,
               token_program: None,
-                                            arg: None,
+                                            args: None,
                     __remaining_accounts: Vec::new(),
     });
     Self { instruction }
@@ -550,8 +548,8 @@ impl<'a, 'b> WithdrawSolCpiBuilder<'a, 'b> {
                     self
     }
       #[inline(always)]
-    pub fn stake_pool_withdraw_authority(&mut self, stake_pool_withdraw_authority: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
-                        self.instruction.stake_pool_withdraw_authority = Some(stake_pool_withdraw_authority);
+    pub fn withdraw_authority(&mut self, withdraw_authority: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+                        self.instruction.withdraw_authority = Some(withdraw_authority);
                     self
     }
       #[inline(always)]
@@ -560,23 +558,23 @@ impl<'a, 'b> WithdrawSolCpiBuilder<'a, 'b> {
                     self
     }
       #[inline(always)]
-    pub fn pool_tokens_from(&mut self, pool_tokens_from: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
-                        self.instruction.pool_tokens_from = Some(pool_tokens_from);
+    pub fn burn_from_pool(&mut self, burn_from_pool: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+                        self.instruction.burn_from_pool = Some(burn_from_pool);
                     self
     }
       #[inline(always)]
-    pub fn reserve_stake_account(&mut self, reserve_stake_account: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
-                        self.instruction.reserve_stake_account = Some(reserve_stake_account);
+    pub fn reserve_stake(&mut self, reserve_stake: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+                        self.instruction.reserve_stake = Some(reserve_stake);
                     self
     }
       #[inline(always)]
-    pub fn lamports_to(&mut self, lamports_to: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
-                        self.instruction.lamports_to = Some(lamports_to);
+    pub fn destination_lamports(&mut self, destination_lamports: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+                        self.instruction.destination_lamports = Some(destination_lamports);
                     self
     }
       #[inline(always)]
-    pub fn manager_fee_account(&mut self, manager_fee_account: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
-                        self.instruction.manager_fee_account = Some(manager_fee_account);
+    pub fn manager_fee(&mut self, manager_fee: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+                        self.instruction.manager_fee = Some(manager_fee);
                     self
     }
       #[inline(always)]
@@ -590,8 +588,8 @@ impl<'a, 'b> WithdrawSolCpiBuilder<'a, 'b> {
                     self
     }
       #[inline(always)]
-    pub fn sysvar_stake_history(&mut self, sysvar_stake_history: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
-                        self.instruction.sysvar_stake_history = Some(sysvar_stake_history);
+    pub fn stake_history(&mut self, stake_history: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+                        self.instruction.stake_history = Some(stake_history);
                     self
     }
       #[inline(always)]
@@ -605,8 +603,8 @@ impl<'a, 'b> WithdrawSolCpiBuilder<'a, 'b> {
                     self
     }
                     #[inline(always)]
-      pub fn arg(&mut self, arg: u64) -> &mut Self {
-        self.instruction.arg = Some(arg);
+      pub fn args(&mut self, args: u64) -> &mut Self {
+        self.instruction.args = Some(args);
         self
       }
         /// Add an additional account to the instruction.
@@ -632,30 +630,30 @@ impl<'a, 'b> WithdrawSolCpiBuilder<'a, 'b> {
   #[allow(clippy::vec_init_then_push)]
   pub fn invoke_signed(&self, signers_seeds: &[&[&[u8]]]) -> solana_program::entrypoint::ProgramResult {
           let args = WithdrawSolInstructionArgs {
-                                                              arg: self.instruction.arg.clone().expect("arg is not set"),
+                                                              args: self.instruction.args.clone().expect("args is not set"),
                                     };
         let instruction = WithdrawSolCpi {
         __program: self.instruction.__program,
                   
           stake_pool: self.instruction.stake_pool.expect("stake_pool is not set"),
                   
-          stake_pool_withdraw_authority: self.instruction.stake_pool_withdraw_authority.expect("stake_pool_withdraw_authority is not set"),
+          withdraw_authority: self.instruction.withdraw_authority.expect("withdraw_authority is not set"),
                   
           user_transfer_authority: self.instruction.user_transfer_authority.expect("user_transfer_authority is not set"),
                   
-          pool_tokens_from: self.instruction.pool_tokens_from.expect("pool_tokens_from is not set"),
+          burn_from_pool: self.instruction.burn_from_pool.expect("burn_from_pool is not set"),
                   
-          reserve_stake_account: self.instruction.reserve_stake_account.expect("reserve_stake_account is not set"),
+          reserve_stake: self.instruction.reserve_stake.expect("reserve_stake is not set"),
                   
-          lamports_to: self.instruction.lamports_to.expect("lamports_to is not set"),
+          destination_lamports: self.instruction.destination_lamports.expect("destination_lamports is not set"),
                   
-          manager_fee_account: self.instruction.manager_fee_account.expect("manager_fee_account is not set"),
+          manager_fee: self.instruction.manager_fee.expect("manager_fee is not set"),
                   
           pool_mint: self.instruction.pool_mint.expect("pool_mint is not set"),
                   
           clock: self.instruction.clock.expect("clock is not set"),
                   
-          sysvar_stake_history: self.instruction.sysvar_stake_history.expect("sysvar_stake_history is not set"),
+          stake_history: self.instruction.stake_history.expect("stake_history is not set"),
                   
           stake_program: self.instruction.stake_program.expect("stake_program is not set"),
                   
@@ -670,18 +668,18 @@ impl<'a, 'b> WithdrawSolCpiBuilder<'a, 'b> {
 struct WithdrawSolCpiBuilderInstruction<'a, 'b> {
   __program: &'b solana_program::account_info::AccountInfo<'a>,
             stake_pool: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-                stake_pool_withdraw_authority: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+                withdraw_authority: Option<&'b solana_program::account_info::AccountInfo<'a>>,
                 user_transfer_authority: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-                pool_tokens_from: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-                reserve_stake_account: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-                lamports_to: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-                manager_fee_account: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+                burn_from_pool: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+                reserve_stake: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+                destination_lamports: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+                manager_fee: Option<&'b solana_program::account_info::AccountInfo<'a>>,
                 pool_mint: Option<&'b solana_program::account_info::AccountInfo<'a>>,
                 clock: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-                sysvar_stake_history: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+                stake_history: Option<&'b solana_program::account_info::AccountInfo<'a>>,
                 stake_program: Option<&'b solana_program::account_info::AccountInfo<'a>>,
                 token_program: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-                        arg: Option<u64>,
+                        args: Option<u64>,
         /// Additional instruction accounts `(AccountInfo, is_writable, is_signer)`.
   __remaining_accounts: Vec<(&'b solana_program::account_info::AccountInfo<'a>, bool, bool)>,
 }

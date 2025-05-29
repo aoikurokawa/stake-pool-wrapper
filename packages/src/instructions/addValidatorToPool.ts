@@ -8,12 +8,12 @@
 
 import {
   combineCodec,
-  fixDecoderSize,
-  fixEncoderSize,
-  getBytesDecoder,
-  getBytesEncoder,
   getStructDecoder,
   getStructEncoder,
+  getU32Decoder,
+  getU32Encoder,
+  getU8Decoder,
+  getU8Encoder,
   transformEncoder,
   type Address,
   type Codec,
@@ -26,44 +26,32 @@ import {
   type IInstructionWithData,
   type ReadonlyAccount,
   type ReadonlySignerAccount,
-  type ReadonlyUint8Array,
   type TransactionSigner,
   type WritableAccount,
-  type WritableSignerAccount,
 } from '@solana/kit';
 import { SPL_STAKE_POOL_PROGRAM_ADDRESS } from '../programs';
 import { getAccountMetaFactory, type ResolvedAccount } from '../shared';
 
-export const ADD_VALIDATOR_TO_POOL_DISCRIMINATOR = new Uint8Array([
-  181, 6, 29, 25, 192, 211, 190, 187,
-]);
+export const ADD_VALIDATOR_TO_POOL_DISCRIMINATOR = 1;
 
 export function getAddValidatorToPoolDiscriminatorBytes() {
-  return fixEncoderSize(getBytesEncoder(), 8).encode(
-    ADD_VALIDATOR_TO_POOL_DISCRIMINATOR
-  );
+  return getU8Encoder().encode(ADD_VALIDATOR_TO_POOL_DISCRIMINATOR);
 }
 
 export type AddValidatorToPoolInstruction<
   TProgram extends string = typeof SPL_STAKE_POOL_PROGRAM_ADDRESS,
   TAccountStakePool extends string | IAccountMeta<string> = string,
   TAccountStaker extends string | IAccountMeta<string> = string,
-  TAccountFunder extends string | IAccountMeta<string> = string,
-  TAccountStakePoolWithdraw extends string | IAccountMeta<string> = string,
+  TAccountReserveStake extends string | IAccountMeta<string> = string,
+  TAccountWithdrawAuthority extends string | IAccountMeta<string> = string,
   TAccountValidatorList extends string | IAccountMeta<string> = string,
   TAccountStake extends string | IAccountMeta<string> = string,
-  TAccountValidator extends string | IAccountMeta<string> = string,
-  TAccountRent extends
-    | string
-    | IAccountMeta<string> = 'SysvarRent111111111111111111111111111111111',
+  TAccountValidatorVote extends string | IAccountMeta<string> = string,
+  TAccountRent extends string | IAccountMeta<string> = string,
   TAccountClock extends string | IAccountMeta<string> = string,
-  TAccountSysvarStakeHistory extends
-    | string
-    | IAccountMeta<string> = 'SysvarStakeHistory1111111111111111111111111',
+  TAccountStakeHistory extends string | IAccountMeta<string> = string,
   TAccountStakeConfig extends string | IAccountMeta<string> = string,
-  TAccountSystemProgram extends
-    | string
-    | IAccountMeta<string> = '11111111111111111111111111111111',
+  TAccountSystemProgram extends string | IAccountMeta<string> = string,
   TAccountStakeProgram extends string | IAccountMeta<string> = string,
   TRemainingAccounts extends readonly IAccountMeta<string>[] = [],
 > = IInstruction<TProgram> &
@@ -77,31 +65,30 @@ export type AddValidatorToPoolInstruction<
         ? ReadonlySignerAccount<TAccountStaker> &
             IAccountSignerMeta<TAccountStaker>
         : TAccountStaker,
-      TAccountFunder extends string
-        ? WritableSignerAccount<TAccountFunder> &
-            IAccountSignerMeta<TAccountFunder>
-        : TAccountFunder,
-      TAccountStakePoolWithdraw extends string
-        ? ReadonlyAccount<TAccountStakePoolWithdraw>
-        : TAccountStakePoolWithdraw,
+      TAccountReserveStake extends string
+        ? WritableAccount<TAccountReserveStake>
+        : TAccountReserveStake,
+      TAccountWithdrawAuthority extends string
+        ? ReadonlyAccount<TAccountWithdrawAuthority>
+        : TAccountWithdrawAuthority,
       TAccountValidatorList extends string
         ? WritableAccount<TAccountValidatorList>
         : TAccountValidatorList,
       TAccountStake extends string
         ? WritableAccount<TAccountStake>
         : TAccountStake,
-      TAccountValidator extends string
-        ? ReadonlyAccount<TAccountValidator>
-        : TAccountValidator,
+      TAccountValidatorVote extends string
+        ? ReadonlyAccount<TAccountValidatorVote>
+        : TAccountValidatorVote,
       TAccountRent extends string
         ? ReadonlyAccount<TAccountRent>
         : TAccountRent,
       TAccountClock extends string
         ? ReadonlyAccount<TAccountClock>
         : TAccountClock,
-      TAccountSysvarStakeHistory extends string
-        ? ReadonlyAccount<TAccountSysvarStakeHistory>
-        : TAccountSysvarStakeHistory,
+      TAccountStakeHistory extends string
+        ? ReadonlyAccount<TAccountStakeHistory>
+        : TAccountStakeHistory,
       TAccountStakeConfig extends string
         ? ReadonlyAccount<TAccountStakeConfig>
         : TAccountStakeConfig,
@@ -116,14 +103,18 @@ export type AddValidatorToPoolInstruction<
   >;
 
 export type AddValidatorToPoolInstructionData = {
-  discriminator: ReadonlyUint8Array;
+  discriminator: number;
+  args: number;
 };
 
-export type AddValidatorToPoolInstructionDataArgs = {};
+export type AddValidatorToPoolInstructionDataArgs = { args: number };
 
 export function getAddValidatorToPoolInstructionDataEncoder(): Encoder<AddValidatorToPoolInstructionDataArgs> {
   return transformEncoder(
-    getStructEncoder([['discriminator', fixEncoderSize(getBytesEncoder(), 8)]]),
+    getStructEncoder([
+      ['discriminator', getU8Encoder()],
+      ['args', getU32Encoder()],
+    ]),
     (value) => ({
       ...value,
       discriminator: ADD_VALIDATOR_TO_POOL_DISCRIMINATOR,
@@ -133,7 +124,8 @@ export function getAddValidatorToPoolInstructionDataEncoder(): Encoder<AddValida
 
 export function getAddValidatorToPoolInstructionDataDecoder(): Decoder<AddValidatorToPoolInstructionData> {
   return getStructDecoder([
-    ['discriminator', fixDecoderSize(getBytesDecoder(), 8)],
+    ['discriminator', getU8Decoder()],
+    ['args', getU32Decoder()],
   ]);
 }
 
@@ -150,44 +142,45 @@ export function getAddValidatorToPoolInstructionDataCodec(): Codec<
 export type AddValidatorToPoolInput<
   TAccountStakePool extends string = string,
   TAccountStaker extends string = string,
-  TAccountFunder extends string = string,
-  TAccountStakePoolWithdraw extends string = string,
+  TAccountReserveStake extends string = string,
+  TAccountWithdrawAuthority extends string = string,
   TAccountValidatorList extends string = string,
   TAccountStake extends string = string,
-  TAccountValidator extends string = string,
+  TAccountValidatorVote extends string = string,
   TAccountRent extends string = string,
   TAccountClock extends string = string,
-  TAccountSysvarStakeHistory extends string = string,
+  TAccountStakeHistory extends string = string,
   TAccountStakeConfig extends string = string,
   TAccountSystemProgram extends string = string,
   TAccountStakeProgram extends string = string,
 > = {
   stakePool: Address<TAccountStakePool>;
   staker: TransactionSigner<TAccountStaker>;
-  funder: TransactionSigner<TAccountFunder>;
-  stakePoolWithdraw: Address<TAccountStakePoolWithdraw>;
+  reserveStake: Address<TAccountReserveStake>;
+  withdrawAuthority: Address<TAccountWithdrawAuthority>;
   validatorList: Address<TAccountValidatorList>;
   stake: Address<TAccountStake>;
-  validator: Address<TAccountValidator>;
-  rent?: Address<TAccountRent>;
+  validatorVote: Address<TAccountValidatorVote>;
+  rent: Address<TAccountRent>;
   clock: Address<TAccountClock>;
-  sysvarStakeHistory?: Address<TAccountSysvarStakeHistory>;
+  stakeHistory: Address<TAccountStakeHistory>;
   stakeConfig: Address<TAccountStakeConfig>;
-  systemProgram?: Address<TAccountSystemProgram>;
+  systemProgram: Address<TAccountSystemProgram>;
   stakeProgram: Address<TAccountStakeProgram>;
+  args: AddValidatorToPoolInstructionDataArgs['args'];
 };
 
 export function getAddValidatorToPoolInstruction<
   TAccountStakePool extends string,
   TAccountStaker extends string,
-  TAccountFunder extends string,
-  TAccountStakePoolWithdraw extends string,
+  TAccountReserveStake extends string,
+  TAccountWithdrawAuthority extends string,
   TAccountValidatorList extends string,
   TAccountStake extends string,
-  TAccountValidator extends string,
+  TAccountValidatorVote extends string,
   TAccountRent extends string,
   TAccountClock extends string,
-  TAccountSysvarStakeHistory extends string,
+  TAccountStakeHistory extends string,
   TAccountStakeConfig extends string,
   TAccountSystemProgram extends string,
   TAccountStakeProgram extends string,
@@ -196,14 +189,14 @@ export function getAddValidatorToPoolInstruction<
   input: AddValidatorToPoolInput<
     TAccountStakePool,
     TAccountStaker,
-    TAccountFunder,
-    TAccountStakePoolWithdraw,
+    TAccountReserveStake,
+    TAccountWithdrawAuthority,
     TAccountValidatorList,
     TAccountStake,
-    TAccountValidator,
+    TAccountValidatorVote,
     TAccountRent,
     TAccountClock,
-    TAccountSysvarStakeHistory,
+    TAccountStakeHistory,
     TAccountStakeConfig,
     TAccountSystemProgram,
     TAccountStakeProgram
@@ -213,14 +206,14 @@ export function getAddValidatorToPoolInstruction<
   TProgramAddress,
   TAccountStakePool,
   TAccountStaker,
-  TAccountFunder,
-  TAccountStakePoolWithdraw,
+  TAccountReserveStake,
+  TAccountWithdrawAuthority,
   TAccountValidatorList,
   TAccountStake,
-  TAccountValidator,
+  TAccountValidatorVote,
   TAccountRent,
   TAccountClock,
-  TAccountSysvarStakeHistory,
+  TAccountStakeHistory,
   TAccountStakeConfig,
   TAccountSystemProgram,
   TAccountStakeProgram
@@ -233,20 +226,17 @@ export function getAddValidatorToPoolInstruction<
   const originalAccounts = {
     stakePool: { value: input.stakePool ?? null, isWritable: true },
     staker: { value: input.staker ?? null, isWritable: false },
-    funder: { value: input.funder ?? null, isWritable: true },
-    stakePoolWithdraw: {
-      value: input.stakePoolWithdraw ?? null,
+    reserveStake: { value: input.reserveStake ?? null, isWritable: true },
+    withdrawAuthority: {
+      value: input.withdrawAuthority ?? null,
       isWritable: false,
     },
     validatorList: { value: input.validatorList ?? null, isWritable: true },
     stake: { value: input.stake ?? null, isWritable: true },
-    validator: { value: input.validator ?? null, isWritable: false },
+    validatorVote: { value: input.validatorVote ?? null, isWritable: false },
     rent: { value: input.rent ?? null, isWritable: false },
     clock: { value: input.clock ?? null, isWritable: false },
-    sysvarStakeHistory: {
-      value: input.sysvarStakeHistory ?? null,
-      isWritable: false,
-    },
+    stakeHistory: { value: input.stakeHistory ?? null, isWritable: false },
     stakeConfig: { value: input.stakeConfig ?? null, isWritable: false },
     systemProgram: { value: input.systemProgram ?? null, isWritable: false },
     stakeProgram: { value: input.stakeProgram ?? null, isWritable: false },
@@ -256,51 +246,42 @@ export function getAddValidatorToPoolInstruction<
     ResolvedAccount
   >;
 
-  // Resolve default values.
-  if (!accounts.rent.value) {
-    accounts.rent.value =
-      'SysvarRent111111111111111111111111111111111' as Address<'SysvarRent111111111111111111111111111111111'>;
-  }
-  if (!accounts.sysvarStakeHistory.value) {
-    accounts.sysvarStakeHistory.value =
-      'SysvarStakeHistory1111111111111111111111111' as Address<'SysvarStakeHistory1111111111111111111111111'>;
-  }
-  if (!accounts.systemProgram.value) {
-    accounts.systemProgram.value =
-      '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>;
-  }
+  // Original args.
+  const args = { ...input };
 
   const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');
   const instruction = {
     accounts: [
       getAccountMeta(accounts.stakePool),
       getAccountMeta(accounts.staker),
-      getAccountMeta(accounts.funder),
-      getAccountMeta(accounts.stakePoolWithdraw),
+      getAccountMeta(accounts.reserveStake),
+      getAccountMeta(accounts.withdrawAuthority),
       getAccountMeta(accounts.validatorList),
       getAccountMeta(accounts.stake),
-      getAccountMeta(accounts.validator),
+      getAccountMeta(accounts.validatorVote),
       getAccountMeta(accounts.rent),
       getAccountMeta(accounts.clock),
-      getAccountMeta(accounts.sysvarStakeHistory),
+      getAccountMeta(accounts.stakeHistory),
       getAccountMeta(accounts.stakeConfig),
       getAccountMeta(accounts.systemProgram),
       getAccountMeta(accounts.stakeProgram),
     ],
     programAddress,
-    data: getAddValidatorToPoolInstructionDataEncoder().encode({}),
+    data: getAddValidatorToPoolInstructionDataEncoder().encode(
+      args as AddValidatorToPoolInstructionDataArgs
+    ),
   } as AddValidatorToPoolInstruction<
     TProgramAddress,
     TAccountStakePool,
     TAccountStaker,
-    TAccountFunder,
-    TAccountStakePoolWithdraw,
+    TAccountReserveStake,
+    TAccountWithdrawAuthority,
     TAccountValidatorList,
     TAccountStake,
-    TAccountValidator,
+    TAccountValidatorVote,
     TAccountRent,
     TAccountClock,
-    TAccountSysvarStakeHistory,
+    TAccountStakeHistory,
     TAccountStakeConfig,
     TAccountSystemProgram,
     TAccountStakeProgram
@@ -317,14 +298,14 @@ export type ParsedAddValidatorToPoolInstruction<
   accounts: {
     stakePool: TAccountMetas[0];
     staker: TAccountMetas[1];
-    funder: TAccountMetas[2];
-    stakePoolWithdraw: TAccountMetas[3];
+    reserveStake: TAccountMetas[2];
+    withdrawAuthority: TAccountMetas[3];
     validatorList: TAccountMetas[4];
     stake: TAccountMetas[5];
-    validator: TAccountMetas[6];
+    validatorVote: TAccountMetas[6];
     rent: TAccountMetas[7];
     clock: TAccountMetas[8];
-    sysvarStakeHistory: TAccountMetas[9];
+    stakeHistory: TAccountMetas[9];
     stakeConfig: TAccountMetas[10];
     systemProgram: TAccountMetas[11];
     stakeProgram: TAccountMetas[12];
@@ -355,14 +336,14 @@ export function parseAddValidatorToPoolInstruction<
     accounts: {
       stakePool: getNextAccount(),
       staker: getNextAccount(),
-      funder: getNextAccount(),
-      stakePoolWithdraw: getNextAccount(),
+      reserveStake: getNextAccount(),
+      withdrawAuthority: getNextAccount(),
       validatorList: getNextAccount(),
       stake: getNextAccount(),
-      validator: getNextAccount(),
+      validatorVote: getNextAccount(),
       rent: getNextAccount(),
       clock: getNextAccount(),
-      sysvarStakeHistory: getNextAccount(),
+      stakeHistory: getNextAccount(),
       stakeConfig: getNextAccount(),
       systemProgram: getNextAccount(),
       stakeProgram: getNextAccount(),

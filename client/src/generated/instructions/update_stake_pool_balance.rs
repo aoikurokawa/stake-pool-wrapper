@@ -16,19 +16,19 @@ pub struct UpdateStakePoolBalance {
           pub stake_pool: solana_program::pubkey::Pubkey,
           
               
-          pub withdraw_authority: solana_program::pubkey::Pubkey,
+          pub withdraw: solana_program::pubkey::Pubkey,
           
               
-          pub validator_list_storage: solana_program::pubkey::Pubkey,
+          pub validator_list: solana_program::pubkey::Pubkey,
           
               
           pub reserve_stake: solana_program::pubkey::Pubkey,
           
               
-          pub manager_fee_account: solana_program::pubkey::Pubkey,
+          pub manager_fee: solana_program::pubkey::Pubkey,
           
               
-          pub stake_pool_mint: solana_program::pubkey::Pubkey,
+          pub pool_mint: solana_program::pubkey::Pubkey,
           
               
           pub token_program: solana_program::pubkey::Pubkey,
@@ -47,11 +47,11 @@ impl UpdateStakePoolBalance {
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-            self.withdraw_authority,
+            self.withdraw,
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new(
-            self.validator_list_storage,
+            self.validator_list,
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new_readonly(
@@ -59,11 +59,11 @@ impl UpdateStakePoolBalance {
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new(
-            self.manager_fee_account,
+            self.manager_fee,
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new(
-            self.stake_pool_mint,
+            self.pool_mint,
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new_readonly(
@@ -84,13 +84,13 @@ impl UpdateStakePoolBalance {
 #[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
  pub struct UpdateStakePoolBalanceInstructionData {
-            discriminator: [u8; 8],
+            discriminator: u8,
       }
 
 impl UpdateStakePoolBalanceInstructionData {
   pub fn new() -> Self {
     Self {
-                        discriminator: [238, 181, 59, 245, 177, 236, 231, 88],
+                        discriminator: 7,
                   }
   }
 }
@@ -108,20 +108,20 @@ impl Default for UpdateStakePoolBalanceInstructionData {
 /// ### Accounts:
 ///
                 ///   0. `[writable]` stake_pool
-          ///   1. `[]` withdraw_authority
-                ///   2. `[writable]` validator_list_storage
+          ///   1. `[]` withdraw
+                ///   2. `[writable]` validator_list
           ///   3. `[]` reserve_stake
-                ///   4. `[writable]` manager_fee_account
-                ///   5. `[writable]` stake_pool_mint
-                ///   6. `[optional]` token_program (default to `TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA`)
+                ///   4. `[writable]` manager_fee
+                ///   5. `[writable]` pool_mint
+          ///   6. `[]` token_program
 #[derive(Clone, Debug, Default)]
 pub struct UpdateStakePoolBalanceBuilder {
             stake_pool: Option<solana_program::pubkey::Pubkey>,
-                withdraw_authority: Option<solana_program::pubkey::Pubkey>,
-                validator_list_storage: Option<solana_program::pubkey::Pubkey>,
+                withdraw: Option<solana_program::pubkey::Pubkey>,
+                validator_list: Option<solana_program::pubkey::Pubkey>,
                 reserve_stake: Option<solana_program::pubkey::Pubkey>,
-                manager_fee_account: Option<solana_program::pubkey::Pubkey>,
-                stake_pool_mint: Option<solana_program::pubkey::Pubkey>,
+                manager_fee: Option<solana_program::pubkey::Pubkey>,
+                pool_mint: Option<solana_program::pubkey::Pubkey>,
                 token_program: Option<solana_program::pubkey::Pubkey>,
                 __remaining_accounts: Vec<solana_program::instruction::AccountMeta>,
 }
@@ -136,13 +136,13 @@ impl UpdateStakePoolBalanceBuilder {
                     self
     }
             #[inline(always)]
-    pub fn withdraw_authority(&mut self, withdraw_authority: solana_program::pubkey::Pubkey) -> &mut Self {
-                        self.withdraw_authority = Some(withdraw_authority);
+    pub fn withdraw(&mut self, withdraw: solana_program::pubkey::Pubkey) -> &mut Self {
+                        self.withdraw = Some(withdraw);
                     self
     }
             #[inline(always)]
-    pub fn validator_list_storage(&mut self, validator_list_storage: solana_program::pubkey::Pubkey) -> &mut Self {
-                        self.validator_list_storage = Some(validator_list_storage);
+    pub fn validator_list(&mut self, validator_list: solana_program::pubkey::Pubkey) -> &mut Self {
+                        self.validator_list = Some(validator_list);
                     self
     }
             #[inline(always)]
@@ -151,17 +151,16 @@ impl UpdateStakePoolBalanceBuilder {
                     self
     }
             #[inline(always)]
-    pub fn manager_fee_account(&mut self, manager_fee_account: solana_program::pubkey::Pubkey) -> &mut Self {
-                        self.manager_fee_account = Some(manager_fee_account);
+    pub fn manager_fee(&mut self, manager_fee: solana_program::pubkey::Pubkey) -> &mut Self {
+                        self.manager_fee = Some(manager_fee);
                     self
     }
             #[inline(always)]
-    pub fn stake_pool_mint(&mut self, stake_pool_mint: solana_program::pubkey::Pubkey) -> &mut Self {
-                        self.stake_pool_mint = Some(stake_pool_mint);
+    pub fn pool_mint(&mut self, pool_mint: solana_program::pubkey::Pubkey) -> &mut Self {
+                        self.pool_mint = Some(pool_mint);
                     self
     }
-            /// `[optional account, default to 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA']`
-#[inline(always)]
+            #[inline(always)]
     pub fn token_program(&mut self, token_program: solana_program::pubkey::Pubkey) -> &mut Self {
                         self.token_program = Some(token_program);
                     self
@@ -182,12 +181,12 @@ impl UpdateStakePoolBalanceBuilder {
   pub fn instruction(&self) -> solana_program::instruction::Instruction {
     let accounts = UpdateStakePoolBalance {
                               stake_pool: self.stake_pool.expect("stake_pool is not set"),
-                                        withdraw_authority: self.withdraw_authority.expect("withdraw_authority is not set"),
-                                        validator_list_storage: self.validator_list_storage.expect("validator_list_storage is not set"),
+                                        withdraw: self.withdraw.expect("withdraw is not set"),
+                                        validator_list: self.validator_list.expect("validator_list is not set"),
                                         reserve_stake: self.reserve_stake.expect("reserve_stake is not set"),
-                                        manager_fee_account: self.manager_fee_account.expect("manager_fee_account is not set"),
-                                        stake_pool_mint: self.stake_pool_mint.expect("stake_pool_mint is not set"),
-                                        token_program: self.token_program.unwrap_or(solana_program::pubkey!("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA")),
+                                        manager_fee: self.manager_fee.expect("manager_fee is not set"),
+                                        pool_mint: self.pool_mint.expect("pool_mint is not set"),
+                                        token_program: self.token_program.expect("token_program is not set"),
                       };
     
     accounts.instruction_with_remaining_accounts(&self.__remaining_accounts)
@@ -201,19 +200,19 @@ impl UpdateStakePoolBalanceBuilder {
               pub stake_pool: &'b solana_program::account_info::AccountInfo<'a>,
                 
                     
-              pub withdraw_authority: &'b solana_program::account_info::AccountInfo<'a>,
+              pub withdraw: &'b solana_program::account_info::AccountInfo<'a>,
                 
                     
-              pub validator_list_storage: &'b solana_program::account_info::AccountInfo<'a>,
+              pub validator_list: &'b solana_program::account_info::AccountInfo<'a>,
                 
                     
               pub reserve_stake: &'b solana_program::account_info::AccountInfo<'a>,
                 
                     
-              pub manager_fee_account: &'b solana_program::account_info::AccountInfo<'a>,
+              pub manager_fee: &'b solana_program::account_info::AccountInfo<'a>,
                 
                     
-              pub stake_pool_mint: &'b solana_program::account_info::AccountInfo<'a>,
+              pub pool_mint: &'b solana_program::account_info::AccountInfo<'a>,
                 
                     
               pub token_program: &'b solana_program::account_info::AccountInfo<'a>,
@@ -228,19 +227,19 @@ pub struct UpdateStakePoolBalanceCpi<'a, 'b> {
           pub stake_pool: &'b solana_program::account_info::AccountInfo<'a>,
           
               
-          pub withdraw_authority: &'b solana_program::account_info::AccountInfo<'a>,
+          pub withdraw: &'b solana_program::account_info::AccountInfo<'a>,
           
               
-          pub validator_list_storage: &'b solana_program::account_info::AccountInfo<'a>,
+          pub validator_list: &'b solana_program::account_info::AccountInfo<'a>,
           
               
           pub reserve_stake: &'b solana_program::account_info::AccountInfo<'a>,
           
               
-          pub manager_fee_account: &'b solana_program::account_info::AccountInfo<'a>,
+          pub manager_fee: &'b solana_program::account_info::AccountInfo<'a>,
           
               
-          pub stake_pool_mint: &'b solana_program::account_info::AccountInfo<'a>,
+          pub pool_mint: &'b solana_program::account_info::AccountInfo<'a>,
           
               
           pub token_program: &'b solana_program::account_info::AccountInfo<'a>,
@@ -254,11 +253,11 @@ impl<'a, 'b> UpdateStakePoolBalanceCpi<'a, 'b> {
     Self {
       __program: program,
               stake_pool: accounts.stake_pool,
-              withdraw_authority: accounts.withdraw_authority,
-              validator_list_storage: accounts.validator_list_storage,
+              withdraw: accounts.withdraw,
+              validator_list: accounts.validator_list,
               reserve_stake: accounts.reserve_stake,
-              manager_fee_account: accounts.manager_fee_account,
-              stake_pool_mint: accounts.stake_pool_mint,
+              manager_fee: accounts.manager_fee,
+              pool_mint: accounts.pool_mint,
               token_program: accounts.token_program,
                 }
   }
@@ -288,11 +287,11 @@ impl<'a, 'b> UpdateStakePoolBalanceCpi<'a, 'b> {
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-            *self.withdraw_authority.key,
+            *self.withdraw.key,
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new(
-            *self.validator_list_storage.key,
+            *self.validator_list.key,
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new_readonly(
@@ -300,11 +299,11 @@ impl<'a, 'b> UpdateStakePoolBalanceCpi<'a, 'b> {
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new(
-            *self.manager_fee_account.key,
+            *self.manager_fee.key,
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new(
-            *self.stake_pool_mint.key,
+            *self.pool_mint.key,
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new_readonly(
@@ -328,11 +327,11 @@ impl<'a, 'b> UpdateStakePoolBalanceCpi<'a, 'b> {
     let mut account_infos = Vec::with_capacity(8 + remaining_accounts.len());
     account_infos.push(self.__program.clone());
                   account_infos.push(self.stake_pool.clone());
-                        account_infos.push(self.withdraw_authority.clone());
-                        account_infos.push(self.validator_list_storage.clone());
+                        account_infos.push(self.withdraw.clone());
+                        account_infos.push(self.validator_list.clone());
                         account_infos.push(self.reserve_stake.clone());
-                        account_infos.push(self.manager_fee_account.clone());
-                        account_infos.push(self.stake_pool_mint.clone());
+                        account_infos.push(self.manager_fee.clone());
+                        account_infos.push(self.pool_mint.clone());
                         account_infos.push(self.token_program.clone());
               remaining_accounts.iter().for_each(|remaining_account| account_infos.push(remaining_account.0.clone()));
 
@@ -349,11 +348,11 @@ impl<'a, 'b> UpdateStakePoolBalanceCpi<'a, 'b> {
 /// ### Accounts:
 ///
                 ///   0. `[writable]` stake_pool
-          ///   1. `[]` withdraw_authority
-                ///   2. `[writable]` validator_list_storage
+          ///   1. `[]` withdraw
+                ///   2. `[writable]` validator_list
           ///   3. `[]` reserve_stake
-                ///   4. `[writable]` manager_fee_account
-                ///   5. `[writable]` stake_pool_mint
+                ///   4. `[writable]` manager_fee
+                ///   5. `[writable]` pool_mint
           ///   6. `[]` token_program
 #[derive(Clone, Debug)]
 pub struct UpdateStakePoolBalanceCpiBuilder<'a, 'b> {
@@ -365,11 +364,11 @@ impl<'a, 'b> UpdateStakePoolBalanceCpiBuilder<'a, 'b> {
     let instruction = Box::new(UpdateStakePoolBalanceCpiBuilderInstruction {
       __program: program,
               stake_pool: None,
-              withdraw_authority: None,
-              validator_list_storage: None,
+              withdraw: None,
+              validator_list: None,
               reserve_stake: None,
-              manager_fee_account: None,
-              stake_pool_mint: None,
+              manager_fee: None,
+              pool_mint: None,
               token_program: None,
                                 __remaining_accounts: Vec::new(),
     });
@@ -381,13 +380,13 @@ impl<'a, 'b> UpdateStakePoolBalanceCpiBuilder<'a, 'b> {
                     self
     }
       #[inline(always)]
-    pub fn withdraw_authority(&mut self, withdraw_authority: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
-                        self.instruction.withdraw_authority = Some(withdraw_authority);
+    pub fn withdraw(&mut self, withdraw: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+                        self.instruction.withdraw = Some(withdraw);
                     self
     }
       #[inline(always)]
-    pub fn validator_list_storage(&mut self, validator_list_storage: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
-                        self.instruction.validator_list_storage = Some(validator_list_storage);
+    pub fn validator_list(&mut self, validator_list: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+                        self.instruction.validator_list = Some(validator_list);
                     self
     }
       #[inline(always)]
@@ -396,13 +395,13 @@ impl<'a, 'b> UpdateStakePoolBalanceCpiBuilder<'a, 'b> {
                     self
     }
       #[inline(always)]
-    pub fn manager_fee_account(&mut self, manager_fee_account: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
-                        self.instruction.manager_fee_account = Some(manager_fee_account);
+    pub fn manager_fee(&mut self, manager_fee: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+                        self.instruction.manager_fee = Some(manager_fee);
                     self
     }
       #[inline(always)]
-    pub fn stake_pool_mint(&mut self, stake_pool_mint: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
-                        self.instruction.stake_pool_mint = Some(stake_pool_mint);
+    pub fn pool_mint(&mut self, pool_mint: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+                        self.instruction.pool_mint = Some(pool_mint);
                     self
     }
       #[inline(always)]
@@ -437,15 +436,15 @@ impl<'a, 'b> UpdateStakePoolBalanceCpiBuilder<'a, 'b> {
                   
           stake_pool: self.instruction.stake_pool.expect("stake_pool is not set"),
                   
-          withdraw_authority: self.instruction.withdraw_authority.expect("withdraw_authority is not set"),
+          withdraw: self.instruction.withdraw.expect("withdraw is not set"),
                   
-          validator_list_storage: self.instruction.validator_list_storage.expect("validator_list_storage is not set"),
+          validator_list: self.instruction.validator_list.expect("validator_list is not set"),
                   
           reserve_stake: self.instruction.reserve_stake.expect("reserve_stake is not set"),
                   
-          manager_fee_account: self.instruction.manager_fee_account.expect("manager_fee_account is not set"),
+          manager_fee: self.instruction.manager_fee.expect("manager_fee is not set"),
                   
-          stake_pool_mint: self.instruction.stake_pool_mint.expect("stake_pool_mint is not set"),
+          pool_mint: self.instruction.pool_mint.expect("pool_mint is not set"),
                   
           token_program: self.instruction.token_program.expect("token_program is not set"),
                     };
@@ -457,11 +456,11 @@ impl<'a, 'b> UpdateStakePoolBalanceCpiBuilder<'a, 'b> {
 struct UpdateStakePoolBalanceCpiBuilderInstruction<'a, 'b> {
   __program: &'b solana_program::account_info::AccountInfo<'a>,
             stake_pool: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-                withdraw_authority: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-                validator_list_storage: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+                withdraw: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+                validator_list: Option<&'b solana_program::account_info::AccountInfo<'a>>,
                 reserve_stake: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-                manager_fee_account: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-                stake_pool_mint: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+                manager_fee: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+                pool_mint: Option<&'b solana_program::account_info::AccountInfo<'a>>,
                 token_program: Option<&'b solana_program::account_info::AccountInfo<'a>>,
                 /// Additional instruction accounts `(AccountInfo, is_writable, is_signer)`.
   __remaining_accounts: Vec<(&'b solana_program::account_info::AccountInfo<'a>, bool, bool)>,

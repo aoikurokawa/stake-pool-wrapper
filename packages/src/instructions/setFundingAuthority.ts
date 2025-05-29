@@ -8,12 +8,10 @@
 
 import {
   combineCodec,
-  fixDecoderSize,
-  fixEncoderSize,
-  getBytesDecoder,
-  getBytesEncoder,
   getStructDecoder,
   getStructEncoder,
+  getU8Decoder,
+  getU8Encoder,
   transformEncoder,
   type Address,
   type Codec,
@@ -24,8 +22,8 @@ import {
   type IInstruction,
   type IInstructionWithAccounts,
   type IInstructionWithData,
+  type ReadonlyAccount,
   type ReadonlySignerAccount,
-  type ReadonlyUint8Array,
   type TransactionSigner,
   type WritableAccount,
 } from '@solana/kit';
@@ -38,20 +36,17 @@ import {
   type FundingTypeArgs,
 } from '../types';
 
-export const SET_FUNDING_AUTHORITY_DISCRIMINATOR = new Uint8Array([
-  48, 2, 114, 83, 165, 222, 71, 233,
-]);
+export const SET_FUNDING_AUTHORITY_DISCRIMINATOR = 15;
 
 export function getSetFundingAuthorityDiscriminatorBytes() {
-  return fixEncoderSize(getBytesEncoder(), 8).encode(
-    SET_FUNDING_AUTHORITY_DISCRIMINATOR
-  );
+  return getU8Encoder().encode(SET_FUNDING_AUTHORITY_DISCRIMINATOR);
 }
 
 export type SetFundingAuthorityInstruction<
   TProgram extends string = typeof SPL_STAKE_POOL_PROGRAM_ADDRESS,
   TAccountStakePool extends string | IAccountMeta<string> = string,
   TAccountManager extends string | IAccountMeta<string> = string,
+  TAccountNewAuthority extends string | IAccountMeta<string> = string,
   TRemainingAccounts extends readonly IAccountMeta<string>[] = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
@@ -64,22 +59,25 @@ export type SetFundingAuthorityInstruction<
         ? ReadonlySignerAccount<TAccountManager> &
             IAccountSignerMeta<TAccountManager>
         : TAccountManager,
+      TAccountNewAuthority extends string
+        ? ReadonlyAccount<TAccountNewAuthority>
+        : TAccountNewAuthority,
       ...TRemainingAccounts,
     ]
   >;
 
 export type SetFundingAuthorityInstructionData = {
-  discriminator: ReadonlyUint8Array;
-  arg: FundingType;
+  discriminator: number;
+  args: FundingType;
 };
 
-export type SetFundingAuthorityInstructionDataArgs = { arg: FundingTypeArgs };
+export type SetFundingAuthorityInstructionDataArgs = { args: FundingTypeArgs };
 
 export function getSetFundingAuthorityInstructionDataEncoder(): Encoder<SetFundingAuthorityInstructionDataArgs> {
   return transformEncoder(
     getStructEncoder([
-      ['discriminator', fixEncoderSize(getBytesEncoder(), 8)],
-      ['arg', getFundingTypeEncoder()],
+      ['discriminator', getU8Encoder()],
+      ['args', getFundingTypeEncoder()],
     ]),
     (value) => ({
       ...value,
@@ -90,8 +88,8 @@ export function getSetFundingAuthorityInstructionDataEncoder(): Encoder<SetFundi
 
 export function getSetFundingAuthorityInstructionDataDecoder(): Decoder<SetFundingAuthorityInstructionData> {
   return getStructDecoder([
-    ['discriminator', fixDecoderSize(getBytesDecoder(), 8)],
-    ['arg', getFundingTypeDecoder()],
+    ['discriminator', getU8Decoder()],
+    ['args', getFundingTypeDecoder()],
   ]);
 }
 
@@ -108,23 +106,31 @@ export function getSetFundingAuthorityInstructionDataCodec(): Codec<
 export type SetFundingAuthorityInput<
   TAccountStakePool extends string = string,
   TAccountManager extends string = string,
+  TAccountNewAuthority extends string = string,
 > = {
   stakePool: Address<TAccountStakePool>;
   manager: TransactionSigner<TAccountManager>;
-  arg: SetFundingAuthorityInstructionDataArgs['arg'];
+  newAuthority: Address<TAccountNewAuthority>;
+  args: SetFundingAuthorityInstructionDataArgs['args'];
 };
 
 export function getSetFundingAuthorityInstruction<
   TAccountStakePool extends string,
   TAccountManager extends string,
+  TAccountNewAuthority extends string,
   TProgramAddress extends Address = typeof SPL_STAKE_POOL_PROGRAM_ADDRESS,
 >(
-  input: SetFundingAuthorityInput<TAccountStakePool, TAccountManager>,
+  input: SetFundingAuthorityInput<
+    TAccountStakePool,
+    TAccountManager,
+    TAccountNewAuthority
+  >,
   config?: { programAddress?: TProgramAddress }
 ): SetFundingAuthorityInstruction<
   TProgramAddress,
   TAccountStakePool,
-  TAccountManager
+  TAccountManager,
+  TAccountNewAuthority
 > {
   // Program address.
   const programAddress =
@@ -134,6 +140,7 @@ export function getSetFundingAuthorityInstruction<
   const originalAccounts = {
     stakePool: { value: input.stakePool ?? null, isWritable: true },
     manager: { value: input.manager ?? null, isWritable: false },
+    newAuthority: { value: input.newAuthority ?? null, isWritable: false },
   };
   const accounts = originalAccounts as Record<
     keyof typeof originalAccounts,
@@ -148,6 +155,7 @@ export function getSetFundingAuthorityInstruction<
     accounts: [
       getAccountMeta(accounts.stakePool),
       getAccountMeta(accounts.manager),
+      getAccountMeta(accounts.newAuthority),
     ],
     programAddress,
     data: getSetFundingAuthorityInstructionDataEncoder().encode(
@@ -156,7 +164,8 @@ export function getSetFundingAuthorityInstruction<
   } as SetFundingAuthorityInstruction<
     TProgramAddress,
     TAccountStakePool,
-    TAccountManager
+    TAccountManager,
+    TAccountNewAuthority
   >;
 
   return instruction;
@@ -170,6 +179,7 @@ export type ParsedSetFundingAuthorityInstruction<
   accounts: {
     stakePool: TAccountMetas[0];
     manager: TAccountMetas[1];
+    newAuthority: TAccountMetas[2];
   };
   data: SetFundingAuthorityInstructionData;
 };
@@ -182,7 +192,7 @@ export function parseSetFundingAuthorityInstruction<
     IInstructionWithAccounts<TAccountMetas> &
     IInstructionWithData<Uint8Array>
 ): ParsedSetFundingAuthorityInstruction<TProgram, TAccountMetas> {
-  if (instruction.accounts.length < 2) {
+  if (instruction.accounts.length < 3) {
     // TODO: Coded error.
     throw new Error('Not enough accounts');
   }
@@ -197,6 +207,7 @@ export function parseSetFundingAuthorityInstruction<
     accounts: {
       stakePool: getNextAccount(),
       manager: getNextAccount(),
+      newAuthority: getNextAccount(),
     },
     data: getSetFundingAuthorityInstructionDataDecoder().decode(
       instruction.data

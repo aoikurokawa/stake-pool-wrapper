@@ -52,13 +52,13 @@ impl SetFee {
 #[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
  pub struct SetFeeInstructionData {
-            discriminator: [u8; 8],
+            discriminator: u8,
             }
 
 impl SetFeeInstructionData {
   pub fn new() -> Self {
     Self {
-                        discriminator: [18, 154, 24, 18, 237, 214, 19, 80],
+                        discriminator: 12,
                                 }
   }
 }

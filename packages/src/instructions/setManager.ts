@@ -8,12 +8,10 @@
 
 import {
   combineCodec,
-  fixDecoderSize,
-  fixEncoderSize,
-  getBytesDecoder,
-  getBytesEncoder,
   getStructDecoder,
   getStructEncoder,
+  getU8Decoder,
+  getU8Encoder,
   transformEncoder,
   type Address,
   type Codec,
@@ -26,19 +24,16 @@ import {
   type IInstructionWithData,
   type ReadonlyAccount,
   type ReadonlySignerAccount,
-  type ReadonlyUint8Array,
   type TransactionSigner,
   type WritableAccount,
 } from '@solana/kit';
 import { SPL_STAKE_POOL_PROGRAM_ADDRESS } from '../programs';
 import { getAccountMetaFactory, type ResolvedAccount } from '../shared';
 
-export const SET_MANAGER_DISCRIMINATOR = new Uint8Array([
-  30, 197, 171, 92, 121, 184, 151, 165,
-]);
+export const SET_MANAGER_DISCRIMINATOR = 11;
 
 export function getSetManagerDiscriminatorBytes() {
-  return fixEncoderSize(getBytesEncoder(), 8).encode(SET_MANAGER_DISCRIMINATOR);
+  return getU8Encoder().encode(SET_MANAGER_DISCRIMINATOR);
 }
 
 export type SetManagerInstruction<
@@ -46,7 +41,7 @@ export type SetManagerInstruction<
   TAccountStakePool extends string | IAccountMeta<string> = string,
   TAccountManager extends string | IAccountMeta<string> = string,
   TAccountNewManager extends string | IAccountMeta<string> = string,
-  TAccountNewFeeReceiver extends string | IAccountMeta<string> = string,
+  TAccountNewManagerFee extends string | IAccountMeta<string> = string,
   TRemainingAccounts extends readonly IAccountMeta<string>[] = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
@@ -63,28 +58,26 @@ export type SetManagerInstruction<
         ? ReadonlySignerAccount<TAccountNewManager> &
             IAccountSignerMeta<TAccountNewManager>
         : TAccountNewManager,
-      TAccountNewFeeReceiver extends string
-        ? ReadonlyAccount<TAccountNewFeeReceiver>
-        : TAccountNewFeeReceiver,
+      TAccountNewManagerFee extends string
+        ? ReadonlyAccount<TAccountNewManagerFee>
+        : TAccountNewManagerFee,
       ...TRemainingAccounts,
     ]
   >;
 
-export type SetManagerInstructionData = { discriminator: ReadonlyUint8Array };
+export type SetManagerInstructionData = { discriminator: number };
 
 export type SetManagerInstructionDataArgs = {};
 
 export function getSetManagerInstructionDataEncoder(): Encoder<SetManagerInstructionDataArgs> {
   return transformEncoder(
-    getStructEncoder([['discriminator', fixEncoderSize(getBytesEncoder(), 8)]]),
+    getStructEncoder([['discriminator', getU8Encoder()]]),
     (value) => ({ ...value, discriminator: SET_MANAGER_DISCRIMINATOR })
   );
 }
 
 export function getSetManagerInstructionDataDecoder(): Decoder<SetManagerInstructionData> {
-  return getStructDecoder([
-    ['discriminator', fixDecoderSize(getBytesDecoder(), 8)],
-  ]);
+  return getStructDecoder([['discriminator', getU8Decoder()]]);
 }
 
 export function getSetManagerInstructionDataCodec(): Codec<
@@ -101,26 +94,26 @@ export type SetManagerInput<
   TAccountStakePool extends string = string,
   TAccountManager extends string = string,
   TAccountNewManager extends string = string,
-  TAccountNewFeeReceiver extends string = string,
+  TAccountNewManagerFee extends string = string,
 > = {
   stakePool: Address<TAccountStakePool>;
   manager: TransactionSigner<TAccountManager>;
   newManager: TransactionSigner<TAccountNewManager>;
-  newFeeReceiver: Address<TAccountNewFeeReceiver>;
+  newManagerFee: Address<TAccountNewManagerFee>;
 };
 
 export function getSetManagerInstruction<
   TAccountStakePool extends string,
   TAccountManager extends string,
   TAccountNewManager extends string,
-  TAccountNewFeeReceiver extends string,
+  TAccountNewManagerFee extends string,
   TProgramAddress extends Address = typeof SPL_STAKE_POOL_PROGRAM_ADDRESS,
 >(
   input: SetManagerInput<
     TAccountStakePool,
     TAccountManager,
     TAccountNewManager,
-    TAccountNewFeeReceiver
+    TAccountNewManagerFee
   >,
   config?: { programAddress?: TProgramAddress }
 ): SetManagerInstruction<
@@ -128,7 +121,7 @@ export function getSetManagerInstruction<
   TAccountStakePool,
   TAccountManager,
   TAccountNewManager,
-  TAccountNewFeeReceiver
+  TAccountNewManagerFee
 > {
   // Program address.
   const programAddress =
@@ -139,7 +132,7 @@ export function getSetManagerInstruction<
     stakePool: { value: input.stakePool ?? null, isWritable: true },
     manager: { value: input.manager ?? null, isWritable: false },
     newManager: { value: input.newManager ?? null, isWritable: false },
-    newFeeReceiver: { value: input.newFeeReceiver ?? null, isWritable: false },
+    newManagerFee: { value: input.newManagerFee ?? null, isWritable: false },
   };
   const accounts = originalAccounts as Record<
     keyof typeof originalAccounts,
@@ -152,7 +145,7 @@ export function getSetManagerInstruction<
       getAccountMeta(accounts.stakePool),
       getAccountMeta(accounts.manager),
       getAccountMeta(accounts.newManager),
-      getAccountMeta(accounts.newFeeReceiver),
+      getAccountMeta(accounts.newManagerFee),
     ],
     programAddress,
     data: getSetManagerInstructionDataEncoder().encode({}),
@@ -161,7 +154,7 @@ export function getSetManagerInstruction<
     TAccountStakePool,
     TAccountManager,
     TAccountNewManager,
-    TAccountNewFeeReceiver
+    TAccountNewManagerFee
   >;
 
   return instruction;
@@ -176,7 +169,7 @@ export type ParsedSetManagerInstruction<
     stakePool: TAccountMetas[0];
     manager: TAccountMetas[1];
     newManager: TAccountMetas[2];
-    newFeeReceiver: TAccountMetas[3];
+    newManagerFee: TAccountMetas[3];
   };
   data: SetManagerInstructionData;
 };
@@ -205,7 +198,7 @@ export function parseSetManagerInstruction<
       stakePool: getNextAccount(),
       manager: getNextAccount(),
       newManager: getNextAccount(),
-      newFeeReceiver: getNextAccount(),
+      newManagerFee: getNextAccount(),
     },
     data: getSetManagerInstructionDataDecoder().decode(instruction.data),
   };

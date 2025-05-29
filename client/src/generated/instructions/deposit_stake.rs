@@ -16,16 +16,16 @@ pub struct DepositStake {
           pub stake_pool: solana_program::pubkey::Pubkey,
           
               
-          pub validator_list_storage: solana_program::pubkey::Pubkey,
+          pub validator_list: solana_program::pubkey::Pubkey,
           
               
-          pub stake_pool_deposit_authority: solana_program::pubkey::Pubkey,
+          pub stake_deposit_authority: solana_program::pubkey::Pubkey,
           
               
-          pub stake_pool_withdraw_authority: solana_program::pubkey::Pubkey,
+          pub withdraw_authority: solana_program::pubkey::Pubkey,
           
               
-          pub deposit_stake_address: solana_program::pubkey::Pubkey,
+          pub stake: solana_program::pubkey::Pubkey,
           
               
           pub validator_stake_account: solana_program::pubkey::Pubkey,
@@ -34,13 +34,13 @@ pub struct DepositStake {
           pub reserve_stake_account: solana_program::pubkey::Pubkey,
           
               
-          pub pool_tokens_to: solana_program::pubkey::Pubkey,
+          pub dest_user_pool: solana_program::pubkey::Pubkey,
           
               
-          pub manager_fee_account: solana_program::pubkey::Pubkey,
+          pub manager_fee: solana_program::pubkey::Pubkey,
           
               
-          pub referrer_pool_tokens_account: solana_program::pubkey::Pubkey,
+          pub referrer_fee: solana_program::pubkey::Pubkey,
           
               
           pub pool_mint: solana_program::pubkey::Pubkey,
@@ -49,7 +49,7 @@ pub struct DepositStake {
           pub clock: solana_program::pubkey::Pubkey,
           
               
-          pub sysvar_stake_history: solana_program::pubkey::Pubkey,
+          pub stake_history: solana_program::pubkey::Pubkey,
           
               
           pub token_program: solana_program::pubkey::Pubkey,
@@ -71,19 +71,19 @@ impl DepositStake {
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new(
-            self.validator_list_storage,
+            self.validator_list,
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-            self.stake_pool_deposit_authority,
-            false
+            self.stake_deposit_authority,
+            true
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-            self.stake_pool_withdraw_authority,
+            self.withdraw_authority,
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new(
-            self.deposit_stake_address,
+            self.stake,
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new(
@@ -95,15 +95,15 @@ impl DepositStake {
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new(
-            self.pool_tokens_to,
+            self.dest_user_pool,
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new(
-            self.manager_fee_account,
+            self.manager_fee,
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new(
-            self.referrer_pool_tokens_account,
+            self.referrer_fee,
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new(
@@ -115,7 +115,7 @@ impl DepositStake {
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-            self.sysvar_stake_history,
+            self.stake_history,
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new_readonly(
@@ -140,13 +140,13 @@ impl DepositStake {
 #[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
  pub struct DepositStakeInstructionData {
-            discriminator: [u8; 8],
+            discriminator: u8,
       }
 
 impl DepositStakeInstructionData {
   pub fn new() -> Self {
     Self {
-                        discriminator: [160, 167, 9, 220, 74, 243, 228, 43],
+                        discriminator: 9,
                   }
   }
 }
@@ -164,35 +164,35 @@ impl Default for DepositStakeInstructionData {
 /// ### Accounts:
 ///
                 ///   0. `[writable]` stake_pool
-                ///   1. `[writable]` validator_list_storage
-          ///   2. `[]` stake_pool_deposit_authority
-          ///   3. `[]` stake_pool_withdraw_authority
-                ///   4. `[writable]` deposit_stake_address
+                ///   1. `[writable]` validator_list
+                ///   2. `[signer]` stake_deposit_authority
+          ///   3. `[]` withdraw_authority
+                ///   4. `[writable]` stake
                 ///   5. `[writable]` validator_stake_account
                 ///   6. `[writable]` reserve_stake_account
-                ///   7. `[writable]` pool_tokens_to
-                ///   8. `[writable]` manager_fee_account
-                ///   9. `[writable]` referrer_pool_tokens_account
+                ///   7. `[writable]` dest_user_pool
+                ///   8. `[writable]` manager_fee
+                ///   9. `[writable]` referrer_fee
                 ///   10. `[writable]` pool_mint
           ///   11. `[]` clock
-                ///   12. `[optional]` sysvar_stake_history (default to `SysvarStakeHistory1111111111111111111111111`)
-                ///   13. `[optional]` token_program (default to `TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA`)
+          ///   12. `[]` stake_history
+          ///   13. `[]` token_program
           ///   14. `[]` stake_program
 #[derive(Clone, Debug, Default)]
 pub struct DepositStakeBuilder {
             stake_pool: Option<solana_program::pubkey::Pubkey>,
-                validator_list_storage: Option<solana_program::pubkey::Pubkey>,
-                stake_pool_deposit_authority: Option<solana_program::pubkey::Pubkey>,
-                stake_pool_withdraw_authority: Option<solana_program::pubkey::Pubkey>,
-                deposit_stake_address: Option<solana_program::pubkey::Pubkey>,
+                validator_list: Option<solana_program::pubkey::Pubkey>,
+                stake_deposit_authority: Option<solana_program::pubkey::Pubkey>,
+                withdraw_authority: Option<solana_program::pubkey::Pubkey>,
+                stake: Option<solana_program::pubkey::Pubkey>,
                 validator_stake_account: Option<solana_program::pubkey::Pubkey>,
                 reserve_stake_account: Option<solana_program::pubkey::Pubkey>,
-                pool_tokens_to: Option<solana_program::pubkey::Pubkey>,
-                manager_fee_account: Option<solana_program::pubkey::Pubkey>,
-                referrer_pool_tokens_account: Option<solana_program::pubkey::Pubkey>,
+                dest_user_pool: Option<solana_program::pubkey::Pubkey>,
+                manager_fee: Option<solana_program::pubkey::Pubkey>,
+                referrer_fee: Option<solana_program::pubkey::Pubkey>,
                 pool_mint: Option<solana_program::pubkey::Pubkey>,
                 clock: Option<solana_program::pubkey::Pubkey>,
-                sysvar_stake_history: Option<solana_program::pubkey::Pubkey>,
+                stake_history: Option<solana_program::pubkey::Pubkey>,
                 token_program: Option<solana_program::pubkey::Pubkey>,
                 stake_program: Option<solana_program::pubkey::Pubkey>,
                 __remaining_accounts: Vec<solana_program::instruction::AccountMeta>,
@@ -208,23 +208,23 @@ impl DepositStakeBuilder {
                     self
     }
             #[inline(always)]
-    pub fn validator_list_storage(&mut self, validator_list_storage: solana_program::pubkey::Pubkey) -> &mut Self {
-                        self.validator_list_storage = Some(validator_list_storage);
+    pub fn validator_list(&mut self, validator_list: solana_program::pubkey::Pubkey) -> &mut Self {
+                        self.validator_list = Some(validator_list);
                     self
     }
             #[inline(always)]
-    pub fn stake_pool_deposit_authority(&mut self, stake_pool_deposit_authority: solana_program::pubkey::Pubkey) -> &mut Self {
-                        self.stake_pool_deposit_authority = Some(stake_pool_deposit_authority);
+    pub fn stake_deposit_authority(&mut self, stake_deposit_authority: solana_program::pubkey::Pubkey) -> &mut Self {
+                        self.stake_deposit_authority = Some(stake_deposit_authority);
                     self
     }
             #[inline(always)]
-    pub fn stake_pool_withdraw_authority(&mut self, stake_pool_withdraw_authority: solana_program::pubkey::Pubkey) -> &mut Self {
-                        self.stake_pool_withdraw_authority = Some(stake_pool_withdraw_authority);
+    pub fn withdraw_authority(&mut self, withdraw_authority: solana_program::pubkey::Pubkey) -> &mut Self {
+                        self.withdraw_authority = Some(withdraw_authority);
                     self
     }
             #[inline(always)]
-    pub fn deposit_stake_address(&mut self, deposit_stake_address: solana_program::pubkey::Pubkey) -> &mut Self {
-                        self.deposit_stake_address = Some(deposit_stake_address);
+    pub fn stake(&mut self, stake: solana_program::pubkey::Pubkey) -> &mut Self {
+                        self.stake = Some(stake);
                     self
     }
             #[inline(always)]
@@ -238,18 +238,18 @@ impl DepositStakeBuilder {
                     self
     }
             #[inline(always)]
-    pub fn pool_tokens_to(&mut self, pool_tokens_to: solana_program::pubkey::Pubkey) -> &mut Self {
-                        self.pool_tokens_to = Some(pool_tokens_to);
+    pub fn dest_user_pool(&mut self, dest_user_pool: solana_program::pubkey::Pubkey) -> &mut Self {
+                        self.dest_user_pool = Some(dest_user_pool);
                     self
     }
             #[inline(always)]
-    pub fn manager_fee_account(&mut self, manager_fee_account: solana_program::pubkey::Pubkey) -> &mut Self {
-                        self.manager_fee_account = Some(manager_fee_account);
+    pub fn manager_fee(&mut self, manager_fee: solana_program::pubkey::Pubkey) -> &mut Self {
+                        self.manager_fee = Some(manager_fee);
                     self
     }
             #[inline(always)]
-    pub fn referrer_pool_tokens_account(&mut self, referrer_pool_tokens_account: solana_program::pubkey::Pubkey) -> &mut Self {
-                        self.referrer_pool_tokens_account = Some(referrer_pool_tokens_account);
+    pub fn referrer_fee(&mut self, referrer_fee: solana_program::pubkey::Pubkey) -> &mut Self {
+                        self.referrer_fee = Some(referrer_fee);
                     self
     }
             #[inline(always)]
@@ -262,14 +262,12 @@ impl DepositStakeBuilder {
                         self.clock = Some(clock);
                     self
     }
-            /// `[optional account, default to 'SysvarStakeHistory1111111111111111111111111']`
-#[inline(always)]
-    pub fn sysvar_stake_history(&mut self, sysvar_stake_history: solana_program::pubkey::Pubkey) -> &mut Self {
-                        self.sysvar_stake_history = Some(sysvar_stake_history);
+            #[inline(always)]
+    pub fn stake_history(&mut self, stake_history: solana_program::pubkey::Pubkey) -> &mut Self {
+                        self.stake_history = Some(stake_history);
                     self
     }
-            /// `[optional account, default to 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA']`
-#[inline(always)]
+            #[inline(always)]
     pub fn token_program(&mut self, token_program: solana_program::pubkey::Pubkey) -> &mut Self {
                         self.token_program = Some(token_program);
                     self
@@ -295,19 +293,19 @@ impl DepositStakeBuilder {
   pub fn instruction(&self) -> solana_program::instruction::Instruction {
     let accounts = DepositStake {
                               stake_pool: self.stake_pool.expect("stake_pool is not set"),
-                                        validator_list_storage: self.validator_list_storage.expect("validator_list_storage is not set"),
-                                        stake_pool_deposit_authority: self.stake_pool_deposit_authority.expect("stake_pool_deposit_authority is not set"),
-                                        stake_pool_withdraw_authority: self.stake_pool_withdraw_authority.expect("stake_pool_withdraw_authority is not set"),
-                                        deposit_stake_address: self.deposit_stake_address.expect("deposit_stake_address is not set"),
+                                        validator_list: self.validator_list.expect("validator_list is not set"),
+                                        stake_deposit_authority: self.stake_deposit_authority.expect("stake_deposit_authority is not set"),
+                                        withdraw_authority: self.withdraw_authority.expect("withdraw_authority is not set"),
+                                        stake: self.stake.expect("stake is not set"),
                                         validator_stake_account: self.validator_stake_account.expect("validator_stake_account is not set"),
                                         reserve_stake_account: self.reserve_stake_account.expect("reserve_stake_account is not set"),
-                                        pool_tokens_to: self.pool_tokens_to.expect("pool_tokens_to is not set"),
-                                        manager_fee_account: self.manager_fee_account.expect("manager_fee_account is not set"),
-                                        referrer_pool_tokens_account: self.referrer_pool_tokens_account.expect("referrer_pool_tokens_account is not set"),
+                                        dest_user_pool: self.dest_user_pool.expect("dest_user_pool is not set"),
+                                        manager_fee: self.manager_fee.expect("manager_fee is not set"),
+                                        referrer_fee: self.referrer_fee.expect("referrer_fee is not set"),
                                         pool_mint: self.pool_mint.expect("pool_mint is not set"),
                                         clock: self.clock.expect("clock is not set"),
-                                        sysvar_stake_history: self.sysvar_stake_history.unwrap_or(solana_program::pubkey!("SysvarStakeHistory1111111111111111111111111")),
-                                        token_program: self.token_program.unwrap_or(solana_program::pubkey!("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA")),
+                                        stake_history: self.stake_history.expect("stake_history is not set"),
+                                        token_program: self.token_program.expect("token_program is not set"),
                                         stake_program: self.stake_program.expect("stake_program is not set"),
                       };
     
@@ -322,16 +320,16 @@ impl DepositStakeBuilder {
               pub stake_pool: &'b solana_program::account_info::AccountInfo<'a>,
                 
                     
-              pub validator_list_storage: &'b solana_program::account_info::AccountInfo<'a>,
+              pub validator_list: &'b solana_program::account_info::AccountInfo<'a>,
                 
                     
-              pub stake_pool_deposit_authority: &'b solana_program::account_info::AccountInfo<'a>,
+              pub stake_deposit_authority: &'b solana_program::account_info::AccountInfo<'a>,
                 
                     
-              pub stake_pool_withdraw_authority: &'b solana_program::account_info::AccountInfo<'a>,
+              pub withdraw_authority: &'b solana_program::account_info::AccountInfo<'a>,
                 
                     
-              pub deposit_stake_address: &'b solana_program::account_info::AccountInfo<'a>,
+              pub stake: &'b solana_program::account_info::AccountInfo<'a>,
                 
                     
               pub validator_stake_account: &'b solana_program::account_info::AccountInfo<'a>,
@@ -340,13 +338,13 @@ impl DepositStakeBuilder {
               pub reserve_stake_account: &'b solana_program::account_info::AccountInfo<'a>,
                 
                     
-              pub pool_tokens_to: &'b solana_program::account_info::AccountInfo<'a>,
+              pub dest_user_pool: &'b solana_program::account_info::AccountInfo<'a>,
                 
                     
-              pub manager_fee_account: &'b solana_program::account_info::AccountInfo<'a>,
+              pub manager_fee: &'b solana_program::account_info::AccountInfo<'a>,
                 
                     
-              pub referrer_pool_tokens_account: &'b solana_program::account_info::AccountInfo<'a>,
+              pub referrer_fee: &'b solana_program::account_info::AccountInfo<'a>,
                 
                     
               pub pool_mint: &'b solana_program::account_info::AccountInfo<'a>,
@@ -355,7 +353,7 @@ impl DepositStakeBuilder {
               pub clock: &'b solana_program::account_info::AccountInfo<'a>,
                 
                     
-              pub sysvar_stake_history: &'b solana_program::account_info::AccountInfo<'a>,
+              pub stake_history: &'b solana_program::account_info::AccountInfo<'a>,
                 
                     
               pub token_program: &'b solana_program::account_info::AccountInfo<'a>,
@@ -373,16 +371,16 @@ pub struct DepositStakeCpi<'a, 'b> {
           pub stake_pool: &'b solana_program::account_info::AccountInfo<'a>,
           
               
-          pub validator_list_storage: &'b solana_program::account_info::AccountInfo<'a>,
+          pub validator_list: &'b solana_program::account_info::AccountInfo<'a>,
           
               
-          pub stake_pool_deposit_authority: &'b solana_program::account_info::AccountInfo<'a>,
+          pub stake_deposit_authority: &'b solana_program::account_info::AccountInfo<'a>,
           
               
-          pub stake_pool_withdraw_authority: &'b solana_program::account_info::AccountInfo<'a>,
+          pub withdraw_authority: &'b solana_program::account_info::AccountInfo<'a>,
           
               
-          pub deposit_stake_address: &'b solana_program::account_info::AccountInfo<'a>,
+          pub stake: &'b solana_program::account_info::AccountInfo<'a>,
           
               
           pub validator_stake_account: &'b solana_program::account_info::AccountInfo<'a>,
@@ -391,13 +389,13 @@ pub struct DepositStakeCpi<'a, 'b> {
           pub reserve_stake_account: &'b solana_program::account_info::AccountInfo<'a>,
           
               
-          pub pool_tokens_to: &'b solana_program::account_info::AccountInfo<'a>,
+          pub dest_user_pool: &'b solana_program::account_info::AccountInfo<'a>,
           
               
-          pub manager_fee_account: &'b solana_program::account_info::AccountInfo<'a>,
+          pub manager_fee: &'b solana_program::account_info::AccountInfo<'a>,
           
               
-          pub referrer_pool_tokens_account: &'b solana_program::account_info::AccountInfo<'a>,
+          pub referrer_fee: &'b solana_program::account_info::AccountInfo<'a>,
           
               
           pub pool_mint: &'b solana_program::account_info::AccountInfo<'a>,
@@ -406,7 +404,7 @@ pub struct DepositStakeCpi<'a, 'b> {
           pub clock: &'b solana_program::account_info::AccountInfo<'a>,
           
               
-          pub sysvar_stake_history: &'b solana_program::account_info::AccountInfo<'a>,
+          pub stake_history: &'b solana_program::account_info::AccountInfo<'a>,
           
               
           pub token_program: &'b solana_program::account_info::AccountInfo<'a>,
@@ -423,18 +421,18 @@ impl<'a, 'b> DepositStakeCpi<'a, 'b> {
     Self {
       __program: program,
               stake_pool: accounts.stake_pool,
-              validator_list_storage: accounts.validator_list_storage,
-              stake_pool_deposit_authority: accounts.stake_pool_deposit_authority,
-              stake_pool_withdraw_authority: accounts.stake_pool_withdraw_authority,
-              deposit_stake_address: accounts.deposit_stake_address,
+              validator_list: accounts.validator_list,
+              stake_deposit_authority: accounts.stake_deposit_authority,
+              withdraw_authority: accounts.withdraw_authority,
+              stake: accounts.stake,
               validator_stake_account: accounts.validator_stake_account,
               reserve_stake_account: accounts.reserve_stake_account,
-              pool_tokens_to: accounts.pool_tokens_to,
-              manager_fee_account: accounts.manager_fee_account,
-              referrer_pool_tokens_account: accounts.referrer_pool_tokens_account,
+              dest_user_pool: accounts.dest_user_pool,
+              manager_fee: accounts.manager_fee,
+              referrer_fee: accounts.referrer_fee,
               pool_mint: accounts.pool_mint,
               clock: accounts.clock,
-              sysvar_stake_history: accounts.sysvar_stake_history,
+              stake_history: accounts.stake_history,
               token_program: accounts.token_program,
               stake_program: accounts.stake_program,
                 }
@@ -465,19 +463,19 @@ impl<'a, 'b> DepositStakeCpi<'a, 'b> {
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new(
-            *self.validator_list_storage.key,
+            *self.validator_list.key,
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-            *self.stake_pool_deposit_authority.key,
-            false
+            *self.stake_deposit_authority.key,
+            true
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-            *self.stake_pool_withdraw_authority.key,
+            *self.withdraw_authority.key,
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new(
-            *self.deposit_stake_address.key,
+            *self.stake.key,
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new(
@@ -489,15 +487,15 @@ impl<'a, 'b> DepositStakeCpi<'a, 'b> {
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new(
-            *self.pool_tokens_to.key,
+            *self.dest_user_pool.key,
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new(
-            *self.manager_fee_account.key,
+            *self.manager_fee.key,
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new(
-            *self.referrer_pool_tokens_account.key,
+            *self.referrer_fee.key,
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new(
@@ -509,7 +507,7 @@ impl<'a, 'b> DepositStakeCpi<'a, 'b> {
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-            *self.sysvar_stake_history.key,
+            *self.stake_history.key,
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new_readonly(
@@ -537,18 +535,18 @@ impl<'a, 'b> DepositStakeCpi<'a, 'b> {
     let mut account_infos = Vec::with_capacity(16 + remaining_accounts.len());
     account_infos.push(self.__program.clone());
                   account_infos.push(self.stake_pool.clone());
-                        account_infos.push(self.validator_list_storage.clone());
-                        account_infos.push(self.stake_pool_deposit_authority.clone());
-                        account_infos.push(self.stake_pool_withdraw_authority.clone());
-                        account_infos.push(self.deposit_stake_address.clone());
+                        account_infos.push(self.validator_list.clone());
+                        account_infos.push(self.stake_deposit_authority.clone());
+                        account_infos.push(self.withdraw_authority.clone());
+                        account_infos.push(self.stake.clone());
                         account_infos.push(self.validator_stake_account.clone());
                         account_infos.push(self.reserve_stake_account.clone());
-                        account_infos.push(self.pool_tokens_to.clone());
-                        account_infos.push(self.manager_fee_account.clone());
-                        account_infos.push(self.referrer_pool_tokens_account.clone());
+                        account_infos.push(self.dest_user_pool.clone());
+                        account_infos.push(self.manager_fee.clone());
+                        account_infos.push(self.referrer_fee.clone());
                         account_infos.push(self.pool_mint.clone());
                         account_infos.push(self.clock.clone());
-                        account_infos.push(self.sysvar_stake_history.clone());
+                        account_infos.push(self.stake_history.clone());
                         account_infos.push(self.token_program.clone());
                         account_infos.push(self.stake_program.clone());
               remaining_accounts.iter().for_each(|remaining_account| account_infos.push(remaining_account.0.clone()));
@@ -566,18 +564,18 @@ impl<'a, 'b> DepositStakeCpi<'a, 'b> {
 /// ### Accounts:
 ///
                 ///   0. `[writable]` stake_pool
-                ///   1. `[writable]` validator_list_storage
-          ///   2. `[]` stake_pool_deposit_authority
-          ///   3. `[]` stake_pool_withdraw_authority
-                ///   4. `[writable]` deposit_stake_address
+                ///   1. `[writable]` validator_list
+                ///   2. `[signer]` stake_deposit_authority
+          ///   3. `[]` withdraw_authority
+                ///   4. `[writable]` stake
                 ///   5. `[writable]` validator_stake_account
                 ///   6. `[writable]` reserve_stake_account
-                ///   7. `[writable]` pool_tokens_to
-                ///   8. `[writable]` manager_fee_account
-                ///   9. `[writable]` referrer_pool_tokens_account
+                ///   7. `[writable]` dest_user_pool
+                ///   8. `[writable]` manager_fee
+                ///   9. `[writable]` referrer_fee
                 ///   10. `[writable]` pool_mint
           ///   11. `[]` clock
-          ///   12. `[]` sysvar_stake_history
+          ///   12. `[]` stake_history
           ///   13. `[]` token_program
           ///   14. `[]` stake_program
 #[derive(Clone, Debug)]
@@ -590,18 +588,18 @@ impl<'a, 'b> DepositStakeCpiBuilder<'a, 'b> {
     let instruction = Box::new(DepositStakeCpiBuilderInstruction {
       __program: program,
               stake_pool: None,
-              validator_list_storage: None,
-              stake_pool_deposit_authority: None,
-              stake_pool_withdraw_authority: None,
-              deposit_stake_address: None,
+              validator_list: None,
+              stake_deposit_authority: None,
+              withdraw_authority: None,
+              stake: None,
               validator_stake_account: None,
               reserve_stake_account: None,
-              pool_tokens_to: None,
-              manager_fee_account: None,
-              referrer_pool_tokens_account: None,
+              dest_user_pool: None,
+              manager_fee: None,
+              referrer_fee: None,
               pool_mint: None,
               clock: None,
-              sysvar_stake_history: None,
+              stake_history: None,
               token_program: None,
               stake_program: None,
                                 __remaining_accounts: Vec::new(),
@@ -614,23 +612,23 @@ impl<'a, 'b> DepositStakeCpiBuilder<'a, 'b> {
                     self
     }
       #[inline(always)]
-    pub fn validator_list_storage(&mut self, validator_list_storage: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
-                        self.instruction.validator_list_storage = Some(validator_list_storage);
+    pub fn validator_list(&mut self, validator_list: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+                        self.instruction.validator_list = Some(validator_list);
                     self
     }
       #[inline(always)]
-    pub fn stake_pool_deposit_authority(&mut self, stake_pool_deposit_authority: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
-                        self.instruction.stake_pool_deposit_authority = Some(stake_pool_deposit_authority);
+    pub fn stake_deposit_authority(&mut self, stake_deposit_authority: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+                        self.instruction.stake_deposit_authority = Some(stake_deposit_authority);
                     self
     }
       #[inline(always)]
-    pub fn stake_pool_withdraw_authority(&mut self, stake_pool_withdraw_authority: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
-                        self.instruction.stake_pool_withdraw_authority = Some(stake_pool_withdraw_authority);
+    pub fn withdraw_authority(&mut self, withdraw_authority: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+                        self.instruction.withdraw_authority = Some(withdraw_authority);
                     self
     }
       #[inline(always)]
-    pub fn deposit_stake_address(&mut self, deposit_stake_address: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
-                        self.instruction.deposit_stake_address = Some(deposit_stake_address);
+    pub fn stake(&mut self, stake: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+                        self.instruction.stake = Some(stake);
                     self
     }
       #[inline(always)]
@@ -644,18 +642,18 @@ impl<'a, 'b> DepositStakeCpiBuilder<'a, 'b> {
                     self
     }
       #[inline(always)]
-    pub fn pool_tokens_to(&mut self, pool_tokens_to: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
-                        self.instruction.pool_tokens_to = Some(pool_tokens_to);
+    pub fn dest_user_pool(&mut self, dest_user_pool: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+                        self.instruction.dest_user_pool = Some(dest_user_pool);
                     self
     }
       #[inline(always)]
-    pub fn manager_fee_account(&mut self, manager_fee_account: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
-                        self.instruction.manager_fee_account = Some(manager_fee_account);
+    pub fn manager_fee(&mut self, manager_fee: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+                        self.instruction.manager_fee = Some(manager_fee);
                     self
     }
       #[inline(always)]
-    pub fn referrer_pool_tokens_account(&mut self, referrer_pool_tokens_account: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
-                        self.instruction.referrer_pool_tokens_account = Some(referrer_pool_tokens_account);
+    pub fn referrer_fee(&mut self, referrer_fee: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+                        self.instruction.referrer_fee = Some(referrer_fee);
                     self
     }
       #[inline(always)]
@@ -669,8 +667,8 @@ impl<'a, 'b> DepositStakeCpiBuilder<'a, 'b> {
                     self
     }
       #[inline(always)]
-    pub fn sysvar_stake_history(&mut self, sysvar_stake_history: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
-                        self.instruction.sysvar_stake_history = Some(sysvar_stake_history);
+    pub fn stake_history(&mut self, stake_history: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+                        self.instruction.stake_history = Some(stake_history);
                     self
     }
       #[inline(always)]
@@ -710,29 +708,29 @@ impl<'a, 'b> DepositStakeCpiBuilder<'a, 'b> {
                   
           stake_pool: self.instruction.stake_pool.expect("stake_pool is not set"),
                   
-          validator_list_storage: self.instruction.validator_list_storage.expect("validator_list_storage is not set"),
+          validator_list: self.instruction.validator_list.expect("validator_list is not set"),
                   
-          stake_pool_deposit_authority: self.instruction.stake_pool_deposit_authority.expect("stake_pool_deposit_authority is not set"),
+          stake_deposit_authority: self.instruction.stake_deposit_authority.expect("stake_deposit_authority is not set"),
                   
-          stake_pool_withdraw_authority: self.instruction.stake_pool_withdraw_authority.expect("stake_pool_withdraw_authority is not set"),
+          withdraw_authority: self.instruction.withdraw_authority.expect("withdraw_authority is not set"),
                   
-          deposit_stake_address: self.instruction.deposit_stake_address.expect("deposit_stake_address is not set"),
+          stake: self.instruction.stake.expect("stake is not set"),
                   
           validator_stake_account: self.instruction.validator_stake_account.expect("validator_stake_account is not set"),
                   
           reserve_stake_account: self.instruction.reserve_stake_account.expect("reserve_stake_account is not set"),
                   
-          pool_tokens_to: self.instruction.pool_tokens_to.expect("pool_tokens_to is not set"),
+          dest_user_pool: self.instruction.dest_user_pool.expect("dest_user_pool is not set"),
                   
-          manager_fee_account: self.instruction.manager_fee_account.expect("manager_fee_account is not set"),
+          manager_fee: self.instruction.manager_fee.expect("manager_fee is not set"),
                   
-          referrer_pool_tokens_account: self.instruction.referrer_pool_tokens_account.expect("referrer_pool_tokens_account is not set"),
+          referrer_fee: self.instruction.referrer_fee.expect("referrer_fee is not set"),
                   
           pool_mint: self.instruction.pool_mint.expect("pool_mint is not set"),
                   
           clock: self.instruction.clock.expect("clock is not set"),
                   
-          sysvar_stake_history: self.instruction.sysvar_stake_history.expect("sysvar_stake_history is not set"),
+          stake_history: self.instruction.stake_history.expect("stake_history is not set"),
                   
           token_program: self.instruction.token_program.expect("token_program is not set"),
                   
@@ -746,18 +744,18 @@ impl<'a, 'b> DepositStakeCpiBuilder<'a, 'b> {
 struct DepositStakeCpiBuilderInstruction<'a, 'b> {
   __program: &'b solana_program::account_info::AccountInfo<'a>,
             stake_pool: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-                validator_list_storage: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-                stake_pool_deposit_authority: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-                stake_pool_withdraw_authority: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-                deposit_stake_address: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+                validator_list: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+                stake_deposit_authority: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+                withdraw_authority: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+                stake: Option<&'b solana_program::account_info::AccountInfo<'a>>,
                 validator_stake_account: Option<&'b solana_program::account_info::AccountInfo<'a>>,
                 reserve_stake_account: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-                pool_tokens_to: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-                manager_fee_account: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-                referrer_pool_tokens_account: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+                dest_user_pool: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+                manager_fee: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+                referrer_fee: Option<&'b solana_program::account_info::AccountInfo<'a>>,
                 pool_mint: Option<&'b solana_program::account_info::AccountInfo<'a>>,
                 clock: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-                sysvar_stake_history: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+                stake_history: Option<&'b solana_program::account_info::AccountInfo<'a>>,
                 token_program: Option<&'b solana_program::account_info::AccountInfo<'a>>,
                 stake_program: Option<&'b solana_program::account_info::AccountInfo<'a>>,
                 /// Additional instruction accounts `(AccountInfo, is_writable, is_signer)`.

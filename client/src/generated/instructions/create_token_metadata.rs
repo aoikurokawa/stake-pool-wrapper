@@ -19,7 +19,7 @@ pub struct CreateTokenMetadata {
           pub manager: solana_program::pubkey::Pubkey,
           
               
-          pub stake_pool_withdraw_authority: solana_program::pubkey::Pubkey,
+          pub withdraw_authority: solana_program::pubkey::Pubkey,
           
               
           pub pool_mint: solana_program::pubkey::Pubkey,
@@ -28,16 +28,13 @@ pub struct CreateTokenMetadata {
           pub payer: solana_program::pubkey::Pubkey,
           
               
-          pub token_metadata: solana_program::pubkey::Pubkey,
+          pub metadata: solana_program::pubkey::Pubkey,
           
               
-          pub mpl_token_metadata: solana_program::pubkey::Pubkey,
+          pub mpl_token_metadata_program: solana_program::pubkey::Pubkey,
           
               
           pub system_program: solana_program::pubkey::Pubkey,
-          
-              
-          pub rent: solana_program::pubkey::Pubkey,
       }
 
 impl CreateTokenMetadata {
@@ -47,7 +44,7 @@ impl CreateTokenMetadata {
   #[allow(clippy::arithmetic_side_effects)]
   #[allow(clippy::vec_init_then_push)]
   pub fn instruction_with_remaining_accounts(&self, args: CreateTokenMetadataInstructionArgs, remaining_accounts: &[solana_program::instruction::AccountMeta]) -> solana_program::instruction::Instruction {
-    let mut accounts = Vec::with_capacity(9+ remaining_accounts.len());
+    let mut accounts = Vec::with_capacity(8+ remaining_accounts.len());
                             accounts.push(solana_program::instruction::AccountMeta::new_readonly(
             self.stake_pool,
             false
@@ -57,7 +54,7 @@ impl CreateTokenMetadata {
             true
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-            self.stake_pool_withdraw_authority,
+            self.withdraw_authority,
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new_readonly(
@@ -69,19 +66,15 @@ impl CreateTokenMetadata {
             true
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new(
-            self.token_metadata,
+            self.metadata,
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-            self.mpl_token_metadata,
+            self.mpl_token_metadata_program,
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new_readonly(
             self.system_program,
-            false
-          ));
-                                          accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-            self.rent,
             false
           ));
                       accounts.extend_from_slice(remaining_accounts);
@@ -100,13 +93,13 @@ impl CreateTokenMetadata {
 #[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
  pub struct CreateTokenMetadataInstructionData {
-            discriminator: [u8; 8],
+            discriminator: u8,
                         }
 
 impl CreateTokenMetadataInstructionData {
   pub fn new() -> Self {
     Self {
-                        discriminator: [221, 80, 176, 37, 153, 188, 160, 68],
+                        discriminator: 17,
                                                             }
   }
 }
@@ -132,24 +125,22 @@ impl Default for CreateTokenMetadataInstructionData {
 ///
           ///   0. `[]` stake_pool
                 ///   1. `[signer]` manager
-          ///   2. `[]` stake_pool_withdraw_authority
+          ///   2. `[]` withdraw_authority
           ///   3. `[]` pool_mint
                       ///   4. `[writable, signer]` payer
-                ///   5. `[writable]` token_metadata
-          ///   6. `[]` mpl_token_metadata
-                ///   7. `[optional]` system_program (default to `11111111111111111111111111111111`)
-                ///   8. `[optional]` rent (default to `SysvarRent111111111111111111111111111111111`)
+                ///   5. `[writable]` metadata
+          ///   6. `[]` mpl_token_metadata_program
+          ///   7. `[]` system_program
 #[derive(Clone, Debug, Default)]
 pub struct CreateTokenMetadataBuilder {
             stake_pool: Option<solana_program::pubkey::Pubkey>,
                 manager: Option<solana_program::pubkey::Pubkey>,
-                stake_pool_withdraw_authority: Option<solana_program::pubkey::Pubkey>,
+                withdraw_authority: Option<solana_program::pubkey::Pubkey>,
                 pool_mint: Option<solana_program::pubkey::Pubkey>,
                 payer: Option<solana_program::pubkey::Pubkey>,
-                token_metadata: Option<solana_program::pubkey::Pubkey>,
-                mpl_token_metadata: Option<solana_program::pubkey::Pubkey>,
+                metadata: Option<solana_program::pubkey::Pubkey>,
+                mpl_token_metadata_program: Option<solana_program::pubkey::Pubkey>,
                 system_program: Option<solana_program::pubkey::Pubkey>,
-                rent: Option<solana_program::pubkey::Pubkey>,
                         name: Option<String>,
                 symbol: Option<String>,
                 uri: Option<String>,
@@ -171,8 +162,8 @@ impl CreateTokenMetadataBuilder {
                     self
     }
             #[inline(always)]
-    pub fn stake_pool_withdraw_authority(&mut self, stake_pool_withdraw_authority: solana_program::pubkey::Pubkey) -> &mut Self {
-                        self.stake_pool_withdraw_authority = Some(stake_pool_withdraw_authority);
+    pub fn withdraw_authority(&mut self, withdraw_authority: solana_program::pubkey::Pubkey) -> &mut Self {
+                        self.withdraw_authority = Some(withdraw_authority);
                     self
     }
             #[inline(always)]
@@ -186,25 +177,18 @@ impl CreateTokenMetadataBuilder {
                     self
     }
             #[inline(always)]
-    pub fn token_metadata(&mut self, token_metadata: solana_program::pubkey::Pubkey) -> &mut Self {
-                        self.token_metadata = Some(token_metadata);
+    pub fn metadata(&mut self, metadata: solana_program::pubkey::Pubkey) -> &mut Self {
+                        self.metadata = Some(metadata);
                     self
     }
             #[inline(always)]
-    pub fn mpl_token_metadata(&mut self, mpl_token_metadata: solana_program::pubkey::Pubkey) -> &mut Self {
-                        self.mpl_token_metadata = Some(mpl_token_metadata);
+    pub fn mpl_token_metadata_program(&mut self, mpl_token_metadata_program: solana_program::pubkey::Pubkey) -> &mut Self {
+                        self.mpl_token_metadata_program = Some(mpl_token_metadata_program);
                     self
     }
-            /// `[optional account, default to '11111111111111111111111111111111']`
-#[inline(always)]
+            #[inline(always)]
     pub fn system_program(&mut self, system_program: solana_program::pubkey::Pubkey) -> &mut Self {
                         self.system_program = Some(system_program);
-                    self
-    }
-            /// `[optional account, default to 'SysvarRent111111111111111111111111111111111']`
-#[inline(always)]
-    pub fn rent(&mut self, rent: solana_program::pubkey::Pubkey) -> &mut Self {
-                        self.rent = Some(rent);
                     self
     }
                     #[inline(always)]
@@ -239,13 +223,12 @@ impl CreateTokenMetadataBuilder {
     let accounts = CreateTokenMetadata {
                               stake_pool: self.stake_pool.expect("stake_pool is not set"),
                                         manager: self.manager.expect("manager is not set"),
-                                        stake_pool_withdraw_authority: self.stake_pool_withdraw_authority.expect("stake_pool_withdraw_authority is not set"),
+                                        withdraw_authority: self.withdraw_authority.expect("withdraw_authority is not set"),
                                         pool_mint: self.pool_mint.expect("pool_mint is not set"),
                                         payer: self.payer.expect("payer is not set"),
-                                        token_metadata: self.token_metadata.expect("token_metadata is not set"),
-                                        mpl_token_metadata: self.mpl_token_metadata.expect("mpl_token_metadata is not set"),
-                                        system_program: self.system_program.unwrap_or(solana_program::pubkey!("11111111111111111111111111111111")),
-                                        rent: self.rent.unwrap_or(solana_program::pubkey!("SysvarRent111111111111111111111111111111111")),
+                                        metadata: self.metadata.expect("metadata is not set"),
+                                        mpl_token_metadata_program: self.mpl_token_metadata_program.expect("mpl_token_metadata_program is not set"),
+                                        system_program: self.system_program.expect("system_program is not set"),
                       };
           let args = CreateTokenMetadataInstructionArgs {
                                                               name: self.name.clone().expect("name is not set"),
@@ -267,7 +250,7 @@ impl CreateTokenMetadataBuilder {
               pub manager: &'b solana_program::account_info::AccountInfo<'a>,
                 
                     
-              pub stake_pool_withdraw_authority: &'b solana_program::account_info::AccountInfo<'a>,
+              pub withdraw_authority: &'b solana_program::account_info::AccountInfo<'a>,
                 
                     
               pub pool_mint: &'b solana_program::account_info::AccountInfo<'a>,
@@ -276,16 +259,13 @@ impl CreateTokenMetadataBuilder {
               pub payer: &'b solana_program::account_info::AccountInfo<'a>,
                 
                     
-              pub token_metadata: &'b solana_program::account_info::AccountInfo<'a>,
+              pub metadata: &'b solana_program::account_info::AccountInfo<'a>,
                 
                     
-              pub mpl_token_metadata: &'b solana_program::account_info::AccountInfo<'a>,
+              pub mpl_token_metadata_program: &'b solana_program::account_info::AccountInfo<'a>,
                 
                     
               pub system_program: &'b solana_program::account_info::AccountInfo<'a>,
-                
-                    
-              pub rent: &'b solana_program::account_info::AccountInfo<'a>,
             }
 
 /// `create_token_metadata` CPI instruction.
@@ -300,7 +280,7 @@ pub struct CreateTokenMetadataCpi<'a, 'b> {
           pub manager: &'b solana_program::account_info::AccountInfo<'a>,
           
               
-          pub stake_pool_withdraw_authority: &'b solana_program::account_info::AccountInfo<'a>,
+          pub withdraw_authority: &'b solana_program::account_info::AccountInfo<'a>,
           
               
           pub pool_mint: &'b solana_program::account_info::AccountInfo<'a>,
@@ -309,16 +289,13 @@ pub struct CreateTokenMetadataCpi<'a, 'b> {
           pub payer: &'b solana_program::account_info::AccountInfo<'a>,
           
               
-          pub token_metadata: &'b solana_program::account_info::AccountInfo<'a>,
+          pub metadata: &'b solana_program::account_info::AccountInfo<'a>,
           
               
-          pub mpl_token_metadata: &'b solana_program::account_info::AccountInfo<'a>,
+          pub mpl_token_metadata_program: &'b solana_program::account_info::AccountInfo<'a>,
           
               
           pub system_program: &'b solana_program::account_info::AccountInfo<'a>,
-          
-              
-          pub rent: &'b solana_program::account_info::AccountInfo<'a>,
             /// The arguments for the instruction.
     pub __args: CreateTokenMetadataInstructionArgs,
   }
@@ -333,13 +310,12 @@ impl<'a, 'b> CreateTokenMetadataCpi<'a, 'b> {
       __program: program,
               stake_pool: accounts.stake_pool,
               manager: accounts.manager,
-              stake_pool_withdraw_authority: accounts.stake_pool_withdraw_authority,
+              withdraw_authority: accounts.withdraw_authority,
               pool_mint: accounts.pool_mint,
               payer: accounts.payer,
-              token_metadata: accounts.token_metadata,
-              mpl_token_metadata: accounts.mpl_token_metadata,
+              metadata: accounts.metadata,
+              mpl_token_metadata_program: accounts.mpl_token_metadata_program,
               system_program: accounts.system_program,
-              rent: accounts.rent,
                     __args: args,
           }
   }
@@ -363,7 +339,7 @@ impl<'a, 'b> CreateTokenMetadataCpi<'a, 'b> {
     signers_seeds: &[&[&[u8]]],
     remaining_accounts: &[(&'b solana_program::account_info::AccountInfo<'a>, bool, bool)]
   ) -> solana_program::entrypoint::ProgramResult {
-    let mut accounts = Vec::with_capacity(9+ remaining_accounts.len());
+    let mut accounts = Vec::with_capacity(8+ remaining_accounts.len());
                             accounts.push(solana_program::instruction::AccountMeta::new_readonly(
             *self.stake_pool.key,
             false
@@ -373,7 +349,7 @@ impl<'a, 'b> CreateTokenMetadataCpi<'a, 'b> {
             true
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-            *self.stake_pool_withdraw_authority.key,
+            *self.withdraw_authority.key,
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new_readonly(
@@ -385,19 +361,15 @@ impl<'a, 'b> CreateTokenMetadataCpi<'a, 'b> {
             true
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new(
-            *self.token_metadata.key,
+            *self.metadata.key,
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-            *self.mpl_token_metadata.key,
+            *self.mpl_token_metadata_program.key,
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new_readonly(
             *self.system_program.key,
-            false
-          ));
-                                          accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-            *self.rent.key,
             false
           ));
                       remaining_accounts.iter().for_each(|remaining_account| {
@@ -416,17 +388,16 @@ impl<'a, 'b> CreateTokenMetadataCpi<'a, 'b> {
       accounts,
       data,
     };
-    let mut account_infos = Vec::with_capacity(10 + remaining_accounts.len());
+    let mut account_infos = Vec::with_capacity(9 + remaining_accounts.len());
     account_infos.push(self.__program.clone());
                   account_infos.push(self.stake_pool.clone());
                         account_infos.push(self.manager.clone());
-                        account_infos.push(self.stake_pool_withdraw_authority.clone());
+                        account_infos.push(self.withdraw_authority.clone());
                         account_infos.push(self.pool_mint.clone());
                         account_infos.push(self.payer.clone());
-                        account_infos.push(self.token_metadata.clone());
-                        account_infos.push(self.mpl_token_metadata.clone());
+                        account_infos.push(self.metadata.clone());
+                        account_infos.push(self.mpl_token_metadata_program.clone());
                         account_infos.push(self.system_program.clone());
-                        account_infos.push(self.rent.clone());
               remaining_accounts.iter().for_each(|remaining_account| account_infos.push(remaining_account.0.clone()));
 
     if signers_seeds.is_empty() {
@@ -443,13 +414,12 @@ impl<'a, 'b> CreateTokenMetadataCpi<'a, 'b> {
 ///
           ///   0. `[]` stake_pool
                 ///   1. `[signer]` manager
-          ///   2. `[]` stake_pool_withdraw_authority
+          ///   2. `[]` withdraw_authority
           ///   3. `[]` pool_mint
                       ///   4. `[writable, signer]` payer
-                ///   5. `[writable]` token_metadata
-          ///   6. `[]` mpl_token_metadata
+                ///   5. `[writable]` metadata
+          ///   6. `[]` mpl_token_metadata_program
           ///   7. `[]` system_program
-          ///   8. `[]` rent
 #[derive(Clone, Debug)]
 pub struct CreateTokenMetadataCpiBuilder<'a, 'b> {
   instruction: Box<CreateTokenMetadataCpiBuilderInstruction<'a, 'b>>,
@@ -461,13 +431,12 @@ impl<'a, 'b> CreateTokenMetadataCpiBuilder<'a, 'b> {
       __program: program,
               stake_pool: None,
               manager: None,
-              stake_pool_withdraw_authority: None,
+              withdraw_authority: None,
               pool_mint: None,
               payer: None,
-              token_metadata: None,
-              mpl_token_metadata: None,
+              metadata: None,
+              mpl_token_metadata_program: None,
               system_program: None,
-              rent: None,
                                             name: None,
                                 symbol: None,
                                 uri: None,
@@ -486,8 +455,8 @@ impl<'a, 'b> CreateTokenMetadataCpiBuilder<'a, 'b> {
                     self
     }
       #[inline(always)]
-    pub fn stake_pool_withdraw_authority(&mut self, stake_pool_withdraw_authority: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
-                        self.instruction.stake_pool_withdraw_authority = Some(stake_pool_withdraw_authority);
+    pub fn withdraw_authority(&mut self, withdraw_authority: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+                        self.instruction.withdraw_authority = Some(withdraw_authority);
                     self
     }
       #[inline(always)]
@@ -501,23 +470,18 @@ impl<'a, 'b> CreateTokenMetadataCpiBuilder<'a, 'b> {
                     self
     }
       #[inline(always)]
-    pub fn token_metadata(&mut self, token_metadata: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
-                        self.instruction.token_metadata = Some(token_metadata);
+    pub fn metadata(&mut self, metadata: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+                        self.instruction.metadata = Some(metadata);
                     self
     }
       #[inline(always)]
-    pub fn mpl_token_metadata(&mut self, mpl_token_metadata: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
-                        self.instruction.mpl_token_metadata = Some(mpl_token_metadata);
+    pub fn mpl_token_metadata_program(&mut self, mpl_token_metadata_program: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+                        self.instruction.mpl_token_metadata_program = Some(mpl_token_metadata_program);
                     self
     }
       #[inline(always)]
     pub fn system_program(&mut self, system_program: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
                         self.instruction.system_program = Some(system_program);
-                    self
-    }
-      #[inline(always)]
-    pub fn rent(&mut self, rent: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
-                        self.instruction.rent = Some(rent);
                     self
     }
                     #[inline(always)]
@@ -569,19 +533,17 @@ impl<'a, 'b> CreateTokenMetadataCpiBuilder<'a, 'b> {
                   
           manager: self.instruction.manager.expect("manager is not set"),
                   
-          stake_pool_withdraw_authority: self.instruction.stake_pool_withdraw_authority.expect("stake_pool_withdraw_authority is not set"),
+          withdraw_authority: self.instruction.withdraw_authority.expect("withdraw_authority is not set"),
                   
           pool_mint: self.instruction.pool_mint.expect("pool_mint is not set"),
                   
           payer: self.instruction.payer.expect("payer is not set"),
                   
-          token_metadata: self.instruction.token_metadata.expect("token_metadata is not set"),
+          metadata: self.instruction.metadata.expect("metadata is not set"),
                   
-          mpl_token_metadata: self.instruction.mpl_token_metadata.expect("mpl_token_metadata is not set"),
+          mpl_token_metadata_program: self.instruction.mpl_token_metadata_program.expect("mpl_token_metadata_program is not set"),
                   
           system_program: self.instruction.system_program.expect("system_program is not set"),
-                  
-          rent: self.instruction.rent.expect("rent is not set"),
                           __args: args,
             };
     instruction.invoke_signed_with_remaining_accounts(signers_seeds, &self.instruction.__remaining_accounts)
@@ -593,13 +555,12 @@ struct CreateTokenMetadataCpiBuilderInstruction<'a, 'b> {
   __program: &'b solana_program::account_info::AccountInfo<'a>,
             stake_pool: Option<&'b solana_program::account_info::AccountInfo<'a>>,
                 manager: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-                stake_pool_withdraw_authority: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+                withdraw_authority: Option<&'b solana_program::account_info::AccountInfo<'a>>,
                 pool_mint: Option<&'b solana_program::account_info::AccountInfo<'a>>,
                 payer: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-                token_metadata: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-                mpl_token_metadata: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+                metadata: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+                mpl_token_metadata_program: Option<&'b solana_program::account_info::AccountInfo<'a>>,
                 system_program: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-                rent: Option<&'b solana_program::account_info::AccountInfo<'a>>,
                         name: Option<String>,
                 symbol: Option<String>,
                 uri: Option<String>,

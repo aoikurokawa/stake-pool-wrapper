@@ -15,13 +15,13 @@ use borsh::BorshDeserialize;
 pub struct SetPreferredValidator {
       
               
-          pub stake_pool_address: solana_program::pubkey::Pubkey,
+          pub stake_pool: solana_program::pubkey::Pubkey,
           
               
           pub staker: solana_program::pubkey::Pubkey,
           
               
-          pub validator_list_address: solana_program::pubkey::Pubkey,
+          pub validator_list: solana_program::pubkey::Pubkey,
       }
 
 impl SetPreferredValidator {
@@ -33,7 +33,7 @@ impl SetPreferredValidator {
   pub fn instruction_with_remaining_accounts(&self, args: SetPreferredValidatorInstructionArgs, remaining_accounts: &[solana_program::instruction::AccountMeta]) -> solana_program::instruction::Instruction {
     let mut accounts = Vec::with_capacity(3+ remaining_accounts.len());
                             accounts.push(solana_program::instruction::AccountMeta::new(
-            self.stake_pool_address,
+            self.stake_pool,
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new_readonly(
@@ -41,7 +41,7 @@ impl SetPreferredValidator {
             true
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-            self.validator_list_address,
+            self.validator_list,
             false
           ));
                       accounts.extend_from_slice(remaining_accounts);
@@ -60,13 +60,13 @@ impl SetPreferredValidator {
 #[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
  pub struct SetPreferredValidatorInstructionData {
-            discriminator: [u8; 8],
+            discriminator: u8,
                   }
 
 impl SetPreferredValidatorInstructionData {
   pub fn new() -> Self {
     Self {
-                        discriminator: [114, 42, 19, 98, 212, 97, 109, 13],
+                        discriminator: 5,
                                               }
   }
 }
@@ -89,14 +89,14 @@ impl Default for SetPreferredValidatorInstructionData {
 ///
 /// ### Accounts:
 ///
-                ///   0. `[writable]` stake_pool_address
+                ///   0. `[writable]` stake_pool
                 ///   1. `[signer]` staker
-          ///   2. `[]` validator_list_address
+          ///   2. `[]` validator_list
 #[derive(Clone, Debug, Default)]
 pub struct SetPreferredValidatorBuilder {
-            stake_pool_address: Option<solana_program::pubkey::Pubkey>,
+            stake_pool: Option<solana_program::pubkey::Pubkey>,
                 staker: Option<solana_program::pubkey::Pubkey>,
-                validator_list_address: Option<solana_program::pubkey::Pubkey>,
+                validator_list: Option<solana_program::pubkey::Pubkey>,
                         validator_type: Option<PreferredValidatorType>,
                 validator_vote_address: Option<Pubkey>,
         __remaining_accounts: Vec<solana_program::instruction::AccountMeta>,
@@ -107,8 +107,8 @@ impl SetPreferredValidatorBuilder {
     Self::default()
   }
             #[inline(always)]
-    pub fn stake_pool_address(&mut self, stake_pool_address: solana_program::pubkey::Pubkey) -> &mut Self {
-                        self.stake_pool_address = Some(stake_pool_address);
+    pub fn stake_pool(&mut self, stake_pool: solana_program::pubkey::Pubkey) -> &mut Self {
+                        self.stake_pool = Some(stake_pool);
                     self
     }
             #[inline(always)]
@@ -117,8 +117,8 @@ impl SetPreferredValidatorBuilder {
                     self
     }
             #[inline(always)]
-    pub fn validator_list_address(&mut self, validator_list_address: solana_program::pubkey::Pubkey) -> &mut Self {
-                        self.validator_list_address = Some(validator_list_address);
+    pub fn validator_list(&mut self, validator_list: solana_program::pubkey::Pubkey) -> &mut Self {
+                        self.validator_list = Some(validator_list);
                     self
     }
                     #[inline(always)]
@@ -147,9 +147,9 @@ impl SetPreferredValidatorBuilder {
   #[allow(clippy::clone_on_copy)]
   pub fn instruction(&self) -> solana_program::instruction::Instruction {
     let accounts = SetPreferredValidator {
-                              stake_pool_address: self.stake_pool_address.expect("stake_pool_address is not set"),
+                              stake_pool: self.stake_pool.expect("stake_pool is not set"),
                                         staker: self.staker.expect("staker is not set"),
-                                        validator_list_address: self.validator_list_address.expect("validator_list_address is not set"),
+                                        validator_list: self.validator_list.expect("validator_list is not set"),
                       };
           let args = SetPreferredValidatorInstructionArgs {
                                                               validator_type: self.validator_type.clone().expect("validator_type is not set"),
@@ -164,13 +164,13 @@ impl SetPreferredValidatorBuilder {
   pub struct SetPreferredValidatorCpiAccounts<'a, 'b> {
           
                     
-              pub stake_pool_address: &'b solana_program::account_info::AccountInfo<'a>,
+              pub stake_pool: &'b solana_program::account_info::AccountInfo<'a>,
                 
                     
               pub staker: &'b solana_program::account_info::AccountInfo<'a>,
                 
                     
-              pub validator_list_address: &'b solana_program::account_info::AccountInfo<'a>,
+              pub validator_list: &'b solana_program::account_info::AccountInfo<'a>,
             }
 
 /// `set_preferred_validator` CPI instruction.
@@ -179,13 +179,13 @@ pub struct SetPreferredValidatorCpi<'a, 'b> {
   pub __program: &'b solana_program::account_info::AccountInfo<'a>,
       
               
-          pub stake_pool_address: &'b solana_program::account_info::AccountInfo<'a>,
+          pub stake_pool: &'b solana_program::account_info::AccountInfo<'a>,
           
               
           pub staker: &'b solana_program::account_info::AccountInfo<'a>,
           
               
-          pub validator_list_address: &'b solana_program::account_info::AccountInfo<'a>,
+          pub validator_list: &'b solana_program::account_info::AccountInfo<'a>,
             /// The arguments for the instruction.
     pub __args: SetPreferredValidatorInstructionArgs,
   }
@@ -198,9 +198,9 @@ impl<'a, 'b> SetPreferredValidatorCpi<'a, 'b> {
       ) -> Self {
     Self {
       __program: program,
-              stake_pool_address: accounts.stake_pool_address,
+              stake_pool: accounts.stake_pool,
               staker: accounts.staker,
-              validator_list_address: accounts.validator_list_address,
+              validator_list: accounts.validator_list,
                     __args: args,
           }
   }
@@ -226,7 +226,7 @@ impl<'a, 'b> SetPreferredValidatorCpi<'a, 'b> {
   ) -> solana_program::entrypoint::ProgramResult {
     let mut accounts = Vec::with_capacity(3+ remaining_accounts.len());
                             accounts.push(solana_program::instruction::AccountMeta::new(
-            *self.stake_pool_address.key,
+            *self.stake_pool.key,
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new_readonly(
@@ -234,7 +234,7 @@ impl<'a, 'b> SetPreferredValidatorCpi<'a, 'b> {
             true
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-            *self.validator_list_address.key,
+            *self.validator_list.key,
             false
           ));
                       remaining_accounts.iter().for_each(|remaining_account| {
@@ -255,9 +255,9 @@ impl<'a, 'b> SetPreferredValidatorCpi<'a, 'b> {
     };
     let mut account_infos = Vec::with_capacity(4 + remaining_accounts.len());
     account_infos.push(self.__program.clone());
-                  account_infos.push(self.stake_pool_address.clone());
+                  account_infos.push(self.stake_pool.clone());
                         account_infos.push(self.staker.clone());
-                        account_infos.push(self.validator_list_address.clone());
+                        account_infos.push(self.validator_list.clone());
               remaining_accounts.iter().for_each(|remaining_account| account_infos.push(remaining_account.0.clone()));
 
     if signers_seeds.is_empty() {
@@ -272,9 +272,9 @@ impl<'a, 'b> SetPreferredValidatorCpi<'a, 'b> {
 ///
 /// ### Accounts:
 ///
-                ///   0. `[writable]` stake_pool_address
+                ///   0. `[writable]` stake_pool
                 ///   1. `[signer]` staker
-          ///   2. `[]` validator_list_address
+          ///   2. `[]` validator_list
 #[derive(Clone, Debug)]
 pub struct SetPreferredValidatorCpiBuilder<'a, 'b> {
   instruction: Box<SetPreferredValidatorCpiBuilderInstruction<'a, 'b>>,
@@ -284,9 +284,9 @@ impl<'a, 'b> SetPreferredValidatorCpiBuilder<'a, 'b> {
   pub fn new(program: &'b solana_program::account_info::AccountInfo<'a>) -> Self {
     let instruction = Box::new(SetPreferredValidatorCpiBuilderInstruction {
       __program: program,
-              stake_pool_address: None,
+              stake_pool: None,
               staker: None,
-              validator_list_address: None,
+              validator_list: None,
                                             validator_type: None,
                                 validator_vote_address: None,
                     __remaining_accounts: Vec::new(),
@@ -294,8 +294,8 @@ impl<'a, 'b> SetPreferredValidatorCpiBuilder<'a, 'b> {
     Self { instruction }
   }
       #[inline(always)]
-    pub fn stake_pool_address(&mut self, stake_pool_address: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
-                        self.instruction.stake_pool_address = Some(stake_pool_address);
+    pub fn stake_pool(&mut self, stake_pool: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+                        self.instruction.stake_pool = Some(stake_pool);
                     self
     }
       #[inline(always)]
@@ -304,8 +304,8 @@ impl<'a, 'b> SetPreferredValidatorCpiBuilder<'a, 'b> {
                     self
     }
       #[inline(always)]
-    pub fn validator_list_address(&mut self, validator_list_address: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
-                        self.instruction.validator_list_address = Some(validator_list_address);
+    pub fn validator_list(&mut self, validator_list: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+                        self.instruction.validator_list = Some(validator_list);
                     self
     }
                     #[inline(always)]
@@ -348,11 +348,11 @@ impl<'a, 'b> SetPreferredValidatorCpiBuilder<'a, 'b> {
         let instruction = SetPreferredValidatorCpi {
         __program: self.instruction.__program,
                   
-          stake_pool_address: self.instruction.stake_pool_address.expect("stake_pool_address is not set"),
+          stake_pool: self.instruction.stake_pool.expect("stake_pool is not set"),
                   
           staker: self.instruction.staker.expect("staker is not set"),
                   
-          validator_list_address: self.instruction.validator_list_address.expect("validator_list_address is not set"),
+          validator_list: self.instruction.validator_list.expect("validator_list is not set"),
                           __args: args,
             };
     instruction.invoke_signed_with_remaining_accounts(signers_seeds, &self.instruction.__remaining_accounts)
@@ -362,9 +362,9 @@ impl<'a, 'b> SetPreferredValidatorCpiBuilder<'a, 'b> {
 #[derive(Clone, Debug)]
 struct SetPreferredValidatorCpiBuilderInstruction<'a, 'b> {
   __program: &'b solana_program::account_info::AccountInfo<'a>,
-            stake_pool_address: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+            stake_pool: Option<&'b solana_program::account_info::AccountInfo<'a>>,
                 staker: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-                validator_list_address: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+                validator_list: Option<&'b solana_program::account_info::AccountInfo<'a>>,
                         validator_type: Option<PreferredValidatorType>,
                 validator_vote_address: Option<Pubkey>,
         /// Additional instruction accounts `(AccountInfo, is_writable, is_signer)`.

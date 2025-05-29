@@ -13,17 +13,10 @@ import {
   decodeAccount,
   fetchEncodedAccount,
   fetchEncodedAccounts,
-  fixDecoderSize,
-  fixEncoderSize,
   getAddressDecoder,
   getAddressEncoder,
-  getBytesDecoder,
-  getBytesEncoder,
   getStructDecoder,
   getStructEncoder,
-  getU64Decoder,
-  getU64Encoder,
-  transformEncoder,
   type Account,
   type Address,
   type Codec,
@@ -34,71 +27,66 @@ import {
   type FetchAccountsConfig,
   type MaybeAccount,
   type MaybeEncodedAccount,
-  type ReadonlyUint8Array,
 } from '@solana/kit';
 import {
-  getStakeStatusDecoder,
-  getStakeStatusEncoder,
-  type StakeStatus,
-  type StakeStatusArgs,
+  getPodStakeStatusDecoder,
+  getPodStakeStatusEncoder,
+  getPodU32Decoder,
+  getPodU32Encoder,
+  getPodU64Decoder,
+  getPodU64Encoder,
+  type PodStakeStatus,
+  type PodStakeStatusArgs,
+  type PodU32,
+  type PodU32Args,
+  type PodU64,
+  type PodU64Args,
 } from '../types';
 
-export const VALIDATOR_STAKE_INFO_DISCRIMINATOR = new Uint8Array([
-  199, 238, 148, 182, 193, 141, 114, 26,
-]);
-
-export function getValidatorStakeInfoDiscriminatorBytes() {
-  return fixEncoderSize(getBytesEncoder(), 8).encode(
-    VALIDATOR_STAKE_INFO_DISCRIMINATOR
-  );
-}
-
 export type ValidatorStakeInfo = {
-  discriminator: ReadonlyUint8Array;
-  activeStakeLamports: bigint;
-  transientStakeLamports: bigint;
-  lastUpdateEpoch: bigint;
-  transientSeedSuffixStart: bigint;
-  transientSeedSuffixEnd: bigint;
-  status: StakeStatus;
+  activeStakeLamports: PodU64;
+  transientStakeLamports: PodU64;
+  lastUpdateEpoch: PodU64;
+  transientSeedSuffix: PodU64;
+  unused: PodU32;
+  validatorSeedSuffix: PodU32;
+  status: PodStakeStatus;
   voteAccountAddress: Address;
 };
 
 export type ValidatorStakeInfoArgs = {
-  activeStakeLamports: number | bigint;
-  transientStakeLamports: number | bigint;
-  lastUpdateEpoch: number | bigint;
-  transientSeedSuffixStart: number | bigint;
-  transientSeedSuffixEnd: number | bigint;
-  status: StakeStatusArgs;
+  activeStakeLamports: PodU64Args;
+  transientStakeLamports: PodU64Args;
+  lastUpdateEpoch: PodU64Args;
+  transientSeedSuffix: PodU64Args;
+  unused: PodU32Args;
+  validatorSeedSuffix: PodU32Args;
+  status: PodStakeStatusArgs;
   voteAccountAddress: Address;
 };
 
 export function getValidatorStakeInfoEncoder(): Encoder<ValidatorStakeInfoArgs> {
-  return transformEncoder(
-    getStructEncoder([
-      ['discriminator', fixEncoderSize(getBytesEncoder(), 8)],
-      ['activeStakeLamports', getU64Encoder()],
-      ['transientStakeLamports', getU64Encoder()],
-      ['lastUpdateEpoch', getU64Encoder()],
-      ['transientSeedSuffixStart', getU64Encoder()],
-      ['transientSeedSuffixEnd', getU64Encoder()],
-      ['status', getStakeStatusEncoder()],
-      ['voteAccountAddress', getAddressEncoder()],
-    ]),
-    (value) => ({ ...value, discriminator: VALIDATOR_STAKE_INFO_DISCRIMINATOR })
-  );
+  return getStructEncoder([
+    ['activeStakeLamports', getPodU64Encoder()],
+    ['transientStakeLamports', getPodU64Encoder()],
+    ['lastUpdateEpoch', getPodU64Encoder()],
+    ['transientSeedSuffix', getPodU64Encoder()],
+    ['unused', getPodU32Encoder()],
+    ['validatorSeedSuffix', getPodU32Encoder()],
+    ['status', getPodStakeStatusEncoder()],
+    ['voteAccountAddress', getAddressEncoder()],
+  ]);
 }
 
 export function getValidatorStakeInfoDecoder(): Decoder<ValidatorStakeInfo> {
   return getStructDecoder([
-    ['discriminator', fixDecoderSize(getBytesDecoder(), 8)],
-    ['activeStakeLamports', getU64Decoder()],
-    ['transientStakeLamports', getU64Decoder()],
-    ['lastUpdateEpoch', getU64Decoder()],
-    ['transientSeedSuffixStart', getU64Decoder()],
-    ['transientSeedSuffixEnd', getU64Decoder()],
-    ['status', getStakeStatusDecoder()],
+    ['activeStakeLamports', getPodU64Decoder()],
+    ['transientStakeLamports', getPodU64Decoder()],
+    ['lastUpdateEpoch', getPodU64Decoder()],
+    ['transientSeedSuffix', getPodU64Decoder()],
+    ['unused', getPodU32Decoder()],
+    ['validatorSeedSuffix', getPodU32Decoder()],
+    ['status', getPodStakeStatusDecoder()],
     ['voteAccountAddress', getAddressDecoder()],
   ]);
 }
@@ -174,8 +162,4 @@ export async function fetchAllMaybeValidatorStakeInfo(
   return maybeAccounts.map((maybeAccount) =>
     decodeValidatorStakeInfo(maybeAccount)
   );
-}
-
-export function getValidatorStakeInfoSize(): number {
-  return 81;
 }

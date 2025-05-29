@@ -2,6 +2,7 @@ import * as codama from "codama";
 import * as anchorIdl from "@codama/nodes-from-anchor";
 import * as path from "path";
 import * as renderers from '@codama/renderers';
+import { rootNode } from "@codama/nodes";
 
 // Paths.
 const projectRoot = path.join(__dirname, "..");
@@ -13,7 +14,8 @@ const jsClientsDir = path.join(__dirname, "..", "packages", "src");
 
 // Generate the vault whitelist client in Rust and JavaScript.
 const vaultWhitelistIdl = require(path.join(idlDir, "idl.json"));
-const vaultWhitelistRootNode = anchorIdl.rootNodeFromAnchor(vaultWhitelistIdl);
+// const vaultWhitelistRootNode = anchorIdl.rootNodeFromAnchor(vaultWhitelistIdl);
+const vaultWhitelistRootNode = rootNode(vaultWhitelistIdl.program);
 // Cast to any to bypass strict type checking between library versions
 const vaultWhitelistCodama = codama.createFromRoot(vaultWhitelistRootNode as any);
 

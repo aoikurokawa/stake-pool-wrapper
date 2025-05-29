@@ -13,15 +13,8 @@ import {
   decodeAccount,
   fetchEncodedAccount,
   fetchEncodedAccounts,
-  fixDecoderSize,
-  fixEncoderSize,
-  getArrayDecoder,
-  getArrayEncoder,
-  getBytesDecoder,
-  getBytesEncoder,
   getStructDecoder,
   getStructEncoder,
-  transformEncoder,
   type Account,
   type Address,
   type Codec,
@@ -32,56 +25,36 @@ import {
   type FetchAccountsConfig,
   type MaybeAccount,
   type MaybeEncodedAccount,
-  type ReadonlyUint8Array,
 } from '@solana/kit';
 import {
   getValidatorListHeaderDecoder,
   getValidatorListHeaderEncoder,
-  getValidatorStakeInfoDecoder,
-  getValidatorStakeInfoEncoder,
+  getVecDecoder,
+  getVecEncoder,
   type ValidatorListHeader,
   type ValidatorListHeaderArgs,
-  type ValidatorStakeInfo,
-  type ValidatorStakeInfoArgs,
+  type Vec,
+  type VecArgs,
 } from '../types';
 
-export const VALIDATOR_LIST_DISCRIMINATOR = new Uint8Array([
-  131, 181, 125, 127, 46, 36, 40, 167,
-]);
-
-export function getValidatorListDiscriminatorBytes() {
-  return fixEncoderSize(getBytesEncoder(), 8).encode(
-    VALIDATOR_LIST_DISCRIMINATOR
-  );
-}
-
-export type ValidatorList = {
-  discriminator: ReadonlyUint8Array;
-  header: ValidatorListHeader;
-  validators: Array<ValidatorStakeInfo>;
-};
+export type ValidatorList = { header: ValidatorListHeader; validators: Vec };
 
 export type ValidatorListArgs = {
   header: ValidatorListHeaderArgs;
-  validators: Array<ValidatorStakeInfoArgs>;
+  validators: VecArgs;
 };
 
 export function getValidatorListEncoder(): Encoder<ValidatorListArgs> {
-  return transformEncoder(
-    getStructEncoder([
-      ['discriminator', fixEncoderSize(getBytesEncoder(), 8)],
-      ['header', getValidatorListHeaderEncoder()],
-      ['validators', getArrayEncoder(getValidatorStakeInfoEncoder())],
-    ]),
-    (value) => ({ ...value, discriminator: VALIDATOR_LIST_DISCRIMINATOR })
-  );
+  return getStructEncoder([
+    ['header', getValidatorListHeaderEncoder()],
+    ['validators', getVecEncoder()],
+  ]);
 }
 
 export function getValidatorListDecoder(): Decoder<ValidatorList> {
   return getStructDecoder([
-    ['discriminator', fixDecoderSize(getBytesDecoder(), 8)],
     ['header', getValidatorListHeaderDecoder()],
-    ['validators', getArrayDecoder(getValidatorStakeInfoDecoder())],
+    ['validators', getVecDecoder()],
   ]);
 }
 

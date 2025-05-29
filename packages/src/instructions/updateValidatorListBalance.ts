@@ -8,16 +8,14 @@
 
 import {
   combineCodec,
-  fixDecoderSize,
-  fixEncoderSize,
   getBooleanDecoder,
   getBooleanEncoder,
-  getBytesDecoder,
-  getBytesEncoder,
   getStructDecoder,
   getStructEncoder,
   getU32Decoder,
   getU32Encoder,
+  getU8Decoder,
+  getU8Encoder,
   transformEncoder,
   type Address,
   type Codec,
@@ -28,34 +26,25 @@ import {
   type IInstructionWithAccounts,
   type IInstructionWithData,
   type ReadonlyAccount,
-  type ReadonlyUint8Array,
   type WritableAccount,
 } from '@solana/kit';
 import { SPL_STAKE_POOL_PROGRAM_ADDRESS } from '../programs';
 import { getAccountMetaFactory, type ResolvedAccount } from '../shared';
 
-export const UPDATE_VALIDATOR_LIST_BALANCE_DISCRIMINATOR = new Uint8Array([
-  98, 93, 78, 124, 109, 4, 165, 194,
-]);
+export const UPDATE_VALIDATOR_LIST_BALANCE_DISCRIMINATOR = 6;
 
 export function getUpdateValidatorListBalanceDiscriminatorBytes() {
-  return fixEncoderSize(getBytesEncoder(), 8).encode(
-    UPDATE_VALIDATOR_LIST_BALANCE_DISCRIMINATOR
-  );
+  return getU8Encoder().encode(UPDATE_VALIDATOR_LIST_BALANCE_DISCRIMINATOR);
 }
 
 export type UpdateValidatorListBalanceInstruction<
   TProgram extends string = typeof SPL_STAKE_POOL_PROGRAM_ADDRESS,
   TAccountStakePool extends string | IAccountMeta<string> = string,
-  TAccountStakePoolWithdrawAuthority extends
-    | string
-    | IAccountMeta<string> = string,
-  TAccountValidatorListAddress extends string | IAccountMeta<string> = string,
+  TAccountWithdrawAuthority extends string | IAccountMeta<string> = string,
+  TAccountValidatorList extends string | IAccountMeta<string> = string,
   TAccountReserveStake extends string | IAccountMeta<string> = string,
   TAccountClock extends string | IAccountMeta<string> = string,
-  TAccountSysvarStakeHistory extends
-    | string
-    | IAccountMeta<string> = 'SysvarStakeHistory1111111111111111111111111',
+  TAccountStakeHistory extends string | IAccountMeta<string> = string,
   TAccountStakeProgram extends string | IAccountMeta<string> = string,
   TRemainingAccounts extends readonly IAccountMeta<string>[] = [],
 > = IInstruction<TProgram> &
@@ -65,21 +54,21 @@ export type UpdateValidatorListBalanceInstruction<
       TAccountStakePool extends string
         ? ReadonlyAccount<TAccountStakePool>
         : TAccountStakePool,
-      TAccountStakePoolWithdrawAuthority extends string
-        ? ReadonlyAccount<TAccountStakePoolWithdrawAuthority>
-        : TAccountStakePoolWithdrawAuthority,
-      TAccountValidatorListAddress extends string
-        ? WritableAccount<TAccountValidatorListAddress>
-        : TAccountValidatorListAddress,
+      TAccountWithdrawAuthority extends string
+        ? ReadonlyAccount<TAccountWithdrawAuthority>
+        : TAccountWithdrawAuthority,
+      TAccountValidatorList extends string
+        ? WritableAccount<TAccountValidatorList>
+        : TAccountValidatorList,
       TAccountReserveStake extends string
         ? WritableAccount<TAccountReserveStake>
         : TAccountReserveStake,
       TAccountClock extends string
         ? ReadonlyAccount<TAccountClock>
         : TAccountClock,
-      TAccountSysvarStakeHistory extends string
-        ? ReadonlyAccount<TAccountSysvarStakeHistory>
-        : TAccountSysvarStakeHistory,
+      TAccountStakeHistory extends string
+        ? ReadonlyAccount<TAccountStakeHistory>
+        : TAccountStakeHistory,
       TAccountStakeProgram extends string
         ? ReadonlyAccount<TAccountStakeProgram>
         : TAccountStakeProgram,
@@ -88,7 +77,7 @@ export type UpdateValidatorListBalanceInstruction<
   >;
 
 export type UpdateValidatorListBalanceInstructionData = {
-  discriminator: ReadonlyUint8Array;
+  discriminator: number;
   startIndex: number;
   noMerge: boolean;
 };
@@ -101,7 +90,7 @@ export type UpdateValidatorListBalanceInstructionDataArgs = {
 export function getUpdateValidatorListBalanceInstructionDataEncoder(): Encoder<UpdateValidatorListBalanceInstructionDataArgs> {
   return transformEncoder(
     getStructEncoder([
-      ['discriminator', fixEncoderSize(getBytesEncoder(), 8)],
+      ['discriminator', getU8Encoder()],
       ['startIndex', getU32Encoder()],
       ['noMerge', getBooleanEncoder()],
     ]),
@@ -114,7 +103,7 @@ export function getUpdateValidatorListBalanceInstructionDataEncoder(): Encoder<U
 
 export function getUpdateValidatorListBalanceInstructionDataDecoder(): Decoder<UpdateValidatorListBalanceInstructionData> {
   return getStructDecoder([
-    ['discriminator', fixDecoderSize(getBytesDecoder(), 8)],
+    ['discriminator', getU8Decoder()],
     ['startIndex', getU32Decoder()],
     ['noMerge', getBooleanDecoder()],
   ]);
@@ -132,19 +121,19 @@ export function getUpdateValidatorListBalanceInstructionDataCodec(): Codec<
 
 export type UpdateValidatorListBalanceInput<
   TAccountStakePool extends string = string,
-  TAccountStakePoolWithdrawAuthority extends string = string,
-  TAccountValidatorListAddress extends string = string,
+  TAccountWithdrawAuthority extends string = string,
+  TAccountValidatorList extends string = string,
   TAccountReserveStake extends string = string,
   TAccountClock extends string = string,
-  TAccountSysvarStakeHistory extends string = string,
+  TAccountStakeHistory extends string = string,
   TAccountStakeProgram extends string = string,
 > = {
   stakePool: Address<TAccountStakePool>;
-  stakePoolWithdrawAuthority: Address<TAccountStakePoolWithdrawAuthority>;
-  validatorListAddress: Address<TAccountValidatorListAddress>;
+  withdrawAuthority: Address<TAccountWithdrawAuthority>;
+  validatorList: Address<TAccountValidatorList>;
   reserveStake: Address<TAccountReserveStake>;
   clock: Address<TAccountClock>;
-  sysvarStakeHistory?: Address<TAccountSysvarStakeHistory>;
+  stakeHistory: Address<TAccountStakeHistory>;
   stakeProgram: Address<TAccountStakeProgram>;
   startIndex: UpdateValidatorListBalanceInstructionDataArgs['startIndex'];
   noMerge: UpdateValidatorListBalanceInstructionDataArgs['noMerge'];
@@ -152,32 +141,32 @@ export type UpdateValidatorListBalanceInput<
 
 export function getUpdateValidatorListBalanceInstruction<
   TAccountStakePool extends string,
-  TAccountStakePoolWithdrawAuthority extends string,
-  TAccountValidatorListAddress extends string,
+  TAccountWithdrawAuthority extends string,
+  TAccountValidatorList extends string,
   TAccountReserveStake extends string,
   TAccountClock extends string,
-  TAccountSysvarStakeHistory extends string,
+  TAccountStakeHistory extends string,
   TAccountStakeProgram extends string,
   TProgramAddress extends Address = typeof SPL_STAKE_POOL_PROGRAM_ADDRESS,
 >(
   input: UpdateValidatorListBalanceInput<
     TAccountStakePool,
-    TAccountStakePoolWithdrawAuthority,
-    TAccountValidatorListAddress,
+    TAccountWithdrawAuthority,
+    TAccountValidatorList,
     TAccountReserveStake,
     TAccountClock,
-    TAccountSysvarStakeHistory,
+    TAccountStakeHistory,
     TAccountStakeProgram
   >,
   config?: { programAddress?: TProgramAddress }
 ): UpdateValidatorListBalanceInstruction<
   TProgramAddress,
   TAccountStakePool,
-  TAccountStakePoolWithdrawAuthority,
-  TAccountValidatorListAddress,
+  TAccountWithdrawAuthority,
+  TAccountValidatorList,
   TAccountReserveStake,
   TAccountClock,
-  TAccountSysvarStakeHistory,
+  TAccountStakeHistory,
   TAccountStakeProgram
 > {
   // Program address.
@@ -187,20 +176,14 @@ export function getUpdateValidatorListBalanceInstruction<
   // Original accounts.
   const originalAccounts = {
     stakePool: { value: input.stakePool ?? null, isWritable: false },
-    stakePoolWithdrawAuthority: {
-      value: input.stakePoolWithdrawAuthority ?? null,
+    withdrawAuthority: {
+      value: input.withdrawAuthority ?? null,
       isWritable: false,
     },
-    validatorListAddress: {
-      value: input.validatorListAddress ?? null,
-      isWritable: true,
-    },
+    validatorList: { value: input.validatorList ?? null, isWritable: true },
     reserveStake: { value: input.reserveStake ?? null, isWritable: true },
     clock: { value: input.clock ?? null, isWritable: false },
-    sysvarStakeHistory: {
-      value: input.sysvarStakeHistory ?? null,
-      isWritable: false,
-    },
+    stakeHistory: { value: input.stakeHistory ?? null, isWritable: false },
     stakeProgram: { value: input.stakeProgram ?? null, isWritable: false },
   };
   const accounts = originalAccounts as Record<
@@ -211,21 +194,15 @@ export function getUpdateValidatorListBalanceInstruction<
   // Original args.
   const args = { ...input };
 
-  // Resolve default values.
-  if (!accounts.sysvarStakeHistory.value) {
-    accounts.sysvarStakeHistory.value =
-      'SysvarStakeHistory1111111111111111111111111' as Address<'SysvarStakeHistory1111111111111111111111111'>;
-  }
-
   const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');
   const instruction = {
     accounts: [
       getAccountMeta(accounts.stakePool),
-      getAccountMeta(accounts.stakePoolWithdrawAuthority),
-      getAccountMeta(accounts.validatorListAddress),
+      getAccountMeta(accounts.withdrawAuthority),
+      getAccountMeta(accounts.validatorList),
       getAccountMeta(accounts.reserveStake),
       getAccountMeta(accounts.clock),
-      getAccountMeta(accounts.sysvarStakeHistory),
+      getAccountMeta(accounts.stakeHistory),
       getAccountMeta(accounts.stakeProgram),
     ],
     programAddress,
@@ -235,11 +212,11 @@ export function getUpdateValidatorListBalanceInstruction<
   } as UpdateValidatorListBalanceInstruction<
     TProgramAddress,
     TAccountStakePool,
-    TAccountStakePoolWithdrawAuthority,
-    TAccountValidatorListAddress,
+    TAccountWithdrawAuthority,
+    TAccountValidatorList,
     TAccountReserveStake,
     TAccountClock,
-    TAccountSysvarStakeHistory,
+    TAccountStakeHistory,
     TAccountStakeProgram
   >;
 
@@ -253,11 +230,11 @@ export type ParsedUpdateValidatorListBalanceInstruction<
   programAddress: Address<TProgram>;
   accounts: {
     stakePool: TAccountMetas[0];
-    stakePoolWithdrawAuthority: TAccountMetas[1];
-    validatorListAddress: TAccountMetas[2];
+    withdrawAuthority: TAccountMetas[1];
+    validatorList: TAccountMetas[2];
     reserveStake: TAccountMetas[3];
     clock: TAccountMetas[4];
-    sysvarStakeHistory: TAccountMetas[5];
+    stakeHistory: TAccountMetas[5];
     stakeProgram: TAccountMetas[6];
   };
   data: UpdateValidatorListBalanceInstructionData;
@@ -285,11 +262,11 @@ export function parseUpdateValidatorListBalanceInstruction<
     programAddress: instruction.programAddress,
     accounts: {
       stakePool: getNextAccount(),
-      stakePoolWithdrawAuthority: getNextAccount(),
-      validatorListAddress: getNextAccount(),
+      withdrawAuthority: getNextAccount(),
+      validatorList: getNextAccount(),
       reserveStake: getNextAccount(),
       clock: getNextAccount(),
-      sysvarStakeHistory: getNextAccount(),
+      stakeHistory: getNextAccount(),
       stakeProgram: getNextAccount(),
     },
     data: getUpdateValidatorListBalanceInstructionDataDecoder().decode(

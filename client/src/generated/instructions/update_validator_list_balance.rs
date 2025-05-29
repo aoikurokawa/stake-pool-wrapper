@@ -16,10 +16,10 @@ pub struct UpdateValidatorListBalance {
           pub stake_pool: solana_program::pubkey::Pubkey,
           
               
-          pub stake_pool_withdraw_authority: solana_program::pubkey::Pubkey,
+          pub withdraw_authority: solana_program::pubkey::Pubkey,
           
               
-          pub validator_list_address: solana_program::pubkey::Pubkey,
+          pub validator_list: solana_program::pubkey::Pubkey,
           
               
           pub reserve_stake: solana_program::pubkey::Pubkey,
@@ -28,7 +28,7 @@ pub struct UpdateValidatorListBalance {
           pub clock: solana_program::pubkey::Pubkey,
           
               
-          pub sysvar_stake_history: solana_program::pubkey::Pubkey,
+          pub stake_history: solana_program::pubkey::Pubkey,
           
               
           pub stake_program: solana_program::pubkey::Pubkey,
@@ -47,11 +47,11 @@ impl UpdateValidatorListBalance {
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-            self.stake_pool_withdraw_authority,
+            self.withdraw_authority,
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new(
-            self.validator_list_address,
+            self.validator_list,
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new(
@@ -63,7 +63,7 @@ impl UpdateValidatorListBalance {
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-            self.sysvar_stake_history,
+            self.stake_history,
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new_readonly(
@@ -86,13 +86,13 @@ impl UpdateValidatorListBalance {
 #[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
  pub struct UpdateValidatorListBalanceInstructionData {
-            discriminator: [u8; 8],
+            discriminator: u8,
                   }
 
 impl UpdateValidatorListBalanceInstructionData {
   pub fn new() -> Self {
     Self {
-                        discriminator: [98, 93, 78, 124, 109, 4, 165, 194],
+                        discriminator: 6,
                                               }
   }
 }
@@ -116,20 +116,20 @@ impl Default for UpdateValidatorListBalanceInstructionData {
 /// ### Accounts:
 ///
           ///   0. `[]` stake_pool
-          ///   1. `[]` stake_pool_withdraw_authority
-                ///   2. `[writable]` validator_list_address
+          ///   1. `[]` withdraw_authority
+                ///   2. `[writable]` validator_list
                 ///   3. `[writable]` reserve_stake
           ///   4. `[]` clock
-                ///   5. `[optional]` sysvar_stake_history (default to `SysvarStakeHistory1111111111111111111111111`)
+          ///   5. `[]` stake_history
           ///   6. `[]` stake_program
 #[derive(Clone, Debug, Default)]
 pub struct UpdateValidatorListBalanceBuilder {
             stake_pool: Option<solana_program::pubkey::Pubkey>,
-                stake_pool_withdraw_authority: Option<solana_program::pubkey::Pubkey>,
-                validator_list_address: Option<solana_program::pubkey::Pubkey>,
+                withdraw_authority: Option<solana_program::pubkey::Pubkey>,
+                validator_list: Option<solana_program::pubkey::Pubkey>,
                 reserve_stake: Option<solana_program::pubkey::Pubkey>,
                 clock: Option<solana_program::pubkey::Pubkey>,
-                sysvar_stake_history: Option<solana_program::pubkey::Pubkey>,
+                stake_history: Option<solana_program::pubkey::Pubkey>,
                 stake_program: Option<solana_program::pubkey::Pubkey>,
                         start_index: Option<u32>,
                 no_merge: Option<bool>,
@@ -146,13 +146,13 @@ impl UpdateValidatorListBalanceBuilder {
                     self
     }
             #[inline(always)]
-    pub fn stake_pool_withdraw_authority(&mut self, stake_pool_withdraw_authority: solana_program::pubkey::Pubkey) -> &mut Self {
-                        self.stake_pool_withdraw_authority = Some(stake_pool_withdraw_authority);
+    pub fn withdraw_authority(&mut self, withdraw_authority: solana_program::pubkey::Pubkey) -> &mut Self {
+                        self.withdraw_authority = Some(withdraw_authority);
                     self
     }
             #[inline(always)]
-    pub fn validator_list_address(&mut self, validator_list_address: solana_program::pubkey::Pubkey) -> &mut Self {
-                        self.validator_list_address = Some(validator_list_address);
+    pub fn validator_list(&mut self, validator_list: solana_program::pubkey::Pubkey) -> &mut Self {
+                        self.validator_list = Some(validator_list);
                     self
     }
             #[inline(always)]
@@ -165,10 +165,9 @@ impl UpdateValidatorListBalanceBuilder {
                         self.clock = Some(clock);
                     self
     }
-            /// `[optional account, default to 'SysvarStakeHistory1111111111111111111111111']`
-#[inline(always)]
-    pub fn sysvar_stake_history(&mut self, sysvar_stake_history: solana_program::pubkey::Pubkey) -> &mut Self {
-                        self.sysvar_stake_history = Some(sysvar_stake_history);
+            #[inline(always)]
+    pub fn stake_history(&mut self, stake_history: solana_program::pubkey::Pubkey) -> &mut Self {
+                        self.stake_history = Some(stake_history);
                     self
     }
             #[inline(always)]
@@ -202,11 +201,11 @@ impl UpdateValidatorListBalanceBuilder {
   pub fn instruction(&self) -> solana_program::instruction::Instruction {
     let accounts = UpdateValidatorListBalance {
                               stake_pool: self.stake_pool.expect("stake_pool is not set"),
-                                        stake_pool_withdraw_authority: self.stake_pool_withdraw_authority.expect("stake_pool_withdraw_authority is not set"),
-                                        validator_list_address: self.validator_list_address.expect("validator_list_address is not set"),
+                                        withdraw_authority: self.withdraw_authority.expect("withdraw_authority is not set"),
+                                        validator_list: self.validator_list.expect("validator_list is not set"),
                                         reserve_stake: self.reserve_stake.expect("reserve_stake is not set"),
                                         clock: self.clock.expect("clock is not set"),
-                                        sysvar_stake_history: self.sysvar_stake_history.unwrap_or(solana_program::pubkey!("SysvarStakeHistory1111111111111111111111111")),
+                                        stake_history: self.stake_history.expect("stake_history is not set"),
                                         stake_program: self.stake_program.expect("stake_program is not set"),
                       };
           let args = UpdateValidatorListBalanceInstructionArgs {
@@ -225,10 +224,10 @@ impl UpdateValidatorListBalanceBuilder {
               pub stake_pool: &'b solana_program::account_info::AccountInfo<'a>,
                 
                     
-              pub stake_pool_withdraw_authority: &'b solana_program::account_info::AccountInfo<'a>,
+              pub withdraw_authority: &'b solana_program::account_info::AccountInfo<'a>,
                 
                     
-              pub validator_list_address: &'b solana_program::account_info::AccountInfo<'a>,
+              pub validator_list: &'b solana_program::account_info::AccountInfo<'a>,
                 
                     
               pub reserve_stake: &'b solana_program::account_info::AccountInfo<'a>,
@@ -237,7 +236,7 @@ impl UpdateValidatorListBalanceBuilder {
               pub clock: &'b solana_program::account_info::AccountInfo<'a>,
                 
                     
-              pub sysvar_stake_history: &'b solana_program::account_info::AccountInfo<'a>,
+              pub stake_history: &'b solana_program::account_info::AccountInfo<'a>,
                 
                     
               pub stake_program: &'b solana_program::account_info::AccountInfo<'a>,
@@ -252,10 +251,10 @@ pub struct UpdateValidatorListBalanceCpi<'a, 'b> {
           pub stake_pool: &'b solana_program::account_info::AccountInfo<'a>,
           
               
-          pub stake_pool_withdraw_authority: &'b solana_program::account_info::AccountInfo<'a>,
+          pub withdraw_authority: &'b solana_program::account_info::AccountInfo<'a>,
           
               
-          pub validator_list_address: &'b solana_program::account_info::AccountInfo<'a>,
+          pub validator_list: &'b solana_program::account_info::AccountInfo<'a>,
           
               
           pub reserve_stake: &'b solana_program::account_info::AccountInfo<'a>,
@@ -264,7 +263,7 @@ pub struct UpdateValidatorListBalanceCpi<'a, 'b> {
           pub clock: &'b solana_program::account_info::AccountInfo<'a>,
           
               
-          pub sysvar_stake_history: &'b solana_program::account_info::AccountInfo<'a>,
+          pub stake_history: &'b solana_program::account_info::AccountInfo<'a>,
           
               
           pub stake_program: &'b solana_program::account_info::AccountInfo<'a>,
@@ -281,11 +280,11 @@ impl<'a, 'b> UpdateValidatorListBalanceCpi<'a, 'b> {
     Self {
       __program: program,
               stake_pool: accounts.stake_pool,
-              stake_pool_withdraw_authority: accounts.stake_pool_withdraw_authority,
-              validator_list_address: accounts.validator_list_address,
+              withdraw_authority: accounts.withdraw_authority,
+              validator_list: accounts.validator_list,
               reserve_stake: accounts.reserve_stake,
               clock: accounts.clock,
-              sysvar_stake_history: accounts.sysvar_stake_history,
+              stake_history: accounts.stake_history,
               stake_program: accounts.stake_program,
                     __args: args,
           }
@@ -316,11 +315,11 @@ impl<'a, 'b> UpdateValidatorListBalanceCpi<'a, 'b> {
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-            *self.stake_pool_withdraw_authority.key,
+            *self.withdraw_authority.key,
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new(
-            *self.validator_list_address.key,
+            *self.validator_list.key,
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new(
@@ -332,7 +331,7 @@ impl<'a, 'b> UpdateValidatorListBalanceCpi<'a, 'b> {
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-            *self.sysvar_stake_history.key,
+            *self.stake_history.key,
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new_readonly(
@@ -358,11 +357,11 @@ impl<'a, 'b> UpdateValidatorListBalanceCpi<'a, 'b> {
     let mut account_infos = Vec::with_capacity(8 + remaining_accounts.len());
     account_infos.push(self.__program.clone());
                   account_infos.push(self.stake_pool.clone());
-                        account_infos.push(self.stake_pool_withdraw_authority.clone());
-                        account_infos.push(self.validator_list_address.clone());
+                        account_infos.push(self.withdraw_authority.clone());
+                        account_infos.push(self.validator_list.clone());
                         account_infos.push(self.reserve_stake.clone());
                         account_infos.push(self.clock.clone());
-                        account_infos.push(self.sysvar_stake_history.clone());
+                        account_infos.push(self.stake_history.clone());
                         account_infos.push(self.stake_program.clone());
               remaining_accounts.iter().for_each(|remaining_account| account_infos.push(remaining_account.0.clone()));
 
@@ -379,11 +378,11 @@ impl<'a, 'b> UpdateValidatorListBalanceCpi<'a, 'b> {
 /// ### Accounts:
 ///
           ///   0. `[]` stake_pool
-          ///   1. `[]` stake_pool_withdraw_authority
-                ///   2. `[writable]` validator_list_address
+          ///   1. `[]` withdraw_authority
+                ///   2. `[writable]` validator_list
                 ///   3. `[writable]` reserve_stake
           ///   4. `[]` clock
-          ///   5. `[]` sysvar_stake_history
+          ///   5. `[]` stake_history
           ///   6. `[]` stake_program
 #[derive(Clone, Debug)]
 pub struct UpdateValidatorListBalanceCpiBuilder<'a, 'b> {
@@ -395,11 +394,11 @@ impl<'a, 'b> UpdateValidatorListBalanceCpiBuilder<'a, 'b> {
     let instruction = Box::new(UpdateValidatorListBalanceCpiBuilderInstruction {
       __program: program,
               stake_pool: None,
-              stake_pool_withdraw_authority: None,
-              validator_list_address: None,
+              withdraw_authority: None,
+              validator_list: None,
               reserve_stake: None,
               clock: None,
-              sysvar_stake_history: None,
+              stake_history: None,
               stake_program: None,
                                             start_index: None,
                                 no_merge: None,
@@ -413,13 +412,13 @@ impl<'a, 'b> UpdateValidatorListBalanceCpiBuilder<'a, 'b> {
                     self
     }
       #[inline(always)]
-    pub fn stake_pool_withdraw_authority(&mut self, stake_pool_withdraw_authority: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
-                        self.instruction.stake_pool_withdraw_authority = Some(stake_pool_withdraw_authority);
+    pub fn withdraw_authority(&mut self, withdraw_authority: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+                        self.instruction.withdraw_authority = Some(withdraw_authority);
                     self
     }
       #[inline(always)]
-    pub fn validator_list_address(&mut self, validator_list_address: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
-                        self.instruction.validator_list_address = Some(validator_list_address);
+    pub fn validator_list(&mut self, validator_list: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+                        self.instruction.validator_list = Some(validator_list);
                     self
     }
       #[inline(always)]
@@ -433,8 +432,8 @@ impl<'a, 'b> UpdateValidatorListBalanceCpiBuilder<'a, 'b> {
                     self
     }
       #[inline(always)]
-    pub fn sysvar_stake_history(&mut self, sysvar_stake_history: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
-                        self.instruction.sysvar_stake_history = Some(sysvar_stake_history);
+    pub fn stake_history(&mut self, stake_history: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+                        self.instruction.stake_history = Some(stake_history);
                     self
     }
       #[inline(always)]
@@ -483,15 +482,15 @@ impl<'a, 'b> UpdateValidatorListBalanceCpiBuilder<'a, 'b> {
                   
           stake_pool: self.instruction.stake_pool.expect("stake_pool is not set"),
                   
-          stake_pool_withdraw_authority: self.instruction.stake_pool_withdraw_authority.expect("stake_pool_withdraw_authority is not set"),
+          withdraw_authority: self.instruction.withdraw_authority.expect("withdraw_authority is not set"),
                   
-          validator_list_address: self.instruction.validator_list_address.expect("validator_list_address is not set"),
+          validator_list: self.instruction.validator_list.expect("validator_list is not set"),
                   
           reserve_stake: self.instruction.reserve_stake.expect("reserve_stake is not set"),
                   
           clock: self.instruction.clock.expect("clock is not set"),
                   
-          sysvar_stake_history: self.instruction.sysvar_stake_history.expect("sysvar_stake_history is not set"),
+          stake_history: self.instruction.stake_history.expect("stake_history is not set"),
                   
           stake_program: self.instruction.stake_program.expect("stake_program is not set"),
                           __args: args,
@@ -504,11 +503,11 @@ impl<'a, 'b> UpdateValidatorListBalanceCpiBuilder<'a, 'b> {
 struct UpdateValidatorListBalanceCpiBuilderInstruction<'a, 'b> {
   __program: &'b solana_program::account_info::AccountInfo<'a>,
             stake_pool: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-                stake_pool_withdraw_authority: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-                validator_list_address: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+                withdraw_authority: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+                validator_list: Option<&'b solana_program::account_info::AccountInfo<'a>>,
                 reserve_stake: Option<&'b solana_program::account_info::AccountInfo<'a>>,
                 clock: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-                sysvar_stake_history: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+                stake_history: Option<&'b solana_program::account_info::AccountInfo<'a>>,
                 stake_program: Option<&'b solana_program::account_info::AccountInfo<'a>>,
                         start_index: Option<u32>,
                 no_merge: Option<bool>,

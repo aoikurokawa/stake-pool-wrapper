@@ -9,5 +9,5 @@ use solana_program::{pubkey, pubkey::Pubkey};
 
 
   /// `spl_stake_pool` program ID.
-  pub const SPL_STAKE_POOL_ID: Pubkey = pubkey!("");
+  pub const SPL_STAKE_POOL_ID: Pubkey = pubkey!("DPoo15wWDqpPJJtS2MUZ49aRxqz5ZaaJCJP4z8bLuib");
 

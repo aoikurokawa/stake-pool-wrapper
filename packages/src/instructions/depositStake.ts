@@ -8,64 +8,50 @@
 
 import {
   combineCodec,
-  fixDecoderSize,
-  fixEncoderSize,
-  getBytesDecoder,
-  getBytesEncoder,
   getStructDecoder,
   getStructEncoder,
+  getU8Decoder,
+  getU8Encoder,
   transformEncoder,
   type Address,
   type Codec,
   type Decoder,
   type Encoder,
   type IAccountMeta,
+  type IAccountSignerMeta,
   type IInstruction,
   type IInstructionWithAccounts,
   type IInstructionWithData,
   type ReadonlyAccount,
-  type ReadonlyUint8Array,
+  type ReadonlySignerAccount,
+  type TransactionSigner,
   type WritableAccount,
 } from '@solana/kit';
 import { SPL_STAKE_POOL_PROGRAM_ADDRESS } from '../programs';
 import { getAccountMetaFactory, type ResolvedAccount } from '../shared';
 
-export const DEPOSIT_STAKE_DISCRIMINATOR = new Uint8Array([
-  160, 167, 9, 220, 74, 243, 228, 43,
-]);
+export const DEPOSIT_STAKE_DISCRIMINATOR = 9;
 
 export function getDepositStakeDiscriminatorBytes() {
-  return fixEncoderSize(getBytesEncoder(), 8).encode(
-    DEPOSIT_STAKE_DISCRIMINATOR
-  );
+  return getU8Encoder().encode(DEPOSIT_STAKE_DISCRIMINATOR);
 }
 
 export type DepositStakeInstruction<
   TProgram extends string = typeof SPL_STAKE_POOL_PROGRAM_ADDRESS,
   TAccountStakePool extends string | IAccountMeta<string> = string,
-  TAccountValidatorListStorage extends string | IAccountMeta<string> = string,
-  TAccountStakePoolDepositAuthority extends
-    | string
-    | IAccountMeta<string> = string,
-  TAccountStakePoolWithdrawAuthority extends
-    | string
-    | IAccountMeta<string> = string,
-  TAccountDepositStakeAddress extends string | IAccountMeta<string> = string,
+  TAccountValidatorList extends string | IAccountMeta<string> = string,
+  TAccountStakeDepositAuthority extends string | IAccountMeta<string> = string,
+  TAccountWithdrawAuthority extends string | IAccountMeta<string> = string,
+  TAccountStake extends string | IAccountMeta<string> = string,
   TAccountValidatorStakeAccount extends string | IAccountMeta<string> = string,
   TAccountReserveStakeAccount extends string | IAccountMeta<string> = string,
-  TAccountPoolTokensTo extends string | IAccountMeta<string> = string,
-  TAccountManagerFeeAccount extends string | IAccountMeta<string> = string,
-  TAccountReferrerPoolTokensAccount extends
-    | string
-    | IAccountMeta<string> = string,
+  TAccountDestUserPool extends string | IAccountMeta<string> = string,
+  TAccountManagerFee extends string | IAccountMeta<string> = string,
+  TAccountReferrerFee extends string | IAccountMeta<string> = string,
   TAccountPoolMint extends string | IAccountMeta<string> = string,
   TAccountClock extends string | IAccountMeta<string> = string,
-  TAccountSysvarStakeHistory extends
-    | string
-    | IAccountMeta<string> = 'SysvarStakeHistory1111111111111111111111111',
-  TAccountTokenProgram extends
-    | string
-    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountStakeHistory extends string | IAccountMeta<string> = string,
+  TAccountTokenProgram extends string | IAccountMeta<string> = string,
   TAccountStakeProgram extends string | IAccountMeta<string> = string,
   TRemainingAccounts extends readonly IAccountMeta<string>[] = [],
 > = IInstruction<TProgram> &
@@ -75,42 +61,43 @@ export type DepositStakeInstruction<
       TAccountStakePool extends string
         ? WritableAccount<TAccountStakePool>
         : TAccountStakePool,
-      TAccountValidatorListStorage extends string
-        ? WritableAccount<TAccountValidatorListStorage>
-        : TAccountValidatorListStorage,
-      TAccountStakePoolDepositAuthority extends string
-        ? ReadonlyAccount<TAccountStakePoolDepositAuthority>
-        : TAccountStakePoolDepositAuthority,
-      TAccountStakePoolWithdrawAuthority extends string
-        ? ReadonlyAccount<TAccountStakePoolWithdrawAuthority>
-        : TAccountStakePoolWithdrawAuthority,
-      TAccountDepositStakeAddress extends string
-        ? WritableAccount<TAccountDepositStakeAddress>
-        : TAccountDepositStakeAddress,
+      TAccountValidatorList extends string
+        ? WritableAccount<TAccountValidatorList>
+        : TAccountValidatorList,
+      TAccountStakeDepositAuthority extends string
+        ? ReadonlySignerAccount<TAccountStakeDepositAuthority> &
+            IAccountSignerMeta<TAccountStakeDepositAuthority>
+        : TAccountStakeDepositAuthority,
+      TAccountWithdrawAuthority extends string
+        ? ReadonlyAccount<TAccountWithdrawAuthority>
+        : TAccountWithdrawAuthority,
+      TAccountStake extends string
+        ? WritableAccount<TAccountStake>
+        : TAccountStake,
       TAccountValidatorStakeAccount extends string
         ? WritableAccount<TAccountValidatorStakeAccount>
         : TAccountValidatorStakeAccount,
       TAccountReserveStakeAccount extends string
         ? WritableAccount<TAccountReserveStakeAccount>
         : TAccountReserveStakeAccount,
-      TAccountPoolTokensTo extends string
-        ? WritableAccount<TAccountPoolTokensTo>
-        : TAccountPoolTokensTo,
-      TAccountManagerFeeAccount extends string
-        ? WritableAccount<TAccountManagerFeeAccount>
-        : TAccountManagerFeeAccount,
-      TAccountReferrerPoolTokensAccount extends string
-        ? WritableAccount<TAccountReferrerPoolTokensAccount>
-        : TAccountReferrerPoolTokensAccount,
+      TAccountDestUserPool extends string
+        ? WritableAccount<TAccountDestUserPool>
+        : TAccountDestUserPool,
+      TAccountManagerFee extends string
+        ? WritableAccount<TAccountManagerFee>
+        : TAccountManagerFee,
+      TAccountReferrerFee extends string
+        ? WritableAccount<TAccountReferrerFee>
+        : TAccountReferrerFee,
       TAccountPoolMint extends string
         ? WritableAccount<TAccountPoolMint>
         : TAccountPoolMint,
       TAccountClock extends string
         ? ReadonlyAccount<TAccountClock>
         : TAccountClock,
-      TAccountSysvarStakeHistory extends string
-        ? ReadonlyAccount<TAccountSysvarStakeHistory>
-        : TAccountSysvarStakeHistory,
+      TAccountStakeHistory extends string
+        ? ReadonlyAccount<TAccountStakeHistory>
+        : TAccountStakeHistory,
       TAccountTokenProgram extends string
         ? ReadonlyAccount<TAccountTokenProgram>
         : TAccountTokenProgram,
@@ -121,21 +108,19 @@ export type DepositStakeInstruction<
     ]
   >;
 
-export type DepositStakeInstructionData = { discriminator: ReadonlyUint8Array };
+export type DepositStakeInstructionData = { discriminator: number };
 
 export type DepositStakeInstructionDataArgs = {};
 
 export function getDepositStakeInstructionDataEncoder(): Encoder<DepositStakeInstructionDataArgs> {
   return transformEncoder(
-    getStructEncoder([['discriminator', fixEncoderSize(getBytesEncoder(), 8)]]),
+    getStructEncoder([['discriminator', getU8Encoder()]]),
     (value) => ({ ...value, discriminator: DEPOSIT_STAKE_DISCRIMINATOR })
   );
 }
 
 export function getDepositStakeInstructionDataDecoder(): Decoder<DepositStakeInstructionData> {
-  return getStructDecoder([
-    ['discriminator', fixDecoderSize(getBytesDecoder(), 8)],
-  ]);
+  return getStructDecoder([['discriminator', getU8Decoder()]]);
 }
 
 export function getDepositStakeInstructionDataCodec(): Codec<
@@ -150,70 +135,70 @@ export function getDepositStakeInstructionDataCodec(): Codec<
 
 export type DepositStakeInput<
   TAccountStakePool extends string = string,
-  TAccountValidatorListStorage extends string = string,
-  TAccountStakePoolDepositAuthority extends string = string,
-  TAccountStakePoolWithdrawAuthority extends string = string,
-  TAccountDepositStakeAddress extends string = string,
+  TAccountValidatorList extends string = string,
+  TAccountStakeDepositAuthority extends string = string,
+  TAccountWithdrawAuthority extends string = string,
+  TAccountStake extends string = string,
   TAccountValidatorStakeAccount extends string = string,
   TAccountReserveStakeAccount extends string = string,
-  TAccountPoolTokensTo extends string = string,
-  TAccountManagerFeeAccount extends string = string,
-  TAccountReferrerPoolTokensAccount extends string = string,
+  TAccountDestUserPool extends string = string,
+  TAccountManagerFee extends string = string,
+  TAccountReferrerFee extends string = string,
   TAccountPoolMint extends string = string,
   TAccountClock extends string = string,
-  TAccountSysvarStakeHistory extends string = string,
+  TAccountStakeHistory extends string = string,
   TAccountTokenProgram extends string = string,
   TAccountStakeProgram extends string = string,
 > = {
   stakePool: Address<TAccountStakePool>;
-  validatorListStorage: Address<TAccountValidatorListStorage>;
-  stakePoolDepositAuthority: Address<TAccountStakePoolDepositAuthority>;
-  stakePoolWithdrawAuthority: Address<TAccountStakePoolWithdrawAuthority>;
-  depositStakeAddress: Address<TAccountDepositStakeAddress>;
+  validatorList: Address<TAccountValidatorList>;
+  stakeDepositAuthority: TransactionSigner<TAccountStakeDepositAuthority>;
+  withdrawAuthority: Address<TAccountWithdrawAuthority>;
+  stake: Address<TAccountStake>;
   validatorStakeAccount: Address<TAccountValidatorStakeAccount>;
   reserveStakeAccount: Address<TAccountReserveStakeAccount>;
-  poolTokensTo: Address<TAccountPoolTokensTo>;
-  managerFeeAccount: Address<TAccountManagerFeeAccount>;
-  referrerPoolTokensAccount: Address<TAccountReferrerPoolTokensAccount>;
+  destUserPool: Address<TAccountDestUserPool>;
+  managerFee: Address<TAccountManagerFee>;
+  referrerFee: Address<TAccountReferrerFee>;
   poolMint: Address<TAccountPoolMint>;
   clock: Address<TAccountClock>;
-  sysvarStakeHistory?: Address<TAccountSysvarStakeHistory>;
-  tokenProgram?: Address<TAccountTokenProgram>;
+  stakeHistory: Address<TAccountStakeHistory>;
+  tokenProgram: Address<TAccountTokenProgram>;
   stakeProgram: Address<TAccountStakeProgram>;
 };
 
 export function getDepositStakeInstruction<
   TAccountStakePool extends string,
-  TAccountValidatorListStorage extends string,
-  TAccountStakePoolDepositAuthority extends string,
-  TAccountStakePoolWithdrawAuthority extends string,
-  TAccountDepositStakeAddress extends string,
+  TAccountValidatorList extends string,
+  TAccountStakeDepositAuthority extends string,
+  TAccountWithdrawAuthority extends string,
+  TAccountStake extends string,
   TAccountValidatorStakeAccount extends string,
   TAccountReserveStakeAccount extends string,
-  TAccountPoolTokensTo extends string,
-  TAccountManagerFeeAccount extends string,
-  TAccountReferrerPoolTokensAccount extends string,
+  TAccountDestUserPool extends string,
+  TAccountManagerFee extends string,
+  TAccountReferrerFee extends string,
   TAccountPoolMint extends string,
   TAccountClock extends string,
-  TAccountSysvarStakeHistory extends string,
+  TAccountStakeHistory extends string,
   TAccountTokenProgram extends string,
   TAccountStakeProgram extends string,
   TProgramAddress extends Address = typeof SPL_STAKE_POOL_PROGRAM_ADDRESS,
 >(
   input: DepositStakeInput<
     TAccountStakePool,
-    TAccountValidatorListStorage,
-    TAccountStakePoolDepositAuthority,
-    TAccountStakePoolWithdrawAuthority,
-    TAccountDepositStakeAddress,
+    TAccountValidatorList,
+    TAccountStakeDepositAuthority,
+    TAccountWithdrawAuthority,
+    TAccountStake,
     TAccountValidatorStakeAccount,
     TAccountReserveStakeAccount,
-    TAccountPoolTokensTo,
-    TAccountManagerFeeAccount,
-    TAccountReferrerPoolTokensAccount,
+    TAccountDestUserPool,
+    TAccountManagerFee,
+    TAccountReferrerFee,
     TAccountPoolMint,
     TAccountClock,
-    TAccountSysvarStakeHistory,
+    TAccountStakeHistory,
     TAccountTokenProgram,
     TAccountStakeProgram
   >,
@@ -221,18 +206,18 @@ export function getDepositStakeInstruction<
 ): DepositStakeInstruction<
   TProgramAddress,
   TAccountStakePool,
-  TAccountValidatorListStorage,
-  TAccountStakePoolDepositAuthority,
-  TAccountStakePoolWithdrawAuthority,
-  TAccountDepositStakeAddress,
+  TAccountValidatorList,
+  TAccountStakeDepositAuthority,
+  TAccountWithdrawAuthority,
+  TAccountStake,
   TAccountValidatorStakeAccount,
   TAccountReserveStakeAccount,
-  TAccountPoolTokensTo,
-  TAccountManagerFeeAccount,
-  TAccountReferrerPoolTokensAccount,
+  TAccountDestUserPool,
+  TAccountManagerFee,
+  TAccountReferrerFee,
   TAccountPoolMint,
   TAccountClock,
-  TAccountSysvarStakeHistory,
+  TAccountStakeHistory,
   TAccountTokenProgram,
   TAccountStakeProgram
 > {
@@ -243,22 +228,16 @@ export function getDepositStakeInstruction<
   // Original accounts.
   const originalAccounts = {
     stakePool: { value: input.stakePool ?? null, isWritable: true },
-    validatorListStorage: {
-      value: input.validatorListStorage ?? null,
-      isWritable: true,
-    },
-    stakePoolDepositAuthority: {
-      value: input.stakePoolDepositAuthority ?? null,
+    validatorList: { value: input.validatorList ?? null, isWritable: true },
+    stakeDepositAuthority: {
+      value: input.stakeDepositAuthority ?? null,
       isWritable: false,
     },
-    stakePoolWithdrawAuthority: {
-      value: input.stakePoolWithdrawAuthority ?? null,
+    withdrawAuthority: {
+      value: input.withdrawAuthority ?? null,
       isWritable: false,
     },
-    depositStakeAddress: {
-      value: input.depositStakeAddress ?? null,
-      isWritable: true,
-    },
+    stake: { value: input.stake ?? null, isWritable: true },
     validatorStakeAccount: {
       value: input.validatorStakeAccount ?? null,
       isWritable: true,
@@ -267,21 +246,12 @@ export function getDepositStakeInstruction<
       value: input.reserveStakeAccount ?? null,
       isWritable: true,
     },
-    poolTokensTo: { value: input.poolTokensTo ?? null, isWritable: true },
-    managerFeeAccount: {
-      value: input.managerFeeAccount ?? null,
-      isWritable: true,
-    },
-    referrerPoolTokensAccount: {
-      value: input.referrerPoolTokensAccount ?? null,
-      isWritable: true,
-    },
+    destUserPool: { value: input.destUserPool ?? null, isWritable: true },
+    managerFee: { value: input.managerFee ?? null, isWritable: true },
+    referrerFee: { value: input.referrerFee ?? null, isWritable: true },
     poolMint: { value: input.poolMint ?? null, isWritable: true },
     clock: { value: input.clock ?? null, isWritable: false },
-    sysvarStakeHistory: {
-      value: input.sysvarStakeHistory ?? null,
-      isWritable: false,
-    },
+    stakeHistory: { value: input.stakeHistory ?? null, isWritable: false },
     tokenProgram: { value: input.tokenProgram ?? null, isWritable: false },
     stakeProgram: { value: input.stakeProgram ?? null, isWritable: false },
   };
@@ -290,32 +260,22 @@ export function getDepositStakeInstruction<
     ResolvedAccount
   >;
 
-  // Resolve default values.
-  if (!accounts.sysvarStakeHistory.value) {
-    accounts.sysvarStakeHistory.value =
-      'SysvarStakeHistory1111111111111111111111111' as Address<'SysvarStakeHistory1111111111111111111111111'>;
-  }
-  if (!accounts.tokenProgram.value) {
-    accounts.tokenProgram.value =
-      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Address<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>;
-  }
-
   const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');
   const instruction = {
     accounts: [
       getAccountMeta(accounts.stakePool),
-      getAccountMeta(accounts.validatorListStorage),
-      getAccountMeta(accounts.stakePoolDepositAuthority),
-      getAccountMeta(accounts.stakePoolWithdrawAuthority),
-      getAccountMeta(accounts.depositStakeAddress),
+      getAccountMeta(accounts.validatorList),
+      getAccountMeta(accounts.stakeDepositAuthority),
+      getAccountMeta(accounts.withdrawAuthority),
+      getAccountMeta(accounts.stake),
       getAccountMeta(accounts.validatorStakeAccount),
       getAccountMeta(accounts.reserveStakeAccount),
-      getAccountMeta(accounts.poolTokensTo),
-      getAccountMeta(accounts.managerFeeAccount),
-      getAccountMeta(accounts.referrerPoolTokensAccount),
+      getAccountMeta(accounts.destUserPool),
+      getAccountMeta(accounts.managerFee),
+      getAccountMeta(accounts.referrerFee),
       getAccountMeta(accounts.poolMint),
       getAccountMeta(accounts.clock),
-      getAccountMeta(accounts.sysvarStakeHistory),
+      getAccountMeta(accounts.stakeHistory),
       getAccountMeta(accounts.tokenProgram),
       getAccountMeta(accounts.stakeProgram),
     ],
@@ -324,18 +284,18 @@ export function getDepositStakeInstruction<
   } as DepositStakeInstruction<
     TProgramAddress,
     TAccountStakePool,
-    TAccountValidatorListStorage,
-    TAccountStakePoolDepositAuthority,
-    TAccountStakePoolWithdrawAuthority,
-    TAccountDepositStakeAddress,
+    TAccountValidatorList,
+    TAccountStakeDepositAuthority,
+    TAccountWithdrawAuthority,
+    TAccountStake,
     TAccountValidatorStakeAccount,
     TAccountReserveStakeAccount,
-    TAccountPoolTokensTo,
-    TAccountManagerFeeAccount,
-    TAccountReferrerPoolTokensAccount,
+    TAccountDestUserPool,
+    TAccountManagerFee,
+    TAccountReferrerFee,
     TAccountPoolMint,
     TAccountClock,
-    TAccountSysvarStakeHistory,
+    TAccountStakeHistory,
     TAccountTokenProgram,
     TAccountStakeProgram
   >;
@@ -350,18 +310,18 @@ export type ParsedDepositStakeInstruction<
   programAddress: Address<TProgram>;
   accounts: {
     stakePool: TAccountMetas[0];
-    validatorListStorage: TAccountMetas[1];
-    stakePoolDepositAuthority: TAccountMetas[2];
-    stakePoolWithdrawAuthority: TAccountMetas[3];
-    depositStakeAddress: TAccountMetas[4];
+    validatorList: TAccountMetas[1];
+    stakeDepositAuthority: TAccountMetas[2];
+    withdrawAuthority: TAccountMetas[3];
+    stake: TAccountMetas[4];
     validatorStakeAccount: TAccountMetas[5];
     reserveStakeAccount: TAccountMetas[6];
-    poolTokensTo: TAccountMetas[7];
-    managerFeeAccount: TAccountMetas[8];
-    referrerPoolTokensAccount: TAccountMetas[9];
+    destUserPool: TAccountMetas[7];
+    managerFee: TAccountMetas[8];
+    referrerFee: TAccountMetas[9];
     poolMint: TAccountMetas[10];
     clock: TAccountMetas[11];
-    sysvarStakeHistory: TAccountMetas[12];
+    stakeHistory: TAccountMetas[12];
     tokenProgram: TAccountMetas[13];
     stakeProgram: TAccountMetas[14];
   };
@@ -390,18 +350,18 @@ export function parseDepositStakeInstruction<
     programAddress: instruction.programAddress,
     accounts: {
       stakePool: getNextAccount(),
-      validatorListStorage: getNextAccount(),
-      stakePoolDepositAuthority: getNextAccount(),
-      stakePoolWithdrawAuthority: getNextAccount(),
-      depositStakeAddress: getNextAccount(),
+      validatorList: getNextAccount(),
+      stakeDepositAuthority: getNextAccount(),
+      withdrawAuthority: getNextAccount(),
+      stake: getNextAccount(),
       validatorStakeAccount: getNextAccount(),
       reserveStakeAccount: getNextAccount(),
-      poolTokensTo: getNextAccount(),
-      managerFeeAccount: getNextAccount(),
-      referrerPoolTokensAccount: getNextAccount(),
+      destUserPool: getNextAccount(),
+      managerFee: getNextAccount(),
+      referrerFee: getNextAccount(),
       poolMint: getNextAccount(),
       clock: getNextAccount(),
-      sysvarStakeHistory: getNextAccount(),
+      stakeHistory: getNextAccount(),
       tokenProgram: getNextAccount(),
       stakeProgram: getNextAccount(),
     },

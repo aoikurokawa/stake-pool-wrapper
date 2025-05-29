@@ -19,6 +19,8 @@ export enum StakeStatus {
   Active,
   DeactivatingTransient,
   ReadyForRemoval,
+  DeactivatingValidator,
+  DeactivatingAll,
 }
 
 export type StakeStatusArgs = StakeStatus;

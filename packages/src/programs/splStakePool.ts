@@ -8,8 +8,7 @@
 
 import {
   containsBytes,
-  fixEncoderSize,
-  getBytesEncoder,
+  getU8Encoder,
   type Address,
   type ReadonlyUint8Array,
 } from '@solana/kit';
@@ -17,11 +16,17 @@ import {
   type ParsedAddValidatorToPoolInstruction,
   type ParsedCleanupRemovedValidatorEntriesInstruction,
   type ParsedCreateTokenMetadataInstruction,
+  type ParsedDecreaseAdditionalValidatorStakeInstruction,
   type ParsedDecreaseValidatorStakeInstruction,
+  type ParsedDecreaseValidatorStakeWithReserveInstruction,
   type ParsedDepositSolInstruction,
+  type ParsedDepositSolWithSlippageInstruction,
   type ParsedDepositStakeInstruction,
+  type ParsedDepositStakeWithSlippageInstruction,
+  type ParsedIncreaseAdditionalValidatorStakeInstruction,
   type ParsedIncreaseValidatorStakeInstruction,
   type ParsedInitializeInstruction,
+  type ParsedRedelegateInstruction,
   type ParsedRemoveValidatorFromPoolInstruction,
   type ParsedSetFeeInstruction,
   type ParsedSetFundingAuthorityInstruction,
@@ -32,57 +37,18 @@ import {
   type ParsedUpdateTokenMetadataInstruction,
   type ParsedUpdateValidatorListBalanceInstruction,
   type ParsedWithdrawSolInstruction,
+  type ParsedWithdrawSolWithSlippageInstruction,
   type ParsedWithdrawStakeInstruction,
+  type ParsedWithdrawStakeWithSlippageInstruction,
 } from '../instructions';
 
-export const SPL_STAKE_POOL_PROGRAM_ADDRESS = '' as Address<''>;
+export const SPL_STAKE_POOL_PROGRAM_ADDRESS =
+  'DPoo15wWDqpPJJtS2MUZ49aRxqz5ZaaJCJP4z8bLuib' as Address<'DPoo15wWDqpPJJtS2MUZ49aRxqz5ZaaJCJP4z8bLuib'>;
 
 export enum SplStakePoolAccount {
   StakePool,
-  ValidatorStakeInfo,
   ValidatorList,
-}
-
-export function identifySplStakePoolAccount(
-  account: { data: ReadonlyUint8Array } | ReadonlyUint8Array
-): SplStakePoolAccount {
-  const data = 'data' in account ? account.data : account;
-  if (
-    containsBytes(
-      data,
-      fixEncoderSize(getBytesEncoder(), 8).encode(
-        new Uint8Array([121, 34, 206, 21, 79, 127, 255, 28])
-      ),
-      0
-    )
-  ) {
-    return SplStakePoolAccount.StakePool;
-  }
-  if (
-    containsBytes(
-      data,
-      fixEncoderSize(getBytesEncoder(), 8).encode(
-        new Uint8Array([199, 238, 148, 182, 193, 141, 114, 26])
-      ),
-      0
-    )
-  ) {
-    return SplStakePoolAccount.ValidatorStakeInfo;
-  }
-  if (
-    containsBytes(
-      data,
-      fixEncoderSize(getBytesEncoder(), 8).encode(
-        new Uint8Array([131, 181, 125, 127, 46, 36, 40, 167])
-      ),
-      0
-    )
-  ) {
-    return SplStakePoolAccount.ValidatorList;
-  }
-  throw new Error(
-    'The provided account could not be identified as a splStakePool account.'
-  );
+  ValidatorStakeInfo,
 }
 
 export enum SplStakePoolInstruction {
@@ -105,227 +71,109 @@ export enum SplStakePoolInstruction {
   WithdrawSol,
   CreateTokenMetadata,
   UpdateTokenMetadata,
+  IncreaseAdditionalValidatorStake,
+  DecreaseAdditionalValidatorStake,
+  DecreaseValidatorStakeWithReserve,
+  Redelegate,
+  DepositStakeWithSlippage,
+  WithdrawStakeWithSlippage,
+  DepositSolWithSlippage,
+  WithdrawSolWithSlippage,
 }
 
 export function identifySplStakePoolInstruction(
   instruction: { data: ReadonlyUint8Array } | ReadonlyUint8Array
 ): SplStakePoolInstruction {
   const data = 'data' in instruction ? instruction.data : instruction;
-  if (
-    containsBytes(
-      data,
-      fixEncoderSize(getBytesEncoder(), 8).encode(
-        new Uint8Array([175, 175, 109, 31, 13, 152, 155, 237])
-      ),
-      0
-    )
-  ) {
+  if (containsBytes(data, getU8Encoder().encode(0), 0)) {
     return SplStakePoolInstruction.Initialize;
   }
-  if (
-    containsBytes(
-      data,
-      fixEncoderSize(getBytesEncoder(), 8).encode(
-        new Uint8Array([181, 6, 29, 25, 192, 211, 190, 187])
-      ),
-      0
-    )
-  ) {
+  if (containsBytes(data, getU8Encoder().encode(1), 0)) {
     return SplStakePoolInstruction.AddValidatorToPool;
   }
-  if (
-    containsBytes(
-      data,
-      fixEncoderSize(getBytesEncoder(), 8).encode(
-        new Uint8Array([161, 32, 213, 239, 221, 15, 181, 114])
-      ),
-      0
-    )
-  ) {
+  if (containsBytes(data, getU8Encoder().encode(2), 0)) {
     return SplStakePoolInstruction.RemoveValidatorFromPool;
   }
-  if (
-    containsBytes(
-      data,
-      fixEncoderSize(getBytesEncoder(), 8).encode(
-        new Uint8Array([145, 203, 107, 123, 71, 63, 35, 225])
-      ),
-      0
-    )
-  ) {
+  if (containsBytes(data, getU8Encoder().encode(3), 0)) {
     return SplStakePoolInstruction.DecreaseValidatorStake;
   }
-  if (
-    containsBytes(
-      data,
-      fixEncoderSize(getBytesEncoder(), 8).encode(
-        new Uint8Array([5, 121, 50, 243, 14, 159, 97, 6])
-      ),
-      0
-    )
-  ) {
+  if (containsBytes(data, getU8Encoder().encode(4), 0)) {
     return SplStakePoolInstruction.IncreaseValidatorStake;
   }
-  if (
-    containsBytes(
-      data,
-      fixEncoderSize(getBytesEncoder(), 8).encode(
-        new Uint8Array([114, 42, 19, 98, 212, 97, 109, 13])
-      ),
-      0
-    )
-  ) {
+  if (containsBytes(data, getU8Encoder().encode(5), 0)) {
     return SplStakePoolInstruction.SetPreferredValidator;
   }
-  if (
-    containsBytes(
-      data,
-      fixEncoderSize(getBytesEncoder(), 8).encode(
-        new Uint8Array([98, 93, 78, 124, 109, 4, 165, 194])
-      ),
-      0
-    )
-  ) {
+  if (containsBytes(data, getU8Encoder().encode(6), 0)) {
     return SplStakePoolInstruction.UpdateValidatorListBalance;
   }
-  if (
-    containsBytes(
-      data,
-      fixEncoderSize(getBytesEncoder(), 8).encode(
-        new Uint8Array([238, 181, 59, 245, 177, 236, 231, 88])
-      ),
-      0
-    )
-  ) {
+  if (containsBytes(data, getU8Encoder().encode(7), 0)) {
     return SplStakePoolInstruction.UpdateStakePoolBalance;
   }
-  if (
-    containsBytes(
-      data,
-      fixEncoderSize(getBytesEncoder(), 8).encode(
-        new Uint8Array([211, 101, 162, 27, 244, 149, 45, 88])
-      ),
-      0
-    )
-  ) {
+  if (containsBytes(data, getU8Encoder().encode(8), 0)) {
     return SplStakePoolInstruction.CleanupRemovedValidatorEntries;
   }
-  if (
-    containsBytes(
-      data,
-      fixEncoderSize(getBytesEncoder(), 8).encode(
-        new Uint8Array([160, 167, 9, 220, 74, 243, 228, 43])
-      ),
-      0
-    )
-  ) {
+  if (containsBytes(data, getU8Encoder().encode(9), 0)) {
     return SplStakePoolInstruction.DepositStake;
   }
-  if (
-    containsBytes(
-      data,
-      fixEncoderSize(getBytesEncoder(), 8).encode(
-        new Uint8Array([153, 8, 22, 138, 105, 176, 87, 66])
-      ),
-      0
-    )
-  ) {
+  if (containsBytes(data, getU8Encoder().encode(10), 0)) {
     return SplStakePoolInstruction.WithdrawStake;
   }
-  if (
-    containsBytes(
-      data,
-      fixEncoderSize(getBytesEncoder(), 8).encode(
-        new Uint8Array([30, 197, 171, 92, 121, 184, 151, 165])
-      ),
-      0
-    )
-  ) {
+  if (containsBytes(data, getU8Encoder().encode(11), 0)) {
     return SplStakePoolInstruction.SetManager;
   }
-  if (
-    containsBytes(
-      data,
-      fixEncoderSize(getBytesEncoder(), 8).encode(
-        new Uint8Array([18, 154, 24, 18, 237, 214, 19, 80])
-      ),
-      0
-    )
-  ) {
+  if (containsBytes(data, getU8Encoder().encode(12), 0)) {
     return SplStakePoolInstruction.SetFee;
   }
-  if (
-    containsBytes(
-      data,
-      fixEncoderSize(getBytesEncoder(), 8).encode(
-        new Uint8Array([149, 203, 114, 28, 80, 138, 17, 131])
-      ),
-      0
-    )
-  ) {
+  if (containsBytes(data, getU8Encoder().encode(13), 0)) {
     return SplStakePoolInstruction.SetStaker;
   }
-  if (
-    containsBytes(
-      data,
-      fixEncoderSize(getBytesEncoder(), 8).encode(
-        new Uint8Array([108, 81, 78, 117, 125, 155, 56, 200])
-      ),
-      0
-    )
-  ) {
+  if (containsBytes(data, getU8Encoder().encode(14), 0)) {
     return SplStakePoolInstruction.DepositSol;
   }
-  if (
-    containsBytes(
-      data,
-      fixEncoderSize(getBytesEncoder(), 8).encode(
-        new Uint8Array([48, 2, 114, 83, 165, 222, 71, 233])
-      ),
-      0
-    )
-  ) {
+  if (containsBytes(data, getU8Encoder().encode(15), 0)) {
     return SplStakePoolInstruction.SetFundingAuthority;
   }
-  if (
-    containsBytes(
-      data,
-      fixEncoderSize(getBytesEncoder(), 8).encode(
-        new Uint8Array([145, 131, 74, 136, 65, 137, 42, 38])
-      ),
-      0
-    )
-  ) {
+  if (containsBytes(data, getU8Encoder().encode(16), 0)) {
     return SplStakePoolInstruction.WithdrawSol;
   }
-  if (
-    containsBytes(
-      data,
-      fixEncoderSize(getBytesEncoder(), 8).encode(
-        new Uint8Array([221, 80, 176, 37, 153, 188, 160, 68])
-      ),
-      0
-    )
-  ) {
+  if (containsBytes(data, getU8Encoder().encode(17), 0)) {
     return SplStakePoolInstruction.CreateTokenMetadata;
   }
-  if (
-    containsBytes(
-      data,
-      fixEncoderSize(getBytesEncoder(), 8).encode(
-        new Uint8Array([243, 6, 8, 23, 126, 181, 251, 158])
-      ),
-      0
-    )
-  ) {
+  if (containsBytes(data, getU8Encoder().encode(18), 0)) {
     return SplStakePoolInstruction.UpdateTokenMetadata;
+  }
+  if (containsBytes(data, getU8Encoder().encode(19), 0)) {
+    return SplStakePoolInstruction.IncreaseAdditionalValidatorStake;
+  }
+  if (containsBytes(data, getU8Encoder().encode(20), 0)) {
+    return SplStakePoolInstruction.DecreaseAdditionalValidatorStake;
+  }
+  if (containsBytes(data, getU8Encoder().encode(21), 0)) {
+    return SplStakePoolInstruction.DecreaseValidatorStakeWithReserve;
+  }
+  if (containsBytes(data, getU8Encoder().encode(22), 0)) {
+    return SplStakePoolInstruction.Redelegate;
+  }
+  if (containsBytes(data, getU8Encoder().encode(23), 0)) {
+    return SplStakePoolInstruction.DepositStakeWithSlippage;
+  }
+  if (containsBytes(data, getU8Encoder().encode(24), 0)) {
+    return SplStakePoolInstruction.WithdrawStakeWithSlippage;
+  }
+  if (containsBytes(data, getU8Encoder().encode(25), 0)) {
+    return SplStakePoolInstruction.DepositSolWithSlippage;
+  }
+  if (containsBytes(data, getU8Encoder().encode(26), 0)) {
+    return SplStakePoolInstruction.WithdrawSolWithSlippage;
   }
   throw new Error(
     'The provided instruction could not be identified as a splStakePool instruction.'
   );
 }
 
-export type ParsedSplStakePoolInstruction<TProgram extends string = ''> =
+export type ParsedSplStakePoolInstruction<
+  TProgram extends string = 'DPoo15wWDqpPJJtS2MUZ49aRxqz5ZaaJCJP4z8bLuib',
+> =
   | ({
       instructionType: SplStakePoolInstruction.Initialize;
     } & ParsedInitializeInstruction<TProgram>)
@@ -382,4 +230,28 @@ export type ParsedSplStakePoolInstruction<TProgram extends string = ''> =
     } & ParsedCreateTokenMetadataInstruction<TProgram>)
   | ({
       instructionType: SplStakePoolInstruction.UpdateTokenMetadata;
-    } & ParsedUpdateTokenMetadataInstruction<TProgram>);
+    } & ParsedUpdateTokenMetadataInstruction<TProgram>)
+  | ({
+      instructionType: SplStakePoolInstruction.IncreaseAdditionalValidatorStake;
+    } & ParsedIncreaseAdditionalValidatorStakeInstruction<TProgram>)
+  | ({
+      instructionType: SplStakePoolInstruction.DecreaseAdditionalValidatorStake;
+    } & ParsedDecreaseAdditionalValidatorStakeInstruction<TProgram>)
+  | ({
+      instructionType: SplStakePoolInstruction.DecreaseValidatorStakeWithReserve;
+    } & ParsedDecreaseValidatorStakeWithReserveInstruction<TProgram>)
+  | ({
+      instructionType: SplStakePoolInstruction.Redelegate;
+    } & ParsedRedelegateInstruction<TProgram>)
+  | ({
+      instructionType: SplStakePoolInstruction.DepositStakeWithSlippage;
+    } & ParsedDepositStakeWithSlippageInstruction<TProgram>)
+  | ({
+      instructionType: SplStakePoolInstruction.WithdrawStakeWithSlippage;
+    } & ParsedWithdrawStakeWithSlippageInstruction<TProgram>)
+  | ({
+      instructionType: SplStakePoolInstruction.DepositSolWithSlippage;
+    } & ParsedDepositSolWithSlippageInstruction<TProgram>)
+  | ({
+      instructionType: SplStakePoolInstruction.WithdrawSolWithSlippage;
+    } & ParsedWithdrawSolWithSlippageInstruction<TProgram>);

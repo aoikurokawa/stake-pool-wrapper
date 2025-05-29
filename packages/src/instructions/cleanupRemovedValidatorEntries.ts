@@ -8,12 +8,10 @@
 
 import {
   combineCodec,
-  fixDecoderSize,
-  fixEncoderSize,
-  getBytesDecoder,
-  getBytesEncoder,
   getStructDecoder,
   getStructEncoder,
+  getU8Decoder,
+  getU8Encoder,
   transformEncoder,
   type Address,
   type Codec,
@@ -24,26 +22,21 @@ import {
   type IInstructionWithAccounts,
   type IInstructionWithData,
   type ReadonlyAccount,
-  type ReadonlyUint8Array,
   type WritableAccount,
 } from '@solana/kit';
 import { SPL_STAKE_POOL_PROGRAM_ADDRESS } from '../programs';
 import { getAccountMetaFactory, type ResolvedAccount } from '../shared';
 
-export const CLEANUP_REMOVED_VALIDATOR_ENTRIES_DISCRIMINATOR = new Uint8Array([
-  211, 101, 162, 27, 244, 149, 45, 88,
-]);
+export const CLEANUP_REMOVED_VALIDATOR_ENTRIES_DISCRIMINATOR = 8;
 
 export function getCleanupRemovedValidatorEntriesDiscriminatorBytes() {
-  return fixEncoderSize(getBytesEncoder(), 8).encode(
-    CLEANUP_REMOVED_VALIDATOR_ENTRIES_DISCRIMINATOR
-  );
+  return getU8Encoder().encode(CLEANUP_REMOVED_VALIDATOR_ENTRIES_DISCRIMINATOR);
 }
 
 export type CleanupRemovedValidatorEntriesInstruction<
   TProgram extends string = typeof SPL_STAKE_POOL_PROGRAM_ADDRESS,
   TAccountStakePool extends string | IAccountMeta<string> = string,
-  TAccountValidatorListStorage extends string | IAccountMeta<string> = string,
+  TAccountValidatorList extends string | IAccountMeta<string> = string,
   TRemainingAccounts extends readonly IAccountMeta<string>[] = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
@@ -52,22 +45,22 @@ export type CleanupRemovedValidatorEntriesInstruction<
       TAccountStakePool extends string
         ? ReadonlyAccount<TAccountStakePool>
         : TAccountStakePool,
-      TAccountValidatorListStorage extends string
-        ? WritableAccount<TAccountValidatorListStorage>
-        : TAccountValidatorListStorage,
+      TAccountValidatorList extends string
+        ? WritableAccount<TAccountValidatorList>
+        : TAccountValidatorList,
       ...TRemainingAccounts,
     ]
   >;
 
 export type CleanupRemovedValidatorEntriesInstructionData = {
-  discriminator: ReadonlyUint8Array;
+  discriminator: number;
 };
 
 export type CleanupRemovedValidatorEntriesInstructionDataArgs = {};
 
 export function getCleanupRemovedValidatorEntriesInstructionDataEncoder(): Encoder<CleanupRemovedValidatorEntriesInstructionDataArgs> {
   return transformEncoder(
-    getStructEncoder([['discriminator', fixEncoderSize(getBytesEncoder(), 8)]]),
+    getStructEncoder([['discriminator', getU8Encoder()]]),
     (value) => ({
       ...value,
       discriminator: CLEANUP_REMOVED_VALIDATOR_ENTRIES_DISCRIMINATOR,
@@ -76,9 +69,7 @@ export function getCleanupRemovedValidatorEntriesInstructionDataEncoder(): Encod
 }
 
 export function getCleanupRemovedValidatorEntriesInstructionDataDecoder(): Decoder<CleanupRemovedValidatorEntriesInstructionData> {
-  return getStructDecoder([
-    ['discriminator', fixDecoderSize(getBytesDecoder(), 8)],
-  ]);
+  return getStructDecoder([['discriminator', getU8Decoder()]]);
 }
 
 export function getCleanupRemovedValidatorEntriesInstructionDataCodec(): Codec<
@@ -93,26 +84,26 @@ export function getCleanupRemovedValidatorEntriesInstructionDataCodec(): Codec<
 
 export type CleanupRemovedValidatorEntriesInput<
   TAccountStakePool extends string = string,
-  TAccountValidatorListStorage extends string = string,
+  TAccountValidatorList extends string = string,
 > = {
   stakePool: Address<TAccountStakePool>;
-  validatorListStorage: Address<TAccountValidatorListStorage>;
+  validatorList: Address<TAccountValidatorList>;
 };
 
 export function getCleanupRemovedValidatorEntriesInstruction<
   TAccountStakePool extends string,
-  TAccountValidatorListStorage extends string,
+  TAccountValidatorList extends string,
   TProgramAddress extends Address = typeof SPL_STAKE_POOL_PROGRAM_ADDRESS,
 >(
   input: CleanupRemovedValidatorEntriesInput<
     TAccountStakePool,
-    TAccountValidatorListStorage
+    TAccountValidatorList
   >,
   config?: { programAddress?: TProgramAddress }
 ): CleanupRemovedValidatorEntriesInstruction<
   TProgramAddress,
   TAccountStakePool,
-  TAccountValidatorListStorage
+  TAccountValidatorList
 > {
   // Program address.
   const programAddress =
@@ -121,10 +112,7 @@ export function getCleanupRemovedValidatorEntriesInstruction<
   // Original accounts.
   const originalAccounts = {
     stakePool: { value: input.stakePool ?? null, isWritable: false },
-    validatorListStorage: {
-      value: input.validatorListStorage ?? null,
-      isWritable: true,
-    },
+    validatorList: { value: input.validatorList ?? null, isWritable: true },
   };
   const accounts = originalAccounts as Record<
     keyof typeof originalAccounts,
@@ -135,14 +123,14 @@ export function getCleanupRemovedValidatorEntriesInstruction<
   const instruction = {
     accounts: [
       getAccountMeta(accounts.stakePool),
-      getAccountMeta(accounts.validatorListStorage),
+      getAccountMeta(accounts.validatorList),
     ],
     programAddress,
     data: getCleanupRemovedValidatorEntriesInstructionDataEncoder().encode({}),
   } as CleanupRemovedValidatorEntriesInstruction<
     TProgramAddress,
     TAccountStakePool,
-    TAccountValidatorListStorage
+    TAccountValidatorList
   >;
 
   return instruction;
@@ -155,7 +143,7 @@ export type ParsedCleanupRemovedValidatorEntriesInstruction<
   programAddress: Address<TProgram>;
   accounts: {
     stakePool: TAccountMetas[0];
-    validatorListStorage: TAccountMetas[1];
+    validatorList: TAccountMetas[1];
   };
   data: CleanupRemovedValidatorEntriesInstructionData;
 };
@@ -182,7 +170,7 @@ export function parseCleanupRemovedValidatorEntriesInstruction<
     programAddress: instruction.programAddress,
     accounts: {
       stakePool: getNextAccount(),
-      validatorListStorage: getNextAccount(),
+      validatorList: getNextAccount(),
     },
     data: getCleanupRemovedValidatorEntriesInstructionDataDecoder().decode(
       instruction.data

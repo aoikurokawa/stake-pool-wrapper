@@ -8,12 +8,10 @@
 
 import {
   combineCodec,
-  fixDecoderSize,
-  fixEncoderSize,
-  getBytesDecoder,
-  getBytesEncoder,
   getStructDecoder,
   getStructEncoder,
+  getU8Decoder,
+  getU8Encoder,
   transformEncoder,
   type Address,
   type Codec,
@@ -26,35 +24,26 @@ import {
   type IInstructionWithData,
   type ReadonlyAccount,
   type ReadonlySignerAccount,
-  type ReadonlyUint8Array,
   type TransactionSigner,
   type WritableAccount,
 } from '@solana/kit';
 import { SPL_STAKE_POOL_PROGRAM_ADDRESS } from '../programs';
 import { getAccountMetaFactory, type ResolvedAccount } from '../shared';
 
-export const REMOVE_VALIDATOR_FROM_POOL_DISCRIMINATOR = new Uint8Array([
-  161, 32, 213, 239, 221, 15, 181, 114,
-]);
+export const REMOVE_VALIDATOR_FROM_POOL_DISCRIMINATOR = 2;
 
 export function getRemoveValidatorFromPoolDiscriminatorBytes() {
-  return fixEncoderSize(getBytesEncoder(), 8).encode(
-    REMOVE_VALIDATOR_FROM_POOL_DISCRIMINATOR
-  );
+  return getU8Encoder().encode(REMOVE_VALIDATOR_FROM_POOL_DISCRIMINATOR);
 }
 
 export type RemoveValidatorFromPoolInstruction<
   TProgram extends string = typeof SPL_STAKE_POOL_PROGRAM_ADDRESS,
   TAccountStakePool extends string | IAccountMeta<string> = string,
   TAccountStaker extends string | IAccountMeta<string> = string,
-  TAccountStakePoolWithdraw extends string | IAccountMeta<string> = string,
-  TAccountNewStakeAuthority extends string | IAccountMeta<string> = string,
+  TAccountWithdrawAuthority extends string | IAccountMeta<string> = string,
   TAccountValidatorList extends string | IAccountMeta<string> = string,
   TAccountStakeAccount extends string | IAccountMeta<string> = string,
   TAccountTransientStakeAccount extends string | IAccountMeta<string> = string,
-  TAccountDestinationStakeAccount extends
-    | string
-    | IAccountMeta<string> = string,
   TAccountClock extends string | IAccountMeta<string> = string,
   TAccountStakeProgram extends string | IAccountMeta<string> = string,
   TRemainingAccounts extends readonly IAccountMeta<string>[] = [],
@@ -69,12 +58,9 @@ export type RemoveValidatorFromPoolInstruction<
         ? ReadonlySignerAccount<TAccountStaker> &
             IAccountSignerMeta<TAccountStaker>
         : TAccountStaker,
-      TAccountStakePoolWithdraw extends string
-        ? ReadonlyAccount<TAccountStakePoolWithdraw>
-        : TAccountStakePoolWithdraw,
-      TAccountNewStakeAuthority extends string
-        ? ReadonlyAccount<TAccountNewStakeAuthority>
-        : TAccountNewStakeAuthority,
+      TAccountWithdrawAuthority extends string
+        ? ReadonlyAccount<TAccountWithdrawAuthority>
+        : TAccountWithdrawAuthority,
       TAccountValidatorList extends string
         ? WritableAccount<TAccountValidatorList>
         : TAccountValidatorList,
@@ -82,11 +68,8 @@ export type RemoveValidatorFromPoolInstruction<
         ? WritableAccount<TAccountStakeAccount>
         : TAccountStakeAccount,
       TAccountTransientStakeAccount extends string
-        ? ReadonlyAccount<TAccountTransientStakeAccount>
+        ? WritableAccount<TAccountTransientStakeAccount>
         : TAccountTransientStakeAccount,
-      TAccountDestinationStakeAccount extends string
-        ? WritableAccount<TAccountDestinationStakeAccount>
-        : TAccountDestinationStakeAccount,
       TAccountClock extends string
         ? ReadonlyAccount<TAccountClock>
         : TAccountClock,
@@ -97,15 +80,13 @@ export type RemoveValidatorFromPoolInstruction<
     ]
   >;
 
-export type RemoveValidatorFromPoolInstructionData = {
-  discriminator: ReadonlyUint8Array;
-};
+export type RemoveValidatorFromPoolInstructionData = { discriminator: number };
 
 export type RemoveValidatorFromPoolInstructionDataArgs = {};
 
 export function getRemoveValidatorFromPoolInstructionDataEncoder(): Encoder<RemoveValidatorFromPoolInstructionDataArgs> {
   return transformEncoder(
-    getStructEncoder([['discriminator', fixEncoderSize(getBytesEncoder(), 8)]]),
+    getStructEncoder([['discriminator', getU8Encoder()]]),
     (value) => ({
       ...value,
       discriminator: REMOVE_VALIDATOR_FROM_POOL_DISCRIMINATOR,
@@ -114,9 +95,7 @@ export function getRemoveValidatorFromPoolInstructionDataEncoder(): Encoder<Remo
 }
 
 export function getRemoveValidatorFromPoolInstructionDataDecoder(): Decoder<RemoveValidatorFromPoolInstructionData> {
-  return getStructDecoder([
-    ['discriminator', fixDecoderSize(getBytesDecoder(), 8)],
-  ]);
+  return getStructDecoder([['discriminator', getU8Decoder()]]);
 }
 
 export function getRemoveValidatorFromPoolInstructionDataCodec(): Codec<
@@ -132,23 +111,19 @@ export function getRemoveValidatorFromPoolInstructionDataCodec(): Codec<
 export type RemoveValidatorFromPoolInput<
   TAccountStakePool extends string = string,
   TAccountStaker extends string = string,
-  TAccountStakePoolWithdraw extends string = string,
-  TAccountNewStakeAuthority extends string = string,
+  TAccountWithdrawAuthority extends string = string,
   TAccountValidatorList extends string = string,
   TAccountStakeAccount extends string = string,
   TAccountTransientStakeAccount extends string = string,
-  TAccountDestinationStakeAccount extends string = string,
   TAccountClock extends string = string,
   TAccountStakeProgram extends string = string,
 > = {
   stakePool: Address<TAccountStakePool>;
   staker: TransactionSigner<TAccountStaker>;
-  stakePoolWithdraw: Address<TAccountStakePoolWithdraw>;
-  newStakeAuthority: Address<TAccountNewStakeAuthority>;
+  withdrawAuthority: Address<TAccountWithdrawAuthority>;
   validatorList: Address<TAccountValidatorList>;
   stakeAccount: Address<TAccountStakeAccount>;
   transientStakeAccount: Address<TAccountTransientStakeAccount>;
-  destinationStakeAccount: Address<TAccountDestinationStakeAccount>;
   clock: Address<TAccountClock>;
   stakeProgram: Address<TAccountStakeProgram>;
 };
@@ -156,12 +131,10 @@ export type RemoveValidatorFromPoolInput<
 export function getRemoveValidatorFromPoolInstruction<
   TAccountStakePool extends string,
   TAccountStaker extends string,
-  TAccountStakePoolWithdraw extends string,
-  TAccountNewStakeAuthority extends string,
+  TAccountWithdrawAuthority extends string,
   TAccountValidatorList extends string,
   TAccountStakeAccount extends string,
   TAccountTransientStakeAccount extends string,
-  TAccountDestinationStakeAccount extends string,
   TAccountClock extends string,
   TAccountStakeProgram extends string,
   TProgramAddress extends Address = typeof SPL_STAKE_POOL_PROGRAM_ADDRESS,
@@ -169,12 +142,10 @@ export function getRemoveValidatorFromPoolInstruction<
   input: RemoveValidatorFromPoolInput<
     TAccountStakePool,
     TAccountStaker,
-    TAccountStakePoolWithdraw,
-    TAccountNewStakeAuthority,
+    TAccountWithdrawAuthority,
     TAccountValidatorList,
     TAccountStakeAccount,
     TAccountTransientStakeAccount,
-    TAccountDestinationStakeAccount,
     TAccountClock,
     TAccountStakeProgram
   >,
@@ -183,12 +154,10 @@ export function getRemoveValidatorFromPoolInstruction<
   TProgramAddress,
   TAccountStakePool,
   TAccountStaker,
-  TAccountStakePoolWithdraw,
-  TAccountNewStakeAuthority,
+  TAccountWithdrawAuthority,
   TAccountValidatorList,
   TAccountStakeAccount,
   TAccountTransientStakeAccount,
-  TAccountDestinationStakeAccount,
   TAccountClock,
   TAccountStakeProgram
 > {
@@ -200,22 +169,14 @@ export function getRemoveValidatorFromPoolInstruction<
   const originalAccounts = {
     stakePool: { value: input.stakePool ?? null, isWritable: true },
     staker: { value: input.staker ?? null, isWritable: false },
-    stakePoolWithdraw: {
-      value: input.stakePoolWithdraw ?? null,
-      isWritable: false,
-    },
-    newStakeAuthority: {
-      value: input.newStakeAuthority ?? null,
+    withdrawAuthority: {
+      value: input.withdrawAuthority ?? null,
       isWritable: false,
     },
     validatorList: { value: input.validatorList ?? null, isWritable: true },
     stakeAccount: { value: input.stakeAccount ?? null, isWritable: true },
     transientStakeAccount: {
       value: input.transientStakeAccount ?? null,
-      isWritable: false,
-    },
-    destinationStakeAccount: {
-      value: input.destinationStakeAccount ?? null,
       isWritable: true,
     },
     clock: { value: input.clock ?? null, isWritable: false },
@@ -231,12 +192,10 @@ export function getRemoveValidatorFromPoolInstruction<
     accounts: [
       getAccountMeta(accounts.stakePool),
       getAccountMeta(accounts.staker),
-      getAccountMeta(accounts.stakePoolWithdraw),
-      getAccountMeta(accounts.newStakeAuthority),
+      getAccountMeta(accounts.withdrawAuthority),
       getAccountMeta(accounts.validatorList),
       getAccountMeta(accounts.stakeAccount),
       getAccountMeta(accounts.transientStakeAccount),
-      getAccountMeta(accounts.destinationStakeAccount),
       getAccountMeta(accounts.clock),
       getAccountMeta(accounts.stakeProgram),
     ],
@@ -246,12 +205,10 @@ export function getRemoveValidatorFromPoolInstruction<
     TProgramAddress,
     TAccountStakePool,
     TAccountStaker,
-    TAccountStakePoolWithdraw,
-    TAccountNewStakeAuthority,
+    TAccountWithdrawAuthority,
     TAccountValidatorList,
     TAccountStakeAccount,
     TAccountTransientStakeAccount,
-    TAccountDestinationStakeAccount,
     TAccountClock,
     TAccountStakeProgram
   >;
@@ -267,14 +224,12 @@ export type ParsedRemoveValidatorFromPoolInstruction<
   accounts: {
     stakePool: TAccountMetas[0];
     staker: TAccountMetas[1];
-    stakePoolWithdraw: TAccountMetas[2];
-    newStakeAuthority: TAccountMetas[3];
-    validatorList: TAccountMetas[4];
-    stakeAccount: TAccountMetas[5];
-    transientStakeAccount: TAccountMetas[6];
-    destinationStakeAccount: TAccountMetas[7];
-    clock: TAccountMetas[8];
-    stakeProgram: TAccountMetas[9];
+    withdrawAuthority: TAccountMetas[2];
+    validatorList: TAccountMetas[3];
+    stakeAccount: TAccountMetas[4];
+    transientStakeAccount: TAccountMetas[5];
+    clock: TAccountMetas[6];
+    stakeProgram: TAccountMetas[7];
   };
   data: RemoveValidatorFromPoolInstructionData;
 };
@@ -287,7 +242,7 @@ export function parseRemoveValidatorFromPoolInstruction<
     IInstructionWithAccounts<TAccountMetas> &
     IInstructionWithData<Uint8Array>
 ): ParsedRemoveValidatorFromPoolInstruction<TProgram, TAccountMetas> {
-  if (instruction.accounts.length < 10) {
+  if (instruction.accounts.length < 8) {
     // TODO: Coded error.
     throw new Error('Not enough accounts');
   }
@@ -302,12 +257,10 @@ export function parseRemoveValidatorFromPoolInstruction<
     accounts: {
       stakePool: getNextAccount(),
       staker: getNextAccount(),
-      stakePoolWithdraw: getNextAccount(),
-      newStakeAuthority: getNextAccount(),
+      withdrawAuthority: getNextAccount(),
       validatorList: getNextAccount(),
       stakeAccount: getNextAccount(),
       transientStakeAccount: getNextAccount(),
-      destinationStakeAccount: getNextAccount(),
       clock: getNextAccount(),
       stakeProgram: getNextAccount(),
     },

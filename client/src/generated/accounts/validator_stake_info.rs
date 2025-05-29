@@ -5,7 +5,9 @@
 //! <https://github.com/codama-idl/codama>
 //!
 
-use crate::generated::types::StakeStatus;
+use crate::generated::types::PodU64;
+use crate::generated::types::PodU32;
+use crate::generated::types::PodStakeStatus;
 use solana_program::pubkey::Pubkey;
 use borsh::BorshSerialize;
 use borsh::BorshDeserialize;
@@ -14,20 +16,19 @@ use borsh::BorshDeserialize;
 #[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct ValidatorStakeInfo {
-pub discriminator: [u8; 8],
-pub active_stake_lamports: u64,
-pub transient_stake_lamports: u64,
-pub last_update_epoch: u64,
-pub transient_seed_suffix_start: u64,
-pub transient_seed_suffix_end: u64,
-pub status: StakeStatus,
+pub active_stake_lamports: PodU64,
+pub transient_stake_lamports: PodU64,
+pub last_update_epoch: PodU64,
+pub transient_seed_suffix: PodU64,
+pub unused: PodU32,
+pub validator_seed_suffix: PodU32,
+pub status: PodStakeStatus,
 #[cfg_attr(feature = "serde", serde(with = "serde_with::As::<serde_with::DisplayFromStr>"))]
 pub vote_account_address: Pubkey,
 }
 
 
 impl ValidatorStakeInfo {
-      pub const LEN: usize = 81;
   
   
   

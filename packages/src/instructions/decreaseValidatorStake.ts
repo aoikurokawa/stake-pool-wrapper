@@ -8,14 +8,12 @@
 
 import {
   combineCodec,
-  fixDecoderSize,
-  fixEncoderSize,
-  getBytesDecoder,
-  getBytesEncoder,
   getStructDecoder,
   getStructEncoder,
   getU64Decoder,
   getU64Encoder,
+  getU8Decoder,
+  getU8Encoder,
   transformEncoder,
   type Address,
   type Codec,
@@ -28,40 +26,29 @@ import {
   type IInstructionWithData,
   type ReadonlyAccount,
   type ReadonlySignerAccount,
-  type ReadonlyUint8Array,
   type TransactionSigner,
   type WritableAccount,
 } from '@solana/kit';
 import { SPL_STAKE_POOL_PROGRAM_ADDRESS } from '../programs';
 import { getAccountMetaFactory, type ResolvedAccount } from '../shared';
 
-export const DECREASE_VALIDATOR_STAKE_DISCRIMINATOR = new Uint8Array([
-  145, 203, 107, 123, 71, 63, 35, 225,
-]);
+export const DECREASE_VALIDATOR_STAKE_DISCRIMINATOR = 3;
 
 export function getDecreaseValidatorStakeDiscriminatorBytes() {
-  return fixEncoderSize(getBytesEncoder(), 8).encode(
-    DECREASE_VALIDATOR_STAKE_DISCRIMINATOR
-  );
+  return getU8Encoder().encode(DECREASE_VALIDATOR_STAKE_DISCRIMINATOR);
 }
 
 export type DecreaseValidatorStakeInstruction<
   TProgram extends string = typeof SPL_STAKE_POOL_PROGRAM_ADDRESS,
   TAccountStakePool extends string | IAccountMeta<string> = string,
   TAccountStaker extends string | IAccountMeta<string> = string,
-  TAccountStakePoolWithdrawAuthority extends
-    | string
-    | IAccountMeta<string> = string,
+  TAccountWithdrawAuthority extends string | IAccountMeta<string> = string,
   TAccountValidatorList extends string | IAccountMeta<string> = string,
-  TAccountValidatorStake extends string | IAccountMeta<string> = string,
-  TAccountTransientStake extends string | IAccountMeta<string> = string,
+  TAccountValidatorStakeAccount extends string | IAccountMeta<string> = string,
+  TAccountTransientStakeAccount extends string | IAccountMeta<string> = string,
   TAccountClock extends string | IAccountMeta<string> = string,
-  TAccountRent extends
-    | string
-    | IAccountMeta<string> = 'SysvarRent111111111111111111111111111111111',
-  TAccountSystemProgram extends
-    | string
-    | IAccountMeta<string> = '11111111111111111111111111111111',
+  TAccountRent extends string | IAccountMeta<string> = string,
+  TAccountSystemProgram extends string | IAccountMeta<string> = string,
   TAccountStakeProgram extends string | IAccountMeta<string> = string,
   TRemainingAccounts extends readonly IAccountMeta<string>[] = [],
 > = IInstruction<TProgram> &
@@ -75,18 +62,18 @@ export type DecreaseValidatorStakeInstruction<
         ? ReadonlySignerAccount<TAccountStaker> &
             IAccountSignerMeta<TAccountStaker>
         : TAccountStaker,
-      TAccountStakePoolWithdrawAuthority extends string
-        ? ReadonlyAccount<TAccountStakePoolWithdrawAuthority>
-        : TAccountStakePoolWithdrawAuthority,
+      TAccountWithdrawAuthority extends string
+        ? ReadonlyAccount<TAccountWithdrawAuthority>
+        : TAccountWithdrawAuthority,
       TAccountValidatorList extends string
         ? WritableAccount<TAccountValidatorList>
         : TAccountValidatorList,
-      TAccountValidatorStake extends string
-        ? WritableAccount<TAccountValidatorStake>
-        : TAccountValidatorStake,
-      TAccountTransientStake extends string
-        ? WritableAccount<TAccountTransientStake>
-        : TAccountTransientStake,
+      TAccountValidatorStakeAccount extends string
+        ? WritableAccount<TAccountValidatorStakeAccount>
+        : TAccountValidatorStakeAccount,
+      TAccountTransientStakeAccount extends string
+        ? WritableAccount<TAccountTransientStakeAccount>
+        : TAccountTransientStakeAccount,
       TAccountClock extends string
         ? ReadonlyAccount<TAccountClock>
         : TAccountClock,
@@ -104,7 +91,7 @@ export type DecreaseValidatorStakeInstruction<
   >;
 
 export type DecreaseValidatorStakeInstructionData = {
-  discriminator: ReadonlyUint8Array;
+  discriminator: number;
   lamports: bigint;
   transientStakeSeed: bigint;
 };
@@ -117,7 +104,7 @@ export type DecreaseValidatorStakeInstructionDataArgs = {
 export function getDecreaseValidatorStakeInstructionDataEncoder(): Encoder<DecreaseValidatorStakeInstructionDataArgs> {
   return transformEncoder(
     getStructEncoder([
-      ['discriminator', fixEncoderSize(getBytesEncoder(), 8)],
+      ['discriminator', getU8Encoder()],
       ['lamports', getU64Encoder()],
       ['transientStakeSeed', getU64Encoder()],
     ]),
@@ -130,7 +117,7 @@ export function getDecreaseValidatorStakeInstructionDataEncoder(): Encoder<Decre
 
 export function getDecreaseValidatorStakeInstructionDataDecoder(): Decoder<DecreaseValidatorStakeInstructionData> {
   return getStructDecoder([
-    ['discriminator', fixDecoderSize(getBytesDecoder(), 8)],
+    ['discriminator', getU8Decoder()],
     ['lamports', getU64Decoder()],
     ['transientStakeSeed', getU64Decoder()],
   ]);
@@ -149,10 +136,10 @@ export function getDecreaseValidatorStakeInstructionDataCodec(): Codec<
 export type DecreaseValidatorStakeInput<
   TAccountStakePool extends string = string,
   TAccountStaker extends string = string,
-  TAccountStakePoolWithdrawAuthority extends string = string,
+  TAccountWithdrawAuthority extends string = string,
   TAccountValidatorList extends string = string,
-  TAccountValidatorStake extends string = string,
-  TAccountTransientStake extends string = string,
+  TAccountValidatorStakeAccount extends string = string,
+  TAccountTransientStakeAccount extends string = string,
   TAccountClock extends string = string,
   TAccountRent extends string = string,
   TAccountSystemProgram extends string = string,
@@ -160,13 +147,13 @@ export type DecreaseValidatorStakeInput<
 > = {
   stakePool: Address<TAccountStakePool>;
   staker: TransactionSigner<TAccountStaker>;
-  stakePoolWithdrawAuthority: Address<TAccountStakePoolWithdrawAuthority>;
+  withdrawAuthority: Address<TAccountWithdrawAuthority>;
   validatorList: Address<TAccountValidatorList>;
-  validatorStake: Address<TAccountValidatorStake>;
-  transientStake: Address<TAccountTransientStake>;
+  validatorStakeAccount: Address<TAccountValidatorStakeAccount>;
+  transientStakeAccount: Address<TAccountTransientStakeAccount>;
   clock: Address<TAccountClock>;
-  rent?: Address<TAccountRent>;
-  systemProgram?: Address<TAccountSystemProgram>;
+  rent: Address<TAccountRent>;
+  systemProgram: Address<TAccountSystemProgram>;
   stakeProgram: Address<TAccountStakeProgram>;
   lamports: DecreaseValidatorStakeInstructionDataArgs['lamports'];
   transientStakeSeed: DecreaseValidatorStakeInstructionDataArgs['transientStakeSeed'];
@@ -175,10 +162,10 @@ export type DecreaseValidatorStakeInput<
 export function getDecreaseValidatorStakeInstruction<
   TAccountStakePool extends string,
   TAccountStaker extends string,
-  TAccountStakePoolWithdrawAuthority extends string,
+  TAccountWithdrawAuthority extends string,
   TAccountValidatorList extends string,
-  TAccountValidatorStake extends string,
-  TAccountTransientStake extends string,
+  TAccountValidatorStakeAccount extends string,
+  TAccountTransientStakeAccount extends string,
   TAccountClock extends string,
   TAccountRent extends string,
   TAccountSystemProgram extends string,
@@ -188,10 +175,10 @@ export function getDecreaseValidatorStakeInstruction<
   input: DecreaseValidatorStakeInput<
     TAccountStakePool,
     TAccountStaker,
-    TAccountStakePoolWithdrawAuthority,
+    TAccountWithdrawAuthority,
     TAccountValidatorList,
-    TAccountValidatorStake,
-    TAccountTransientStake,
+    TAccountValidatorStakeAccount,
+    TAccountTransientStakeAccount,
     TAccountClock,
     TAccountRent,
     TAccountSystemProgram,
@@ -202,10 +189,10 @@ export function getDecreaseValidatorStakeInstruction<
   TProgramAddress,
   TAccountStakePool,
   TAccountStaker,
-  TAccountStakePoolWithdrawAuthority,
+  TAccountWithdrawAuthority,
   TAccountValidatorList,
-  TAccountValidatorStake,
-  TAccountTransientStake,
+  TAccountValidatorStakeAccount,
+  TAccountTransientStakeAccount,
   TAccountClock,
   TAccountRent,
   TAccountSystemProgram,
@@ -219,13 +206,19 @@ export function getDecreaseValidatorStakeInstruction<
   const originalAccounts = {
     stakePool: { value: input.stakePool ?? null, isWritable: false },
     staker: { value: input.staker ?? null, isWritable: false },
-    stakePoolWithdrawAuthority: {
-      value: input.stakePoolWithdrawAuthority ?? null,
+    withdrawAuthority: {
+      value: input.withdrawAuthority ?? null,
       isWritable: false,
     },
     validatorList: { value: input.validatorList ?? null, isWritable: true },
-    validatorStake: { value: input.validatorStake ?? null, isWritable: true },
-    transientStake: { value: input.transientStake ?? null, isWritable: true },
+    validatorStakeAccount: {
+      value: input.validatorStakeAccount ?? null,
+      isWritable: true,
+    },
+    transientStakeAccount: {
+      value: input.transientStakeAccount ?? null,
+      isWritable: true,
+    },
     clock: { value: input.clock ?? null, isWritable: false },
     rent: { value: input.rent ?? null, isWritable: false },
     systemProgram: { value: input.systemProgram ?? null, isWritable: false },
@@ -239,25 +232,15 @@ export function getDecreaseValidatorStakeInstruction<
   // Original args.
   const args = { ...input };
 
-  // Resolve default values.
-  if (!accounts.rent.value) {
-    accounts.rent.value =
-      'SysvarRent111111111111111111111111111111111' as Address<'SysvarRent111111111111111111111111111111111'>;
-  }
-  if (!accounts.systemProgram.value) {
-    accounts.systemProgram.value =
-      '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>;
-  }
-
   const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');
   const instruction = {
     accounts: [
       getAccountMeta(accounts.stakePool),
       getAccountMeta(accounts.staker),
-      getAccountMeta(accounts.stakePoolWithdrawAuthority),
+      getAccountMeta(accounts.withdrawAuthority),
       getAccountMeta(accounts.validatorList),
-      getAccountMeta(accounts.validatorStake),
-      getAccountMeta(accounts.transientStake),
+      getAccountMeta(accounts.validatorStakeAccount),
+      getAccountMeta(accounts.transientStakeAccount),
       getAccountMeta(accounts.clock),
       getAccountMeta(accounts.rent),
       getAccountMeta(accounts.systemProgram),
@@ -271,10 +254,10 @@ export function getDecreaseValidatorStakeInstruction<
     TProgramAddress,
     TAccountStakePool,
     TAccountStaker,
-    TAccountStakePoolWithdrawAuthority,
+    TAccountWithdrawAuthority,
     TAccountValidatorList,
-    TAccountValidatorStake,
-    TAccountTransientStake,
+    TAccountValidatorStakeAccount,
+    TAccountTransientStakeAccount,
     TAccountClock,
     TAccountRent,
     TAccountSystemProgram,
@@ -292,10 +275,10 @@ export type ParsedDecreaseValidatorStakeInstruction<
   accounts: {
     stakePool: TAccountMetas[0];
     staker: TAccountMetas[1];
-    stakePoolWithdrawAuthority: TAccountMetas[2];
+    withdrawAuthority: TAccountMetas[2];
     validatorList: TAccountMetas[3];
-    validatorStake: TAccountMetas[4];
-    transientStake: TAccountMetas[5];
+    validatorStakeAccount: TAccountMetas[4];
+    transientStakeAccount: TAccountMetas[5];
     clock: TAccountMetas[6];
     rent: TAccountMetas[7];
     systemProgram: TAccountMetas[8];
@@ -327,10 +310,10 @@ export function parseDecreaseValidatorStakeInstruction<
     accounts: {
       stakePool: getNextAccount(),
       staker: getNextAccount(),
-      stakePoolWithdrawAuthority: getNextAccount(),
+      withdrawAuthority: getNextAccount(),
       validatorList: getNextAccount(),
-      validatorStake: getNextAccount(),
-      transientStake: getNextAccount(),
+      validatorStakeAccount: getNextAccount(),
+      transientStakeAccount: getNextAccount(),
       clock: getNextAccount(),
       rent: getNextAccount(),
       systemProgram: getNextAccount(),

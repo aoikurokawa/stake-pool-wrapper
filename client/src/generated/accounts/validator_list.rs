@@ -6,7 +6,7 @@
 //!
 
 use crate::generated::types::ValidatorListHeader;
-use crate::generated::types::ValidatorStakeInfo;
+use crate::generated::types::Vec;
 use borsh::BorshSerialize;
 use borsh::BorshDeserialize;
 
@@ -14,9 +14,8 @@ use borsh::BorshDeserialize;
 #[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct ValidatorList {
-pub discriminator: [u8; 8],
 pub header: ValidatorListHeader,
-pub validators: Vec<ValidatorStakeInfo>,
+pub validators: Vec,
 }
 
 

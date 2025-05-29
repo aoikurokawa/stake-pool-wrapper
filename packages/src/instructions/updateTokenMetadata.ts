@@ -10,14 +10,12 @@ import {
   addDecoderSizePrefix,
   addEncoderSizePrefix,
   combineCodec,
-  fixDecoderSize,
-  fixEncoderSize,
-  getBytesDecoder,
-  getBytesEncoder,
   getStructDecoder,
   getStructEncoder,
   getU32Decoder,
   getU32Encoder,
+  getU8Decoder,
+  getU8Encoder,
   getUtf8Decoder,
   getUtf8Encoder,
   transformEncoder,
@@ -32,32 +30,27 @@ import {
   type IInstructionWithData,
   type ReadonlyAccount,
   type ReadonlySignerAccount,
-  type ReadonlyUint8Array,
   type TransactionSigner,
   type WritableAccount,
 } from '@solana/kit';
 import { SPL_STAKE_POOL_PROGRAM_ADDRESS } from '../programs';
 import { getAccountMetaFactory, type ResolvedAccount } from '../shared';
 
-export const UPDATE_TOKEN_METADATA_DISCRIMINATOR = new Uint8Array([
-  243, 6, 8, 23, 126, 181, 251, 158,
-]);
+export const UPDATE_TOKEN_METADATA_DISCRIMINATOR = 18;
 
 export function getUpdateTokenMetadataDiscriminatorBytes() {
-  return fixEncoderSize(getBytesEncoder(), 8).encode(
-    UPDATE_TOKEN_METADATA_DISCRIMINATOR
-  );
+  return getU8Encoder().encode(UPDATE_TOKEN_METADATA_DISCRIMINATOR);
 }
 
 export type UpdateTokenMetadataInstruction<
   TProgram extends string = typeof SPL_STAKE_POOL_PROGRAM_ADDRESS,
   TAccountStakePool extends string | IAccountMeta<string> = string,
   TAccountManager extends string | IAccountMeta<string> = string,
-  TAccountStakePoolWithdrawAuthority extends
+  TAccountWithdrawAuthority extends string | IAccountMeta<string> = string,
+  TAccountMetadata extends string | IAccountMeta<string> = string,
+  TAccountMplTokenMetadataProgram extends
     | string
     | IAccountMeta<string> = string,
-  TAccountTokenMetadata extends string | IAccountMeta<string> = string,
-  TAccountMplTokenMetadata extends string | IAccountMeta<string> = string,
   TRemainingAccounts extends readonly IAccountMeta<string>[] = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
@@ -70,21 +63,21 @@ export type UpdateTokenMetadataInstruction<
         ? ReadonlySignerAccount<TAccountManager> &
             IAccountSignerMeta<TAccountManager>
         : TAccountManager,
-      TAccountStakePoolWithdrawAuthority extends string
-        ? ReadonlyAccount<TAccountStakePoolWithdrawAuthority>
-        : TAccountStakePoolWithdrawAuthority,
-      TAccountTokenMetadata extends string
-        ? WritableAccount<TAccountTokenMetadata>
-        : TAccountTokenMetadata,
-      TAccountMplTokenMetadata extends string
-        ? ReadonlyAccount<TAccountMplTokenMetadata>
-        : TAccountMplTokenMetadata,
+      TAccountWithdrawAuthority extends string
+        ? ReadonlyAccount<TAccountWithdrawAuthority>
+        : TAccountWithdrawAuthority,
+      TAccountMetadata extends string
+        ? WritableAccount<TAccountMetadata>
+        : TAccountMetadata,
+      TAccountMplTokenMetadataProgram extends string
+        ? ReadonlyAccount<TAccountMplTokenMetadataProgram>
+        : TAccountMplTokenMetadataProgram,
       ...TRemainingAccounts,
     ]
   >;
 
 export type UpdateTokenMetadataInstructionData = {
-  discriminator: ReadonlyUint8Array;
+  discriminator: number;
   name: string;
   symbol: string;
   uri: string;
@@ -99,7 +92,7 @@ export type UpdateTokenMetadataInstructionDataArgs = {
 export function getUpdateTokenMetadataInstructionDataEncoder(): Encoder<UpdateTokenMetadataInstructionDataArgs> {
   return transformEncoder(
     getStructEncoder([
-      ['discriminator', fixEncoderSize(getBytesEncoder(), 8)],
+      ['discriminator', getU8Encoder()],
       ['name', addEncoderSizePrefix(getUtf8Encoder(), getU32Encoder())],
       ['symbol', addEncoderSizePrefix(getUtf8Encoder(), getU32Encoder())],
       ['uri', addEncoderSizePrefix(getUtf8Encoder(), getU32Encoder())],
@@ -113,7 +106,7 @@ export function getUpdateTokenMetadataInstructionDataEncoder(): Encoder<UpdateTo
 
 export function getUpdateTokenMetadataInstructionDataDecoder(): Decoder<UpdateTokenMetadataInstructionData> {
   return getStructDecoder([
-    ['discriminator', fixDecoderSize(getBytesDecoder(), 8)],
+    ['discriminator', getU8Decoder()],
     ['name', addDecoderSizePrefix(getUtf8Decoder(), getU32Decoder())],
     ['symbol', addDecoderSizePrefix(getUtf8Decoder(), getU32Decoder())],
     ['uri', addDecoderSizePrefix(getUtf8Decoder(), getU32Decoder())],
@@ -133,15 +126,15 @@ export function getUpdateTokenMetadataInstructionDataCodec(): Codec<
 export type UpdateTokenMetadataInput<
   TAccountStakePool extends string = string,
   TAccountManager extends string = string,
-  TAccountStakePoolWithdrawAuthority extends string = string,
-  TAccountTokenMetadata extends string = string,
-  TAccountMplTokenMetadata extends string = string,
+  TAccountWithdrawAuthority extends string = string,
+  TAccountMetadata extends string = string,
+  TAccountMplTokenMetadataProgram extends string = string,
 > = {
   stakePool: Address<TAccountStakePool>;
   manager: TransactionSigner<TAccountManager>;
-  stakePoolWithdrawAuthority: Address<TAccountStakePoolWithdrawAuthority>;
-  tokenMetadata: Address<TAccountTokenMetadata>;
-  mplTokenMetadata: Address<TAccountMplTokenMetadata>;
+  withdrawAuthority: Address<TAccountWithdrawAuthority>;
+  metadata: Address<TAccountMetadata>;
+  mplTokenMetadataProgram: Address<TAccountMplTokenMetadataProgram>;
   name: UpdateTokenMetadataInstructionDataArgs['name'];
   symbol: UpdateTokenMetadataInstructionDataArgs['symbol'];
   uri: UpdateTokenMetadataInstructionDataArgs['uri'];
@@ -150,26 +143,26 @@ export type UpdateTokenMetadataInput<
 export function getUpdateTokenMetadataInstruction<
   TAccountStakePool extends string,
   TAccountManager extends string,
-  TAccountStakePoolWithdrawAuthority extends string,
-  TAccountTokenMetadata extends string,
-  TAccountMplTokenMetadata extends string,
+  TAccountWithdrawAuthority extends string,
+  TAccountMetadata extends string,
+  TAccountMplTokenMetadataProgram extends string,
   TProgramAddress extends Address = typeof SPL_STAKE_POOL_PROGRAM_ADDRESS,
 >(
   input: UpdateTokenMetadataInput<
     TAccountStakePool,
     TAccountManager,
-    TAccountStakePoolWithdrawAuthority,
-    TAccountTokenMetadata,
-    TAccountMplTokenMetadata
+    TAccountWithdrawAuthority,
+    TAccountMetadata,
+    TAccountMplTokenMetadataProgram
   >,
   config?: { programAddress?: TProgramAddress }
 ): UpdateTokenMetadataInstruction<
   TProgramAddress,
   TAccountStakePool,
   TAccountManager,
-  TAccountStakePoolWithdrawAuthority,
-  TAccountTokenMetadata,
-  TAccountMplTokenMetadata
+  TAccountWithdrawAuthority,
+  TAccountMetadata,
+  TAccountMplTokenMetadataProgram
 > {
   // Program address.
   const programAddress =
@@ -179,13 +172,13 @@ export function getUpdateTokenMetadataInstruction<
   const originalAccounts = {
     stakePool: { value: input.stakePool ?? null, isWritable: false },
     manager: { value: input.manager ?? null, isWritable: false },
-    stakePoolWithdrawAuthority: {
-      value: input.stakePoolWithdrawAuthority ?? null,
+    withdrawAuthority: {
+      value: input.withdrawAuthority ?? null,
       isWritable: false,
     },
-    tokenMetadata: { value: input.tokenMetadata ?? null, isWritable: true },
-    mplTokenMetadata: {
-      value: input.mplTokenMetadata ?? null,
+    metadata: { value: input.metadata ?? null, isWritable: true },
+    mplTokenMetadataProgram: {
+      value: input.mplTokenMetadataProgram ?? null,
       isWritable: false,
     },
   };
@@ -202,9 +195,9 @@ export function getUpdateTokenMetadataInstruction<
     accounts: [
       getAccountMeta(accounts.stakePool),
       getAccountMeta(accounts.manager),
-      getAccountMeta(accounts.stakePoolWithdrawAuthority),
-      getAccountMeta(accounts.tokenMetadata),
-      getAccountMeta(accounts.mplTokenMetadata),
+      getAccountMeta(accounts.withdrawAuthority),
+      getAccountMeta(accounts.metadata),
+      getAccountMeta(accounts.mplTokenMetadataProgram),
     ],
     programAddress,
     data: getUpdateTokenMetadataInstructionDataEncoder().encode(
@@ -214,9 +207,9 @@ export function getUpdateTokenMetadataInstruction<
     TProgramAddress,
     TAccountStakePool,
     TAccountManager,
-    TAccountStakePoolWithdrawAuthority,
-    TAccountTokenMetadata,
-    TAccountMplTokenMetadata
+    TAccountWithdrawAuthority,
+    TAccountMetadata,
+    TAccountMplTokenMetadataProgram
   >;
 
   return instruction;
@@ -230,9 +223,9 @@ export type ParsedUpdateTokenMetadataInstruction<
   accounts: {
     stakePool: TAccountMetas[0];
     manager: TAccountMetas[1];
-    stakePoolWithdrawAuthority: TAccountMetas[2];
-    tokenMetadata: TAccountMetas[3];
-    mplTokenMetadata: TAccountMetas[4];
+    withdrawAuthority: TAccountMetas[2];
+    metadata: TAccountMetas[3];
+    mplTokenMetadataProgram: TAccountMetas[4];
   };
   data: UpdateTokenMetadataInstructionData;
 };
@@ -260,9 +253,9 @@ export function parseUpdateTokenMetadataInstruction<
     accounts: {
       stakePool: getNextAccount(),
       manager: getNextAccount(),
-      stakePoolWithdrawAuthority: getNextAccount(),
-      tokenMetadata: getNextAccount(),
-      mplTokenMetadata: getNextAccount(),
+      withdrawAuthority: getNextAccount(),
+      metadata: getNextAccount(),
+      mplTokenMetadataProgram: getNextAccount(),
     },
     data: getUpdateTokenMetadataInstructionDataDecoder().decode(
       instruction.data

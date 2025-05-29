@@ -19,10 +19,7 @@ pub struct RemoveValidatorFromPool {
           pub staker: solana_program::pubkey::Pubkey,
           
               
-          pub stake_pool_withdraw: solana_program::pubkey::Pubkey,
-          
-              
-          pub new_stake_authority: solana_program::pubkey::Pubkey,
+          pub withdraw_authority: solana_program::pubkey::Pubkey,
           
               
           pub validator_list: solana_program::pubkey::Pubkey,
@@ -32,9 +29,6 @@ pub struct RemoveValidatorFromPool {
           
               
           pub transient_stake_account: solana_program::pubkey::Pubkey,
-          
-              
-          pub destination_stake_account: solana_program::pubkey::Pubkey,
           
               
           pub clock: solana_program::pubkey::Pubkey,
@@ -50,7 +44,7 @@ impl RemoveValidatorFromPool {
   #[allow(clippy::arithmetic_side_effects)]
   #[allow(clippy::vec_init_then_push)]
   pub fn instruction_with_remaining_accounts(&self, remaining_accounts: &[solana_program::instruction::AccountMeta]) -> solana_program::instruction::Instruction {
-    let mut accounts = Vec::with_capacity(10+ remaining_accounts.len());
+    let mut accounts = Vec::with_capacity(8+ remaining_accounts.len());
                             accounts.push(solana_program::instruction::AccountMeta::new(
             self.stake_pool,
             false
@@ -60,11 +54,7 @@ impl RemoveValidatorFromPool {
             true
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-            self.stake_pool_withdraw,
-            false
-          ));
-                                          accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-            self.new_stake_authority,
+            self.withdraw_authority,
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new(
@@ -75,12 +65,8 @@ impl RemoveValidatorFromPool {
             self.stake_account,
             false
           ));
-                                          accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-            self.transient_stake_account,
-            false
-          ));
                                           accounts.push(solana_program::instruction::AccountMeta::new(
-            self.destination_stake_account,
+            self.transient_stake_account,
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new_readonly(
@@ -105,13 +91,13 @@ impl RemoveValidatorFromPool {
 #[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
  pub struct RemoveValidatorFromPoolInstructionData {
-            discriminator: [u8; 8],
+            discriminator: u8,
       }
 
 impl RemoveValidatorFromPoolInstructionData {
   pub fn new() -> Self {
     Self {
-                        discriminator: [161, 32, 213, 239, 221, 15, 181, 114],
+                        discriminator: 2,
                   }
   }
 }
@@ -130,24 +116,20 @@ impl Default for RemoveValidatorFromPoolInstructionData {
 ///
                 ///   0. `[writable]` stake_pool
                 ///   1. `[signer]` staker
-          ///   2. `[]` stake_pool_withdraw
-          ///   3. `[]` new_stake_authority
-                ///   4. `[writable]` validator_list
-                ///   5. `[writable]` stake_account
-          ///   6. `[]` transient_stake_account
-                ///   7. `[writable]` destination_stake_account
-          ///   8. `[]` clock
-          ///   9. `[]` stake_program
+          ///   2. `[]` withdraw_authority
+                ///   3. `[writable]` validator_list
+                ///   4. `[writable]` stake_account
+                ///   5. `[writable]` transient_stake_account
+          ///   6. `[]` clock
+          ///   7. `[]` stake_program
 #[derive(Clone, Debug, Default)]
 pub struct RemoveValidatorFromPoolBuilder {
             stake_pool: Option<solana_program::pubkey::Pubkey>,
                 staker: Option<solana_program::pubkey::Pubkey>,
-                stake_pool_withdraw: Option<solana_program::pubkey::Pubkey>,
-                new_stake_authority: Option<solana_program::pubkey::Pubkey>,
+                withdraw_authority: Option<solana_program::pubkey::Pubkey>,
                 validator_list: Option<solana_program::pubkey::Pubkey>,
                 stake_account: Option<solana_program::pubkey::Pubkey>,
                 transient_stake_account: Option<solana_program::pubkey::Pubkey>,
-                destination_stake_account: Option<solana_program::pubkey::Pubkey>,
                 clock: Option<solana_program::pubkey::Pubkey>,
                 stake_program: Option<solana_program::pubkey::Pubkey>,
                 __remaining_accounts: Vec<solana_program::instruction::AccountMeta>,
@@ -168,13 +150,8 @@ impl RemoveValidatorFromPoolBuilder {
                     self
     }
             #[inline(always)]
-    pub fn stake_pool_withdraw(&mut self, stake_pool_withdraw: solana_program::pubkey::Pubkey) -> &mut Self {
-                        self.stake_pool_withdraw = Some(stake_pool_withdraw);
-                    self
-    }
-            #[inline(always)]
-    pub fn new_stake_authority(&mut self, new_stake_authority: solana_program::pubkey::Pubkey) -> &mut Self {
-                        self.new_stake_authority = Some(new_stake_authority);
+    pub fn withdraw_authority(&mut self, withdraw_authority: solana_program::pubkey::Pubkey) -> &mut Self {
+                        self.withdraw_authority = Some(withdraw_authority);
                     self
     }
             #[inline(always)]
@@ -190,11 +167,6 @@ impl RemoveValidatorFromPoolBuilder {
             #[inline(always)]
     pub fn transient_stake_account(&mut self, transient_stake_account: solana_program::pubkey::Pubkey) -> &mut Self {
                         self.transient_stake_account = Some(transient_stake_account);
-                    self
-    }
-            #[inline(always)]
-    pub fn destination_stake_account(&mut self, destination_stake_account: solana_program::pubkey::Pubkey) -> &mut Self {
-                        self.destination_stake_account = Some(destination_stake_account);
                     self
     }
             #[inline(always)]
@@ -224,12 +196,10 @@ impl RemoveValidatorFromPoolBuilder {
     let accounts = RemoveValidatorFromPool {
                               stake_pool: self.stake_pool.expect("stake_pool is not set"),
                                         staker: self.staker.expect("staker is not set"),
-                                        stake_pool_withdraw: self.stake_pool_withdraw.expect("stake_pool_withdraw is not set"),
-                                        new_stake_authority: self.new_stake_authority.expect("new_stake_authority is not set"),
+                                        withdraw_authority: self.withdraw_authority.expect("withdraw_authority is not set"),
                                         validator_list: self.validator_list.expect("validator_list is not set"),
                                         stake_account: self.stake_account.expect("stake_account is not set"),
                                         transient_stake_account: self.transient_stake_account.expect("transient_stake_account is not set"),
-                                        destination_stake_account: self.destination_stake_account.expect("destination_stake_account is not set"),
                                         clock: self.clock.expect("clock is not set"),
                                         stake_program: self.stake_program.expect("stake_program is not set"),
                       };
@@ -248,10 +218,7 @@ impl RemoveValidatorFromPoolBuilder {
               pub staker: &'b solana_program::account_info::AccountInfo<'a>,
                 
                     
-              pub stake_pool_withdraw: &'b solana_program::account_info::AccountInfo<'a>,
-                
-                    
-              pub new_stake_authority: &'b solana_program::account_info::AccountInfo<'a>,
+              pub withdraw_authority: &'b solana_program::account_info::AccountInfo<'a>,
                 
                     
               pub validator_list: &'b solana_program::account_info::AccountInfo<'a>,
@@ -261,9 +228,6 @@ impl RemoveValidatorFromPoolBuilder {
                 
                     
               pub transient_stake_account: &'b solana_program::account_info::AccountInfo<'a>,
-                
-                    
-              pub destination_stake_account: &'b solana_program::account_info::AccountInfo<'a>,
                 
                     
               pub clock: &'b solana_program::account_info::AccountInfo<'a>,
@@ -284,10 +248,7 @@ pub struct RemoveValidatorFromPoolCpi<'a, 'b> {
           pub staker: &'b solana_program::account_info::AccountInfo<'a>,
           
               
-          pub stake_pool_withdraw: &'b solana_program::account_info::AccountInfo<'a>,
-          
-              
-          pub new_stake_authority: &'b solana_program::account_info::AccountInfo<'a>,
+          pub withdraw_authority: &'b solana_program::account_info::AccountInfo<'a>,
           
               
           pub validator_list: &'b solana_program::account_info::AccountInfo<'a>,
@@ -297,9 +258,6 @@ pub struct RemoveValidatorFromPoolCpi<'a, 'b> {
           
               
           pub transient_stake_account: &'b solana_program::account_info::AccountInfo<'a>,
-          
-              
-          pub destination_stake_account: &'b solana_program::account_info::AccountInfo<'a>,
           
               
           pub clock: &'b solana_program::account_info::AccountInfo<'a>,
@@ -317,12 +275,10 @@ impl<'a, 'b> RemoveValidatorFromPoolCpi<'a, 'b> {
       __program: program,
               stake_pool: accounts.stake_pool,
               staker: accounts.staker,
-              stake_pool_withdraw: accounts.stake_pool_withdraw,
-              new_stake_authority: accounts.new_stake_authority,
+              withdraw_authority: accounts.withdraw_authority,
               validator_list: accounts.validator_list,
               stake_account: accounts.stake_account,
               transient_stake_account: accounts.transient_stake_account,
-              destination_stake_account: accounts.destination_stake_account,
               clock: accounts.clock,
               stake_program: accounts.stake_program,
                 }
@@ -347,7 +303,7 @@ impl<'a, 'b> RemoveValidatorFromPoolCpi<'a, 'b> {
     signers_seeds: &[&[&[u8]]],
     remaining_accounts: &[(&'b solana_program::account_info::AccountInfo<'a>, bool, bool)]
   ) -> solana_program::entrypoint::ProgramResult {
-    let mut accounts = Vec::with_capacity(10+ remaining_accounts.len());
+    let mut accounts = Vec::with_capacity(8+ remaining_accounts.len());
                             accounts.push(solana_program::instruction::AccountMeta::new(
             *self.stake_pool.key,
             false
@@ -357,11 +313,7 @@ impl<'a, 'b> RemoveValidatorFromPoolCpi<'a, 'b> {
             true
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-            *self.stake_pool_withdraw.key,
-            false
-          ));
-                                          accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-            *self.new_stake_authority.key,
+            *self.withdraw_authority.key,
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new(
@@ -372,12 +324,8 @@ impl<'a, 'b> RemoveValidatorFromPoolCpi<'a, 'b> {
             *self.stake_account.key,
             false
           ));
-                                          accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-            *self.transient_stake_account.key,
-            false
-          ));
                                           accounts.push(solana_program::instruction::AccountMeta::new(
-            *self.destination_stake_account.key,
+            *self.transient_stake_account.key,
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new_readonly(
@@ -402,16 +350,14 @@ impl<'a, 'b> RemoveValidatorFromPoolCpi<'a, 'b> {
       accounts,
       data,
     };
-    let mut account_infos = Vec::with_capacity(11 + remaining_accounts.len());
+    let mut account_infos = Vec::with_capacity(9 + remaining_accounts.len());
     account_infos.push(self.__program.clone());
                   account_infos.push(self.stake_pool.clone());
                         account_infos.push(self.staker.clone());
-                        account_infos.push(self.stake_pool_withdraw.clone());
-                        account_infos.push(self.new_stake_authority.clone());
+                        account_infos.push(self.withdraw_authority.clone());
                         account_infos.push(self.validator_list.clone());
                         account_infos.push(self.stake_account.clone());
                         account_infos.push(self.transient_stake_account.clone());
-                        account_infos.push(self.destination_stake_account.clone());
                         account_infos.push(self.clock.clone());
                         account_infos.push(self.stake_program.clone());
               remaining_accounts.iter().for_each(|remaining_account| account_infos.push(remaining_account.0.clone()));
@@ -430,14 +376,12 @@ impl<'a, 'b> RemoveValidatorFromPoolCpi<'a, 'b> {
 ///
                 ///   0. `[writable]` stake_pool
                 ///   1. `[signer]` staker
-          ///   2. `[]` stake_pool_withdraw
-          ///   3. `[]` new_stake_authority
-                ///   4. `[writable]` validator_list
-                ///   5. `[writable]` stake_account
-          ///   6. `[]` transient_stake_account
-                ///   7. `[writable]` destination_stake_account
-          ///   8. `[]` clock
-          ///   9. `[]` stake_program
+          ///   2. `[]` withdraw_authority
+                ///   3. `[writable]` validator_list
+                ///   4. `[writable]` stake_account
+                ///   5. `[writable]` transient_stake_account
+          ///   6. `[]` clock
+          ///   7. `[]` stake_program
 #[derive(Clone, Debug)]
 pub struct RemoveValidatorFromPoolCpiBuilder<'a, 'b> {
   instruction: Box<RemoveValidatorFromPoolCpiBuilderInstruction<'a, 'b>>,
@@ -449,12 +393,10 @@ impl<'a, 'b> RemoveValidatorFromPoolCpiBuilder<'a, 'b> {
       __program: program,
               stake_pool: None,
               staker: None,
-              stake_pool_withdraw: None,
-              new_stake_authority: None,
+              withdraw_authority: None,
               validator_list: None,
               stake_account: None,
               transient_stake_account: None,
-              destination_stake_account: None,
               clock: None,
               stake_program: None,
                                 __remaining_accounts: Vec::new(),
@@ -472,13 +414,8 @@ impl<'a, 'b> RemoveValidatorFromPoolCpiBuilder<'a, 'b> {
                     self
     }
       #[inline(always)]
-    pub fn stake_pool_withdraw(&mut self, stake_pool_withdraw: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
-                        self.instruction.stake_pool_withdraw = Some(stake_pool_withdraw);
-                    self
-    }
-      #[inline(always)]
-    pub fn new_stake_authority(&mut self, new_stake_authority: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
-                        self.instruction.new_stake_authority = Some(new_stake_authority);
+    pub fn withdraw_authority(&mut self, withdraw_authority: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+                        self.instruction.withdraw_authority = Some(withdraw_authority);
                     self
     }
       #[inline(always)]
@@ -494,11 +431,6 @@ impl<'a, 'b> RemoveValidatorFromPoolCpiBuilder<'a, 'b> {
       #[inline(always)]
     pub fn transient_stake_account(&mut self, transient_stake_account: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
                         self.instruction.transient_stake_account = Some(transient_stake_account);
-                    self
-    }
-      #[inline(always)]
-    pub fn destination_stake_account(&mut self, destination_stake_account: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
-                        self.instruction.destination_stake_account = Some(destination_stake_account);
                     self
     }
       #[inline(always)]
@@ -540,17 +472,13 @@ impl<'a, 'b> RemoveValidatorFromPoolCpiBuilder<'a, 'b> {
                   
           staker: self.instruction.staker.expect("staker is not set"),
                   
-          stake_pool_withdraw: self.instruction.stake_pool_withdraw.expect("stake_pool_withdraw is not set"),
-                  
-          new_stake_authority: self.instruction.new_stake_authority.expect("new_stake_authority is not set"),
+          withdraw_authority: self.instruction.withdraw_authority.expect("withdraw_authority is not set"),
                   
           validator_list: self.instruction.validator_list.expect("validator_list is not set"),
                   
           stake_account: self.instruction.stake_account.expect("stake_account is not set"),
                   
           transient_stake_account: self.instruction.transient_stake_account.expect("transient_stake_account is not set"),
-                  
-          destination_stake_account: self.instruction.destination_stake_account.expect("destination_stake_account is not set"),
                   
           clock: self.instruction.clock.expect("clock is not set"),
                   
@@ -565,12 +493,10 @@ struct RemoveValidatorFromPoolCpiBuilderInstruction<'a, 'b> {
   __program: &'b solana_program::account_info::AccountInfo<'a>,
             stake_pool: Option<&'b solana_program::account_info::AccountInfo<'a>>,
                 staker: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-                stake_pool_withdraw: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-                new_stake_authority: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+                withdraw_authority: Option<&'b solana_program::account_info::AccountInfo<'a>>,
                 validator_list: Option<&'b solana_program::account_info::AccountInfo<'a>>,
                 stake_account: Option<&'b solana_program::account_info::AccountInfo<'a>>,
                 transient_stake_account: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-                destination_stake_account: Option<&'b solana_program::account_info::AccountInfo<'a>>,
                 clock: Option<&'b solana_program::account_info::AccountInfo<'a>>,
                 stake_program: Option<&'b solana_program::account_info::AccountInfo<'a>>,
                 /// Additional instruction accounts `(AccountInfo, is_writable, is_signer)`.

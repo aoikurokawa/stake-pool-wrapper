@@ -13,12 +13,8 @@ import {
   decodeAccount,
   fetchEncodedAccount,
   fetchEncodedAccounts,
-  fixDecoderSize,
-  fixEncoderSize,
   getAddressDecoder,
   getAddressEncoder,
-  getBytesDecoder,
-  getBytesEncoder,
   getOptionDecoder,
   getOptionEncoder,
   getStructDecoder,
@@ -27,7 +23,6 @@ import {
   getU64Encoder,
   getU8Decoder,
   getU8Encoder,
-  transformEncoder,
   type Account,
   type Address,
   type Codec,
@@ -40,33 +35,27 @@ import {
   type MaybeEncodedAccount,
   type Option,
   type OptionOrNullable,
-  type ReadonlyUint8Array,
 } from '@solana/kit';
 import {
   getAccountTypeDecoder,
   getAccountTypeEncoder,
   getFeeDecoder,
   getFeeEncoder,
+  getFutureEpochDecoder,
+  getFutureEpochEncoder,
   getLockupDecoder,
   getLockupEncoder,
   type AccountType,
   type AccountTypeArgs,
   type Fee,
   type FeeArgs,
+  type FutureEpoch,
+  type FutureEpochArgs,
   type Lockup,
   type LockupArgs,
 } from '../types';
 
-export const STAKE_POOL_DISCRIMINATOR = new Uint8Array([
-  121, 34, 206, 21, 79, 127, 255, 28,
-]);
-
-export function getStakePoolDiscriminatorBytes() {
-  return fixEncoderSize(getBytesEncoder(), 8).encode(STAKE_POOL_DISCRIMINATOR);
-}
-
 export type StakePool = {
-  discriminator: ReadonlyUint8Array;
   accountType: AccountType;
   manager: Address;
   staker: Address;
@@ -82,19 +71,19 @@ export type StakePool = {
   lastUpdateEpoch: bigint;
   lockup: Lockup;
   epochFee: Fee;
-  nextEpochFee: Option<Fee>;
+  nextEpochFee: FutureEpoch;
   preferredDepositValidatorVoteAddress: Option<Address>;
   preferredWithdrawValidatorVoteAddress: Option<Address>;
   stakeDepositFee: Fee;
   stakeWithdrawalFee: Fee;
-  nextStakeWithdrawalFee: Option<Fee>;
+  nextStakeWithdrawalFee: FutureEpoch;
   stakeReferralFee: number;
   solDepositAuthority: Option<Address>;
   solDepositFee: Fee;
   solReferralFee: number;
   solWithdrawAuthority: Option<Address>;
   solWithdrawalFee: Fee;
-  nextSolWithdrawalFee: Option<Fee>;
+  nextSolWithdrawalFee: FutureEpoch;
   lastEpochPoolTokenSupply: bigint;
   lastEpochTotalLamports: bigint;
 };
@@ -115,71 +104,66 @@ export type StakePoolArgs = {
   lastUpdateEpoch: number | bigint;
   lockup: LockupArgs;
   epochFee: FeeArgs;
-  nextEpochFee: OptionOrNullable<FeeArgs>;
+  nextEpochFee: FutureEpochArgs;
   preferredDepositValidatorVoteAddress: OptionOrNullable<Address>;
   preferredWithdrawValidatorVoteAddress: OptionOrNullable<Address>;
   stakeDepositFee: FeeArgs;
   stakeWithdrawalFee: FeeArgs;
-  nextStakeWithdrawalFee: OptionOrNullable<FeeArgs>;
+  nextStakeWithdrawalFee: FutureEpochArgs;
   stakeReferralFee: number;
   solDepositAuthority: OptionOrNullable<Address>;
   solDepositFee: FeeArgs;
   solReferralFee: number;
   solWithdrawAuthority: OptionOrNullable<Address>;
   solWithdrawalFee: FeeArgs;
-  nextSolWithdrawalFee: OptionOrNullable<FeeArgs>;
+  nextSolWithdrawalFee: FutureEpochArgs;
   lastEpochPoolTokenSupply: number | bigint;
   lastEpochTotalLamports: number | bigint;
 };
 
 export function getStakePoolEncoder(): Encoder<StakePoolArgs> {
-  return transformEncoder(
-    getStructEncoder([
-      ['discriminator', fixEncoderSize(getBytesEncoder(), 8)],
-      ['accountType', getAccountTypeEncoder()],
-      ['manager', getAddressEncoder()],
-      ['staker', getAddressEncoder()],
-      ['stakeDepositAuthority', getAddressEncoder()],
-      ['stakeWithdrawBumpSeed', getU8Encoder()],
-      ['validatorList', getAddressEncoder()],
-      ['reserveStake', getAddressEncoder()],
-      ['poolMint', getAddressEncoder()],
-      ['managerFeeAccount', getAddressEncoder()],
-      ['tokenProgramId', getAddressEncoder()],
-      ['totalLamports', getU64Encoder()],
-      ['poolTokenSupply', getU64Encoder()],
-      ['lastUpdateEpoch', getU64Encoder()],
-      ['lockup', getLockupEncoder()],
-      ['epochFee', getFeeEncoder()],
-      ['nextEpochFee', getOptionEncoder(getFeeEncoder())],
-      [
-        'preferredDepositValidatorVoteAddress',
-        getOptionEncoder(getAddressEncoder()),
-      ],
-      [
-        'preferredWithdrawValidatorVoteAddress',
-        getOptionEncoder(getAddressEncoder()),
-      ],
-      ['stakeDepositFee', getFeeEncoder()],
-      ['stakeWithdrawalFee', getFeeEncoder()],
-      ['nextStakeWithdrawalFee', getOptionEncoder(getFeeEncoder())],
-      ['stakeReferralFee', getU8Encoder()],
-      ['solDepositAuthority', getOptionEncoder(getAddressEncoder())],
-      ['solDepositFee', getFeeEncoder()],
-      ['solReferralFee', getU8Encoder()],
-      ['solWithdrawAuthority', getOptionEncoder(getAddressEncoder())],
-      ['solWithdrawalFee', getFeeEncoder()],
-      ['nextSolWithdrawalFee', getOptionEncoder(getFeeEncoder())],
-      ['lastEpochPoolTokenSupply', getU64Encoder()],
-      ['lastEpochTotalLamports', getU64Encoder()],
-    ]),
-    (value) => ({ ...value, discriminator: STAKE_POOL_DISCRIMINATOR })
-  );
+  return getStructEncoder([
+    ['accountType', getAccountTypeEncoder()],
+    ['manager', getAddressEncoder()],
+    ['staker', getAddressEncoder()],
+    ['stakeDepositAuthority', getAddressEncoder()],
+    ['stakeWithdrawBumpSeed', getU8Encoder()],
+    ['validatorList', getAddressEncoder()],
+    ['reserveStake', getAddressEncoder()],
+    ['poolMint', getAddressEncoder()],
+    ['managerFeeAccount', getAddressEncoder()],
+    ['tokenProgramId', getAddressEncoder()],
+    ['totalLamports', getU64Encoder()],
+    ['poolTokenSupply', getU64Encoder()],
+    ['lastUpdateEpoch', getU64Encoder()],
+    ['lockup', getLockupEncoder()],
+    ['epochFee', getFeeEncoder()],
+    ['nextEpochFee', getFutureEpochEncoder()],
+    [
+      'preferredDepositValidatorVoteAddress',
+      getOptionEncoder(getAddressEncoder()),
+    ],
+    [
+      'preferredWithdrawValidatorVoteAddress',
+      getOptionEncoder(getAddressEncoder()),
+    ],
+    ['stakeDepositFee', getFeeEncoder()],
+    ['stakeWithdrawalFee', getFeeEncoder()],
+    ['nextStakeWithdrawalFee', getFutureEpochEncoder()],
+    ['stakeReferralFee', getU8Encoder()],
+    ['solDepositAuthority', getOptionEncoder(getAddressEncoder())],
+    ['solDepositFee', getFeeEncoder()],
+    ['solReferralFee', getU8Encoder()],
+    ['solWithdrawAuthority', getOptionEncoder(getAddressEncoder())],
+    ['solWithdrawalFee', getFeeEncoder()],
+    ['nextSolWithdrawalFee', getFutureEpochEncoder()],
+    ['lastEpochPoolTokenSupply', getU64Encoder()],
+    ['lastEpochTotalLamports', getU64Encoder()],
+  ]);
 }
 
 export function getStakePoolDecoder(): Decoder<StakePool> {
   return getStructDecoder([
-    ['discriminator', fixDecoderSize(getBytesDecoder(), 8)],
     ['accountType', getAccountTypeDecoder()],
     ['manager', getAddressDecoder()],
     ['staker', getAddressDecoder()],
@@ -195,7 +179,7 @@ export function getStakePoolDecoder(): Decoder<StakePool> {
     ['lastUpdateEpoch', getU64Decoder()],
     ['lockup', getLockupDecoder()],
     ['epochFee', getFeeDecoder()],
-    ['nextEpochFee', getOptionDecoder(getFeeDecoder())],
+    ['nextEpochFee', getFutureEpochDecoder()],
     [
       'preferredDepositValidatorVoteAddress',
       getOptionDecoder(getAddressDecoder()),
@@ -206,14 +190,14 @@ export function getStakePoolDecoder(): Decoder<StakePool> {
     ],
     ['stakeDepositFee', getFeeDecoder()],
     ['stakeWithdrawalFee', getFeeDecoder()],
-    ['nextStakeWithdrawalFee', getOptionDecoder(getFeeDecoder())],
+    ['nextStakeWithdrawalFee', getFutureEpochDecoder()],
     ['stakeReferralFee', getU8Decoder()],
     ['solDepositAuthority', getOptionDecoder(getAddressDecoder())],
     ['solDepositFee', getFeeDecoder()],
     ['solReferralFee', getU8Decoder()],
     ['solWithdrawAuthority', getOptionDecoder(getAddressDecoder())],
     ['solWithdrawalFee', getFeeDecoder()],
-    ['nextSolWithdrawalFee', getOptionDecoder(getFeeDecoder())],
+    ['nextSolWithdrawalFee', getFutureEpochDecoder()],
     ['lastEpochPoolTokenSupply', getU64Decoder()],
     ['lastEpochTotalLamports', getU64Decoder()],
   ]);

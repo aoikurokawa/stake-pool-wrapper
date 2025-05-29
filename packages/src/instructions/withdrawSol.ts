@@ -8,14 +8,12 @@
 
 import {
   combineCodec,
-  fixDecoderSize,
-  fixEncoderSize,
-  getBytesDecoder,
-  getBytesEncoder,
   getStructDecoder,
   getStructEncoder,
   getU64Decoder,
   getU64Encoder,
+  getU8Decoder,
+  getU8Encoder,
   transformEncoder,
   type Address,
   type Codec,
@@ -28,43 +26,32 @@ import {
   type IInstructionWithData,
   type ReadonlyAccount,
   type ReadonlySignerAccount,
-  type ReadonlyUint8Array,
   type TransactionSigner,
   type WritableAccount,
 } from '@solana/kit';
 import { SPL_STAKE_POOL_PROGRAM_ADDRESS } from '../programs';
 import { getAccountMetaFactory, type ResolvedAccount } from '../shared';
 
-export const WITHDRAW_SOL_DISCRIMINATOR = new Uint8Array([
-  145, 131, 74, 136, 65, 137, 42, 38,
-]);
+export const WITHDRAW_SOL_DISCRIMINATOR = 16;
 
 export function getWithdrawSolDiscriminatorBytes() {
-  return fixEncoderSize(getBytesEncoder(), 8).encode(
-    WITHDRAW_SOL_DISCRIMINATOR
-  );
+  return getU8Encoder().encode(WITHDRAW_SOL_DISCRIMINATOR);
 }
 
 export type WithdrawSolInstruction<
   TProgram extends string = typeof SPL_STAKE_POOL_PROGRAM_ADDRESS,
   TAccountStakePool extends string | IAccountMeta<string> = string,
-  TAccountStakePoolWithdrawAuthority extends
-    | string
-    | IAccountMeta<string> = string,
+  TAccountWithdrawAuthority extends string | IAccountMeta<string> = string,
   TAccountUserTransferAuthority extends string | IAccountMeta<string> = string,
-  TAccountPoolTokensFrom extends string | IAccountMeta<string> = string,
-  TAccountReserveStakeAccount extends string | IAccountMeta<string> = string,
-  TAccountLamportsTo extends string | IAccountMeta<string> = string,
-  TAccountManagerFeeAccount extends string | IAccountMeta<string> = string,
+  TAccountBurnFromPool extends string | IAccountMeta<string> = string,
+  TAccountReserveStake extends string | IAccountMeta<string> = string,
+  TAccountDestinationLamports extends string | IAccountMeta<string> = string,
+  TAccountManagerFee extends string | IAccountMeta<string> = string,
   TAccountPoolMint extends string | IAccountMeta<string> = string,
   TAccountClock extends string | IAccountMeta<string> = string,
-  TAccountSysvarStakeHistory extends
-    | string
-    | IAccountMeta<string> = 'SysvarStakeHistory1111111111111111111111111',
+  TAccountStakeHistory extends string | IAccountMeta<string> = string,
   TAccountStakeProgram extends string | IAccountMeta<string> = string,
-  TAccountTokenProgram extends
-    | string
-    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountTokenProgram extends string | IAccountMeta<string> = string,
   TRemainingAccounts extends readonly IAccountMeta<string>[] = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
@@ -73,34 +60,34 @@ export type WithdrawSolInstruction<
       TAccountStakePool extends string
         ? WritableAccount<TAccountStakePool>
         : TAccountStakePool,
-      TAccountStakePoolWithdrawAuthority extends string
-        ? ReadonlyAccount<TAccountStakePoolWithdrawAuthority>
-        : TAccountStakePoolWithdrawAuthority,
+      TAccountWithdrawAuthority extends string
+        ? ReadonlyAccount<TAccountWithdrawAuthority>
+        : TAccountWithdrawAuthority,
       TAccountUserTransferAuthority extends string
         ? ReadonlySignerAccount<TAccountUserTransferAuthority> &
             IAccountSignerMeta<TAccountUserTransferAuthority>
         : TAccountUserTransferAuthority,
-      TAccountPoolTokensFrom extends string
-        ? WritableAccount<TAccountPoolTokensFrom>
-        : TAccountPoolTokensFrom,
-      TAccountReserveStakeAccount extends string
-        ? WritableAccount<TAccountReserveStakeAccount>
-        : TAccountReserveStakeAccount,
-      TAccountLamportsTo extends string
-        ? WritableAccount<TAccountLamportsTo>
-        : TAccountLamportsTo,
-      TAccountManagerFeeAccount extends string
-        ? WritableAccount<TAccountManagerFeeAccount>
-        : TAccountManagerFeeAccount,
+      TAccountBurnFromPool extends string
+        ? WritableAccount<TAccountBurnFromPool>
+        : TAccountBurnFromPool,
+      TAccountReserveStake extends string
+        ? WritableAccount<TAccountReserveStake>
+        : TAccountReserveStake,
+      TAccountDestinationLamports extends string
+        ? WritableAccount<TAccountDestinationLamports>
+        : TAccountDestinationLamports,
+      TAccountManagerFee extends string
+        ? WritableAccount<TAccountManagerFee>
+        : TAccountManagerFee,
       TAccountPoolMint extends string
         ? WritableAccount<TAccountPoolMint>
         : TAccountPoolMint,
       TAccountClock extends string
         ? ReadonlyAccount<TAccountClock>
         : TAccountClock,
-      TAccountSysvarStakeHistory extends string
-        ? ReadonlyAccount<TAccountSysvarStakeHistory>
-        : TAccountSysvarStakeHistory,
+      TAccountStakeHistory extends string
+        ? ReadonlyAccount<TAccountStakeHistory>
+        : TAccountStakeHistory,
       TAccountStakeProgram extends string
         ? ReadonlyAccount<TAccountStakeProgram>
         : TAccountStakeProgram,
@@ -112,17 +99,17 @@ export type WithdrawSolInstruction<
   >;
 
 export type WithdrawSolInstructionData = {
-  discriminator: ReadonlyUint8Array;
-  arg: bigint;
+  discriminator: number;
+  args: bigint;
 };
 
-export type WithdrawSolInstructionDataArgs = { arg: number | bigint };
+export type WithdrawSolInstructionDataArgs = { args: number | bigint };
 
 export function getWithdrawSolInstructionDataEncoder(): Encoder<WithdrawSolInstructionDataArgs> {
   return transformEncoder(
     getStructEncoder([
-      ['discriminator', fixEncoderSize(getBytesEncoder(), 8)],
-      ['arg', getU64Encoder()],
+      ['discriminator', getU8Encoder()],
+      ['args', getU64Encoder()],
     ]),
     (value) => ({ ...value, discriminator: WITHDRAW_SOL_DISCRIMINATOR })
   );
@@ -130,8 +117,8 @@ export function getWithdrawSolInstructionDataEncoder(): Encoder<WithdrawSolInstr
 
 export function getWithdrawSolInstructionDataDecoder(): Decoder<WithdrawSolInstructionData> {
   return getStructDecoder([
-    ['discriminator', fixDecoderSize(getBytesDecoder(), 8)],
-    ['arg', getU64Decoder()],
+    ['discriminator', getU8Decoder()],
+    ['args', getU64Decoder()],
   ]);
 }
 
@@ -147,59 +134,59 @@ export function getWithdrawSolInstructionDataCodec(): Codec<
 
 export type WithdrawSolInput<
   TAccountStakePool extends string = string,
-  TAccountStakePoolWithdrawAuthority extends string = string,
+  TAccountWithdrawAuthority extends string = string,
   TAccountUserTransferAuthority extends string = string,
-  TAccountPoolTokensFrom extends string = string,
-  TAccountReserveStakeAccount extends string = string,
-  TAccountLamportsTo extends string = string,
-  TAccountManagerFeeAccount extends string = string,
+  TAccountBurnFromPool extends string = string,
+  TAccountReserveStake extends string = string,
+  TAccountDestinationLamports extends string = string,
+  TAccountManagerFee extends string = string,
   TAccountPoolMint extends string = string,
   TAccountClock extends string = string,
-  TAccountSysvarStakeHistory extends string = string,
+  TAccountStakeHistory extends string = string,
   TAccountStakeProgram extends string = string,
   TAccountTokenProgram extends string = string,
 > = {
   stakePool: Address<TAccountStakePool>;
-  stakePoolWithdrawAuthority: Address<TAccountStakePoolWithdrawAuthority>;
+  withdrawAuthority: Address<TAccountWithdrawAuthority>;
   userTransferAuthority: TransactionSigner<TAccountUserTransferAuthority>;
-  poolTokensFrom: Address<TAccountPoolTokensFrom>;
-  reserveStakeAccount: Address<TAccountReserveStakeAccount>;
-  lamportsTo: Address<TAccountLamportsTo>;
-  managerFeeAccount: Address<TAccountManagerFeeAccount>;
+  burnFromPool: Address<TAccountBurnFromPool>;
+  reserveStake: Address<TAccountReserveStake>;
+  destinationLamports: Address<TAccountDestinationLamports>;
+  managerFee: Address<TAccountManagerFee>;
   poolMint: Address<TAccountPoolMint>;
   clock: Address<TAccountClock>;
-  sysvarStakeHistory?: Address<TAccountSysvarStakeHistory>;
+  stakeHistory: Address<TAccountStakeHistory>;
   stakeProgram: Address<TAccountStakeProgram>;
-  tokenProgram?: Address<TAccountTokenProgram>;
-  arg: WithdrawSolInstructionDataArgs['arg'];
+  tokenProgram: Address<TAccountTokenProgram>;
+  args: WithdrawSolInstructionDataArgs['args'];
 };
 
 export function getWithdrawSolInstruction<
   TAccountStakePool extends string,
-  TAccountStakePoolWithdrawAuthority extends string,
+  TAccountWithdrawAuthority extends string,
   TAccountUserTransferAuthority extends string,
-  TAccountPoolTokensFrom extends string,
-  TAccountReserveStakeAccount extends string,
-  TAccountLamportsTo extends string,
-  TAccountManagerFeeAccount extends string,
+  TAccountBurnFromPool extends string,
+  TAccountReserveStake extends string,
+  TAccountDestinationLamports extends string,
+  TAccountManagerFee extends string,
   TAccountPoolMint extends string,
   TAccountClock extends string,
-  TAccountSysvarStakeHistory extends string,
+  TAccountStakeHistory extends string,
   TAccountStakeProgram extends string,
   TAccountTokenProgram extends string,
   TProgramAddress extends Address = typeof SPL_STAKE_POOL_PROGRAM_ADDRESS,
 >(
   input: WithdrawSolInput<
     TAccountStakePool,
-    TAccountStakePoolWithdrawAuthority,
+    TAccountWithdrawAuthority,
     TAccountUserTransferAuthority,
-    TAccountPoolTokensFrom,
-    TAccountReserveStakeAccount,
-    TAccountLamportsTo,
-    TAccountManagerFeeAccount,
+    TAccountBurnFromPool,
+    TAccountReserveStake,
+    TAccountDestinationLamports,
+    TAccountManagerFee,
     TAccountPoolMint,
     TAccountClock,
-    TAccountSysvarStakeHistory,
+    TAccountStakeHistory,
     TAccountStakeProgram,
     TAccountTokenProgram
   >,
@@ -207,15 +194,15 @@ export function getWithdrawSolInstruction<
 ): WithdrawSolInstruction<
   TProgramAddress,
   TAccountStakePool,
-  TAccountStakePoolWithdrawAuthority,
+  TAccountWithdrawAuthority,
   TAccountUserTransferAuthority,
-  TAccountPoolTokensFrom,
-  TAccountReserveStakeAccount,
-  TAccountLamportsTo,
-  TAccountManagerFeeAccount,
+  TAccountBurnFromPool,
+  TAccountReserveStake,
+  TAccountDestinationLamports,
+  TAccountManagerFee,
   TAccountPoolMint,
   TAccountClock,
-  TAccountSysvarStakeHistory,
+  TAccountStakeHistory,
   TAccountStakeProgram,
   TAccountTokenProgram
 > {
@@ -226,30 +213,24 @@ export function getWithdrawSolInstruction<
   // Original accounts.
   const originalAccounts = {
     stakePool: { value: input.stakePool ?? null, isWritable: true },
-    stakePoolWithdrawAuthority: {
-      value: input.stakePoolWithdrawAuthority ?? null,
+    withdrawAuthority: {
+      value: input.withdrawAuthority ?? null,
       isWritable: false,
     },
     userTransferAuthority: {
       value: input.userTransferAuthority ?? null,
       isWritable: false,
     },
-    poolTokensFrom: { value: input.poolTokensFrom ?? null, isWritable: true },
-    reserveStakeAccount: {
-      value: input.reserveStakeAccount ?? null,
+    burnFromPool: { value: input.burnFromPool ?? null, isWritable: true },
+    reserveStake: { value: input.reserveStake ?? null, isWritable: true },
+    destinationLamports: {
+      value: input.destinationLamports ?? null,
       isWritable: true,
     },
-    lamportsTo: { value: input.lamportsTo ?? null, isWritable: true },
-    managerFeeAccount: {
-      value: input.managerFeeAccount ?? null,
-      isWritable: true,
-    },
+    managerFee: { value: input.managerFee ?? null, isWritable: true },
     poolMint: { value: input.poolMint ?? null, isWritable: true },
     clock: { value: input.clock ?? null, isWritable: false },
-    sysvarStakeHistory: {
-      value: input.sysvarStakeHistory ?? null,
-      isWritable: false,
-    },
+    stakeHistory: { value: input.stakeHistory ?? null, isWritable: false },
     stakeProgram: { value: input.stakeProgram ?? null, isWritable: false },
     tokenProgram: { value: input.tokenProgram ?? null, isWritable: false },
   };
@@ -261,29 +242,19 @@ export function getWithdrawSolInstruction<
   // Original args.
   const args = { ...input };
 
-  // Resolve default values.
-  if (!accounts.sysvarStakeHistory.value) {
-    accounts.sysvarStakeHistory.value =
-      'SysvarStakeHistory1111111111111111111111111' as Address<'SysvarStakeHistory1111111111111111111111111'>;
-  }
-  if (!accounts.tokenProgram.value) {
-    accounts.tokenProgram.value =
-      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Address<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>;
-  }
-
   const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');
   const instruction = {
     accounts: [
       getAccountMeta(accounts.stakePool),
-      getAccountMeta(accounts.stakePoolWithdrawAuthority),
+      getAccountMeta(accounts.withdrawAuthority),
       getAccountMeta(accounts.userTransferAuthority),
-      getAccountMeta(accounts.poolTokensFrom),
-      getAccountMeta(accounts.reserveStakeAccount),
-      getAccountMeta(accounts.lamportsTo),
-      getAccountMeta(accounts.managerFeeAccount),
+      getAccountMeta(accounts.burnFromPool),
+      getAccountMeta(accounts.reserveStake),
+      getAccountMeta(accounts.destinationLamports),
+      getAccountMeta(accounts.managerFee),
       getAccountMeta(accounts.poolMint),
       getAccountMeta(accounts.clock),
-      getAccountMeta(accounts.sysvarStakeHistory),
+      getAccountMeta(accounts.stakeHistory),
       getAccountMeta(accounts.stakeProgram),
       getAccountMeta(accounts.tokenProgram),
     ],
@@ -294,15 +265,15 @@ export function getWithdrawSolInstruction<
   } as WithdrawSolInstruction<
     TProgramAddress,
     TAccountStakePool,
-    TAccountStakePoolWithdrawAuthority,
+    TAccountWithdrawAuthority,
     TAccountUserTransferAuthority,
-    TAccountPoolTokensFrom,
-    TAccountReserveStakeAccount,
-    TAccountLamportsTo,
-    TAccountManagerFeeAccount,
+    TAccountBurnFromPool,
+    TAccountReserveStake,
+    TAccountDestinationLamports,
+    TAccountManagerFee,
     TAccountPoolMint,
     TAccountClock,
-    TAccountSysvarStakeHistory,
+    TAccountStakeHistory,
     TAccountStakeProgram,
     TAccountTokenProgram
   >;
@@ -317,15 +288,15 @@ export type ParsedWithdrawSolInstruction<
   programAddress: Address<TProgram>;
   accounts: {
     stakePool: TAccountMetas[0];
-    stakePoolWithdrawAuthority: TAccountMetas[1];
+    withdrawAuthority: TAccountMetas[1];
     userTransferAuthority: TAccountMetas[2];
-    poolTokensFrom: TAccountMetas[3];
-    reserveStakeAccount: TAccountMetas[4];
-    lamportsTo: TAccountMetas[5];
-    managerFeeAccount: TAccountMetas[6];
+    burnFromPool: TAccountMetas[3];
+    reserveStake: TAccountMetas[4];
+    destinationLamports: TAccountMetas[5];
+    managerFee: TAccountMetas[6];
     poolMint: TAccountMetas[7];
     clock: TAccountMetas[8];
-    sysvarStakeHistory: TAccountMetas[9];
+    stakeHistory: TAccountMetas[9];
     stakeProgram: TAccountMetas[10];
     tokenProgram: TAccountMetas[11];
   };
@@ -354,15 +325,15 @@ export function parseWithdrawSolInstruction<
     programAddress: instruction.programAddress,
     accounts: {
       stakePool: getNextAccount(),
-      stakePoolWithdrawAuthority: getNextAccount(),
+      withdrawAuthority: getNextAccount(),
       userTransferAuthority: getNextAccount(),
-      poolTokensFrom: getNextAccount(),
-      reserveStakeAccount: getNextAccount(),
-      lamportsTo: getNextAccount(),
-      managerFeeAccount: getNextAccount(),
+      burnFromPool: getNextAccount(),
+      reserveStake: getNextAccount(),
+      destinationLamports: getNextAccount(),
+      managerFee: getNextAccount(),
       poolMint: getNextAccount(),
       clock: getNextAccount(),
-      sysvarStakeHistory: getNextAccount(),
+      stakeHistory: getNextAccount(),
       stakeProgram: getNextAccount(),
       tokenProgram: getNextAccount(),
     },

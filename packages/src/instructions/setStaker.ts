@@ -8,12 +8,10 @@
 
 import {
   combineCodec,
-  fixDecoderSize,
-  fixEncoderSize,
-  getBytesDecoder,
-  getBytesEncoder,
   getStructDecoder,
   getStructEncoder,
+  getU8Decoder,
+  getU8Encoder,
   transformEncoder,
   type Address,
   type Codec,
@@ -26,25 +24,22 @@ import {
   type IInstructionWithData,
   type ReadonlyAccount,
   type ReadonlySignerAccount,
-  type ReadonlyUint8Array,
   type TransactionSigner,
   type WritableAccount,
 } from '@solana/kit';
 import { SPL_STAKE_POOL_PROGRAM_ADDRESS } from '../programs';
 import { getAccountMetaFactory, type ResolvedAccount } from '../shared';
 
-export const SET_STAKER_DISCRIMINATOR = new Uint8Array([
-  149, 203, 114, 28, 80, 138, 17, 131,
-]);
+export const SET_STAKER_DISCRIMINATOR = 13;
 
 export function getSetStakerDiscriminatorBytes() {
-  return fixEncoderSize(getBytesEncoder(), 8).encode(SET_STAKER_DISCRIMINATOR);
+  return getU8Encoder().encode(SET_STAKER_DISCRIMINATOR);
 }
 
 export type SetStakerInstruction<
   TProgram extends string = typeof SPL_STAKE_POOL_PROGRAM_ADDRESS,
   TAccountStakePool extends string | IAccountMeta<string> = string,
-  TAccountSetStakerAuthority extends string | IAccountMeta<string> = string,
+  TAccountManager extends string | IAccountMeta<string> = string,
   TAccountNewStaker extends string | IAccountMeta<string> = string,
   TRemainingAccounts extends readonly IAccountMeta<string>[] = [],
 > = IInstruction<TProgram> &
@@ -54,10 +49,10 @@ export type SetStakerInstruction<
       TAccountStakePool extends string
         ? WritableAccount<TAccountStakePool>
         : TAccountStakePool,
-      TAccountSetStakerAuthority extends string
-        ? ReadonlySignerAccount<TAccountSetStakerAuthority> &
-            IAccountSignerMeta<TAccountSetStakerAuthority>
-        : TAccountSetStakerAuthority,
+      TAccountManager extends string
+        ? ReadonlySignerAccount<TAccountManager> &
+            IAccountSignerMeta<TAccountManager>
+        : TAccountManager,
       TAccountNewStaker extends string
         ? ReadonlyAccount<TAccountNewStaker>
         : TAccountNewStaker,
@@ -65,21 +60,19 @@ export type SetStakerInstruction<
     ]
   >;
 
-export type SetStakerInstructionData = { discriminator: ReadonlyUint8Array };
+export type SetStakerInstructionData = { discriminator: number };
 
 export type SetStakerInstructionDataArgs = {};
 
 export function getSetStakerInstructionDataEncoder(): Encoder<SetStakerInstructionDataArgs> {
   return transformEncoder(
-    getStructEncoder([['discriminator', fixEncoderSize(getBytesEncoder(), 8)]]),
+    getStructEncoder([['discriminator', getU8Encoder()]]),
     (value) => ({ ...value, discriminator: SET_STAKER_DISCRIMINATOR })
   );
 }
 
 export function getSetStakerInstructionDataDecoder(): Decoder<SetStakerInstructionData> {
-  return getStructDecoder([
-    ['discriminator', fixDecoderSize(getBytesDecoder(), 8)],
-  ]);
+  return getStructDecoder([['discriminator', getU8Decoder()]]);
 }
 
 export function getSetStakerInstructionDataCodec(): Codec<
@@ -94,30 +87,26 @@ export function getSetStakerInstructionDataCodec(): Codec<
 
 export type SetStakerInput<
   TAccountStakePool extends string = string,
-  TAccountSetStakerAuthority extends string = string,
+  TAccountManager extends string = string,
   TAccountNewStaker extends string = string,
 > = {
   stakePool: Address<TAccountStakePool>;
-  setStakerAuthority: TransactionSigner<TAccountSetStakerAuthority>;
+  manager: TransactionSigner<TAccountManager>;
   newStaker: Address<TAccountNewStaker>;
 };
 
 export function getSetStakerInstruction<
   TAccountStakePool extends string,
-  TAccountSetStakerAuthority extends string,
+  TAccountManager extends string,
   TAccountNewStaker extends string,
   TProgramAddress extends Address = typeof SPL_STAKE_POOL_PROGRAM_ADDRESS,
 >(
-  input: SetStakerInput<
-    TAccountStakePool,
-    TAccountSetStakerAuthority,
-    TAccountNewStaker
-  >,
+  input: SetStakerInput<TAccountStakePool, TAccountManager, TAccountNewStaker>,
   config?: { programAddress?: TProgramAddress }
 ): SetStakerInstruction<
   TProgramAddress,
   TAccountStakePool,
-  TAccountSetStakerAuthority,
+  TAccountManager,
   TAccountNewStaker
 > {
   // Program address.
@@ -127,10 +116,7 @@ export function getSetStakerInstruction<
   // Original accounts.
   const originalAccounts = {
     stakePool: { value: input.stakePool ?? null, isWritable: true },
-    setStakerAuthority: {
-      value: input.setStakerAuthority ?? null,
-      isWritable: false,
-    },
+    manager: { value: input.manager ?? null, isWritable: false },
     newStaker: { value: input.newStaker ?? null, isWritable: false },
   };
   const accounts = originalAccounts as Record<
@@ -142,7 +128,7 @@ export function getSetStakerInstruction<
   const instruction = {
     accounts: [
       getAccountMeta(accounts.stakePool),
-      getAccountMeta(accounts.setStakerAuthority),
+      getAccountMeta(accounts.manager),
       getAccountMeta(accounts.newStaker),
     ],
     programAddress,
@@ -150,7 +136,7 @@ export function getSetStakerInstruction<
   } as SetStakerInstruction<
     TProgramAddress,
     TAccountStakePool,
-    TAccountSetStakerAuthority,
+    TAccountManager,
     TAccountNewStaker
   >;
 
@@ -164,7 +150,7 @@ export type ParsedSetStakerInstruction<
   programAddress: Address<TProgram>;
   accounts: {
     stakePool: TAccountMetas[0];
-    setStakerAuthority: TAccountMetas[1];
+    manager: TAccountMetas[1];
     newStaker: TAccountMetas[2];
   };
   data: SetStakerInstructionData;
@@ -192,7 +178,7 @@ export function parseSetStakerInstruction<
     programAddress: instruction.programAddress,
     accounts: {
       stakePool: getNextAccount(),
-      setStakerAuthority: getNextAccount(),
+      manager: getNextAccount(),
       newStaker: getNextAccount(),
     },
     data: getSetStakerInstructionDataDecoder().decode(instruction.data),

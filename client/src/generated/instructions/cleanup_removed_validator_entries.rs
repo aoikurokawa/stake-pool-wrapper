@@ -16,7 +16,7 @@ pub struct CleanupRemovedValidatorEntries {
           pub stake_pool: solana_program::pubkey::Pubkey,
           
               
-          pub validator_list_storage: solana_program::pubkey::Pubkey,
+          pub validator_list: solana_program::pubkey::Pubkey,
       }
 
 impl CleanupRemovedValidatorEntries {
@@ -32,7 +32,7 @@ impl CleanupRemovedValidatorEntries {
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new(
-            self.validator_list_storage,
+            self.validator_list,
             false
           ));
                       accounts.extend_from_slice(remaining_accounts);
@@ -49,13 +49,13 @@ impl CleanupRemovedValidatorEntries {
 #[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
  pub struct CleanupRemovedValidatorEntriesInstructionData {
-            discriminator: [u8; 8],
+            discriminator: u8,
       }
 
 impl CleanupRemovedValidatorEntriesInstructionData {
   pub fn new() -> Self {
     Self {
-                        discriminator: [211, 101, 162, 27, 244, 149, 45, 88],
+                        discriminator: 8,
                   }
   }
 }
@@ -73,11 +73,11 @@ impl Default for CleanupRemovedValidatorEntriesInstructionData {
 /// ### Accounts:
 ///
           ///   0. `[]` stake_pool
-                ///   1. `[writable]` validator_list_storage
+                ///   1. `[writable]` validator_list
 #[derive(Clone, Debug, Default)]
 pub struct CleanupRemovedValidatorEntriesBuilder {
             stake_pool: Option<solana_program::pubkey::Pubkey>,
-                validator_list_storage: Option<solana_program::pubkey::Pubkey>,
+                validator_list: Option<solana_program::pubkey::Pubkey>,
                 __remaining_accounts: Vec<solana_program::instruction::AccountMeta>,
 }
 
@@ -91,8 +91,8 @@ impl CleanupRemovedValidatorEntriesBuilder {
                     self
     }
             #[inline(always)]
-    pub fn validator_list_storage(&mut self, validator_list_storage: solana_program::pubkey::Pubkey) -> &mut Self {
-                        self.validator_list_storage = Some(validator_list_storage);
+    pub fn validator_list(&mut self, validator_list: solana_program::pubkey::Pubkey) -> &mut Self {
+                        self.validator_list = Some(validator_list);
                     self
     }
             /// Add an additional account to the instruction.
@@ -111,7 +111,7 @@ impl CleanupRemovedValidatorEntriesBuilder {
   pub fn instruction(&self) -> solana_program::instruction::Instruction {
     let accounts = CleanupRemovedValidatorEntries {
                               stake_pool: self.stake_pool.expect("stake_pool is not set"),
-                                        validator_list_storage: self.validator_list_storage.expect("validator_list_storage is not set"),
+                                        validator_list: self.validator_list.expect("validator_list is not set"),
                       };
     
     accounts.instruction_with_remaining_accounts(&self.__remaining_accounts)
@@ -125,7 +125,7 @@ impl CleanupRemovedValidatorEntriesBuilder {
               pub stake_pool: &'b solana_program::account_info::AccountInfo<'a>,
                 
                     
-              pub validator_list_storage: &'b solana_program::account_info::AccountInfo<'a>,
+              pub validator_list: &'b solana_program::account_info::AccountInfo<'a>,
             }
 
 /// `cleanup_removed_validator_entries` CPI instruction.
@@ -137,7 +137,7 @@ pub struct CleanupRemovedValidatorEntriesCpi<'a, 'b> {
           pub stake_pool: &'b solana_program::account_info::AccountInfo<'a>,
           
               
-          pub validator_list_storage: &'b solana_program::account_info::AccountInfo<'a>,
+          pub validator_list: &'b solana_program::account_info::AccountInfo<'a>,
         }
 
 impl<'a, 'b> CleanupRemovedValidatorEntriesCpi<'a, 'b> {
@@ -148,7 +148,7 @@ impl<'a, 'b> CleanupRemovedValidatorEntriesCpi<'a, 'b> {
     Self {
       __program: program,
               stake_pool: accounts.stake_pool,
-              validator_list_storage: accounts.validator_list_storage,
+              validator_list: accounts.validator_list,
                 }
   }
   #[inline(always)]
@@ -177,7 +177,7 @@ impl<'a, 'b> CleanupRemovedValidatorEntriesCpi<'a, 'b> {
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new(
-            *self.validator_list_storage.key,
+            *self.validator_list.key,
             false
           ));
                       remaining_accounts.iter().for_each(|remaining_account| {
@@ -197,7 +197,7 @@ impl<'a, 'b> CleanupRemovedValidatorEntriesCpi<'a, 'b> {
     let mut account_infos = Vec::with_capacity(3 + remaining_accounts.len());
     account_infos.push(self.__program.clone());
                   account_infos.push(self.stake_pool.clone());
-                        account_infos.push(self.validator_list_storage.clone());
+                        account_infos.push(self.validator_list.clone());
               remaining_accounts.iter().for_each(|remaining_account| account_infos.push(remaining_account.0.clone()));
 
     if signers_seeds.is_empty() {
@@ -213,7 +213,7 @@ impl<'a, 'b> CleanupRemovedValidatorEntriesCpi<'a, 'b> {
 /// ### Accounts:
 ///
           ///   0. `[]` stake_pool
-                ///   1. `[writable]` validator_list_storage
+                ///   1. `[writable]` validator_list
 #[derive(Clone, Debug)]
 pub struct CleanupRemovedValidatorEntriesCpiBuilder<'a, 'b> {
   instruction: Box<CleanupRemovedValidatorEntriesCpiBuilderInstruction<'a, 'b>>,
@@ -224,7 +224,7 @@ impl<'a, 'b> CleanupRemovedValidatorEntriesCpiBuilder<'a, 'b> {
     let instruction = Box::new(CleanupRemovedValidatorEntriesCpiBuilderInstruction {
       __program: program,
               stake_pool: None,
-              validator_list_storage: None,
+              validator_list: None,
                                 __remaining_accounts: Vec::new(),
     });
     Self { instruction }
@@ -235,8 +235,8 @@ impl<'a, 'b> CleanupRemovedValidatorEntriesCpiBuilder<'a, 'b> {
                     self
     }
       #[inline(always)]
-    pub fn validator_list_storage(&mut self, validator_list_storage: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
-                        self.instruction.validator_list_storage = Some(validator_list_storage);
+    pub fn validator_list(&mut self, validator_list: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+                        self.instruction.validator_list = Some(validator_list);
                     self
     }
             /// Add an additional account to the instruction.
@@ -266,7 +266,7 @@ impl<'a, 'b> CleanupRemovedValidatorEntriesCpiBuilder<'a, 'b> {
                   
           stake_pool: self.instruction.stake_pool.expect("stake_pool is not set"),
                   
-          validator_list_storage: self.instruction.validator_list_storage.expect("validator_list_storage is not set"),
+          validator_list: self.instruction.validator_list.expect("validator_list is not set"),
                     };
     instruction.invoke_signed_with_remaining_accounts(signers_seeds, &self.instruction.__remaining_accounts)
   }
@@ -276,7 +276,7 @@ impl<'a, 'b> CleanupRemovedValidatorEntriesCpiBuilder<'a, 'b> {
 struct CleanupRemovedValidatorEntriesCpiBuilderInstruction<'a, 'b> {
   __program: &'b solana_program::account_info::AccountInfo<'a>,
             stake_pool: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-                validator_list_storage: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+                validator_list: Option<&'b solana_program::account_info::AccountInfo<'a>>,
                 /// Additional instruction accounts `(AccountInfo, is_writable, is_signer)`.
   __remaining_accounts: Vec<(&'b solana_program::account_info::AccountInfo<'a>, bool, bool)>,
 }

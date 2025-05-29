@@ -16,22 +16,22 @@ pub struct DepositSol {
           pub stake_pool: solana_program::pubkey::Pubkey,
           
               
-          pub stake_pool_withdraw_authority: solana_program::pubkey::Pubkey,
+          pub withdraw_authority: solana_program::pubkey::Pubkey,
           
               
           pub reserve_stake_account: solana_program::pubkey::Pubkey,
           
               
-          pub lamports_from: solana_program::pubkey::Pubkey,
+          pub from_user_lamports: solana_program::pubkey::Pubkey,
           
               
-          pub pool_tokens_to: solana_program::pubkey::Pubkey,
+          pub dest_user_pool: solana_program::pubkey::Pubkey,
           
               
-          pub manager_fee_account: solana_program::pubkey::Pubkey,
+          pub manager_fee: solana_program::pubkey::Pubkey,
           
               
-          pub referrer_pool_tokens_account: solana_program::pubkey::Pubkey,
+          pub referrer_fee: solana_program::pubkey::Pubkey,
           
               
           pub pool_mint: solana_program::pubkey::Pubkey,
@@ -56,27 +56,27 @@ impl DepositSol {
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-            self.stake_pool_withdraw_authority,
+            self.withdraw_authority,
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new(
             self.reserve_stake_account,
             false
           ));
-                                          accounts.push(solana_program::instruction::AccountMeta::new(
-            self.lamports_from,
+                                          accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            self.from_user_lamports,
             true
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new(
-            self.pool_tokens_to,
+            self.dest_user_pool,
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new(
-            self.manager_fee_account,
+            self.manager_fee,
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new(
-            self.referrer_pool_tokens_account,
+            self.referrer_fee,
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new(
@@ -107,13 +107,13 @@ impl DepositSol {
 #[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
  pub struct DepositSolInstructionData {
-            discriminator: [u8; 8],
+            discriminator: u8,
             }
 
 impl DepositSolInstructionData {
   pub fn new() -> Self {
     Self {
-                        discriminator: [108, 81, 78, 117, 125, 155, 56, 200],
+                        discriminator: 14,
                                 }
   }
 }
@@ -127,7 +127,7 @@ impl Default for DepositSolInstructionData {
 #[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
  pub struct DepositSolInstructionArgs {
-                  pub arg: u64,
+                  pub args: u64,
       }
 
 
@@ -136,28 +136,28 @@ impl Default for DepositSolInstructionData {
 /// ### Accounts:
 ///
                 ///   0. `[writable]` stake_pool
-          ///   1. `[]` stake_pool_withdraw_authority
+          ///   1. `[]` withdraw_authority
                 ///   2. `[writable]` reserve_stake_account
-                      ///   3. `[writable, signer]` lamports_from
-                ///   4. `[writable]` pool_tokens_to
-                ///   5. `[writable]` manager_fee_account
-                ///   6. `[writable]` referrer_pool_tokens_account
+                ///   3. `[signer]` from_user_lamports
+                ///   4. `[writable]` dest_user_pool
+                ///   5. `[writable]` manager_fee
+                ///   6. `[writable]` referrer_fee
                 ///   7. `[writable]` pool_mint
-                ///   8. `[optional]` system_program (default to `11111111111111111111111111111111`)
-                ///   9. `[optional]` token_program (default to `TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA`)
+          ///   8. `[]` system_program
+          ///   9. `[]` token_program
 #[derive(Clone, Debug, Default)]
 pub struct DepositSolBuilder {
             stake_pool: Option<solana_program::pubkey::Pubkey>,
-                stake_pool_withdraw_authority: Option<solana_program::pubkey::Pubkey>,
+                withdraw_authority: Option<solana_program::pubkey::Pubkey>,
                 reserve_stake_account: Option<solana_program::pubkey::Pubkey>,
-                lamports_from: Option<solana_program::pubkey::Pubkey>,
-                pool_tokens_to: Option<solana_program::pubkey::Pubkey>,
-                manager_fee_account: Option<solana_program::pubkey::Pubkey>,
-                referrer_pool_tokens_account: Option<solana_program::pubkey::Pubkey>,
+                from_user_lamports: Option<solana_program::pubkey::Pubkey>,
+                dest_user_pool: Option<solana_program::pubkey::Pubkey>,
+                manager_fee: Option<solana_program::pubkey::Pubkey>,
+                referrer_fee: Option<solana_program::pubkey::Pubkey>,
                 pool_mint: Option<solana_program::pubkey::Pubkey>,
                 system_program: Option<solana_program::pubkey::Pubkey>,
                 token_program: Option<solana_program::pubkey::Pubkey>,
-                        arg: Option<u64>,
+                        args: Option<u64>,
         __remaining_accounts: Vec<solana_program::instruction::AccountMeta>,
 }
 
@@ -171,8 +171,8 @@ impl DepositSolBuilder {
                     self
     }
             #[inline(always)]
-    pub fn stake_pool_withdraw_authority(&mut self, stake_pool_withdraw_authority: solana_program::pubkey::Pubkey) -> &mut Self {
-                        self.stake_pool_withdraw_authority = Some(stake_pool_withdraw_authority);
+    pub fn withdraw_authority(&mut self, withdraw_authority: solana_program::pubkey::Pubkey) -> &mut Self {
+                        self.withdraw_authority = Some(withdraw_authority);
                     self
     }
             #[inline(always)]
@@ -181,23 +181,23 @@ impl DepositSolBuilder {
                     self
     }
             #[inline(always)]
-    pub fn lamports_from(&mut self, lamports_from: solana_program::pubkey::Pubkey) -> &mut Self {
-                        self.lamports_from = Some(lamports_from);
+    pub fn from_user_lamports(&mut self, from_user_lamports: solana_program::pubkey::Pubkey) -> &mut Self {
+                        self.from_user_lamports = Some(from_user_lamports);
                     self
     }
             #[inline(always)]
-    pub fn pool_tokens_to(&mut self, pool_tokens_to: solana_program::pubkey::Pubkey) -> &mut Self {
-                        self.pool_tokens_to = Some(pool_tokens_to);
+    pub fn dest_user_pool(&mut self, dest_user_pool: solana_program::pubkey::Pubkey) -> &mut Self {
+                        self.dest_user_pool = Some(dest_user_pool);
                     self
     }
             #[inline(always)]
-    pub fn manager_fee_account(&mut self, manager_fee_account: solana_program::pubkey::Pubkey) -> &mut Self {
-                        self.manager_fee_account = Some(manager_fee_account);
+    pub fn manager_fee(&mut self, manager_fee: solana_program::pubkey::Pubkey) -> &mut Self {
+                        self.manager_fee = Some(manager_fee);
                     self
     }
             #[inline(always)]
-    pub fn referrer_pool_tokens_account(&mut self, referrer_pool_tokens_account: solana_program::pubkey::Pubkey) -> &mut Self {
-                        self.referrer_pool_tokens_account = Some(referrer_pool_tokens_account);
+    pub fn referrer_fee(&mut self, referrer_fee: solana_program::pubkey::Pubkey) -> &mut Self {
+                        self.referrer_fee = Some(referrer_fee);
                     self
     }
             #[inline(always)]
@@ -205,21 +205,19 @@ impl DepositSolBuilder {
                         self.pool_mint = Some(pool_mint);
                     self
     }
-            /// `[optional account, default to '11111111111111111111111111111111']`
-#[inline(always)]
+            #[inline(always)]
     pub fn system_program(&mut self, system_program: solana_program::pubkey::Pubkey) -> &mut Self {
                         self.system_program = Some(system_program);
                     self
     }
-            /// `[optional account, default to 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA']`
-#[inline(always)]
+            #[inline(always)]
     pub fn token_program(&mut self, token_program: solana_program::pubkey::Pubkey) -> &mut Self {
                         self.token_program = Some(token_program);
                     self
     }
                     #[inline(always)]
-      pub fn arg(&mut self, arg: u64) -> &mut Self {
-        self.arg = Some(arg);
+      pub fn args(&mut self, args: u64) -> &mut Self {
+        self.args = Some(args);
         self
       }
         /// Add an additional account to the instruction.
@@ -238,18 +236,18 @@ impl DepositSolBuilder {
   pub fn instruction(&self) -> solana_program::instruction::Instruction {
     let accounts = DepositSol {
                               stake_pool: self.stake_pool.expect("stake_pool is not set"),
-                                        stake_pool_withdraw_authority: self.stake_pool_withdraw_authority.expect("stake_pool_withdraw_authority is not set"),
+                                        withdraw_authority: self.withdraw_authority.expect("withdraw_authority is not set"),
                                         reserve_stake_account: self.reserve_stake_account.expect("reserve_stake_account is not set"),
-                                        lamports_from: self.lamports_from.expect("lamports_from is not set"),
-                                        pool_tokens_to: self.pool_tokens_to.expect("pool_tokens_to is not set"),
-                                        manager_fee_account: self.manager_fee_account.expect("manager_fee_account is not set"),
-                                        referrer_pool_tokens_account: self.referrer_pool_tokens_account.expect("referrer_pool_tokens_account is not set"),
+                                        from_user_lamports: self.from_user_lamports.expect("from_user_lamports is not set"),
+                                        dest_user_pool: self.dest_user_pool.expect("dest_user_pool is not set"),
+                                        manager_fee: self.manager_fee.expect("manager_fee is not set"),
+                                        referrer_fee: self.referrer_fee.expect("referrer_fee is not set"),
                                         pool_mint: self.pool_mint.expect("pool_mint is not set"),
-                                        system_program: self.system_program.unwrap_or(solana_program::pubkey!("11111111111111111111111111111111")),
-                                        token_program: self.token_program.unwrap_or(solana_program::pubkey!("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA")),
+                                        system_program: self.system_program.expect("system_program is not set"),
+                                        token_program: self.token_program.expect("token_program is not set"),
                       };
           let args = DepositSolInstructionArgs {
-                                                              arg: self.arg.clone().expect("arg is not set"),
+                                                              args: self.args.clone().expect("args is not set"),
                                     };
     
     accounts.instruction_with_remaining_accounts(args, &self.__remaining_accounts)
@@ -263,22 +261,22 @@ impl DepositSolBuilder {
               pub stake_pool: &'b solana_program::account_info::AccountInfo<'a>,
                 
                     
-              pub stake_pool_withdraw_authority: &'b solana_program::account_info::AccountInfo<'a>,
+              pub withdraw_authority: &'b solana_program::account_info::AccountInfo<'a>,
                 
                     
               pub reserve_stake_account: &'b solana_program::account_info::AccountInfo<'a>,
                 
                     
-              pub lamports_from: &'b solana_program::account_info::AccountInfo<'a>,
+              pub from_user_lamports: &'b solana_program::account_info::AccountInfo<'a>,
                 
                     
-              pub pool_tokens_to: &'b solana_program::account_info::AccountInfo<'a>,
+              pub dest_user_pool: &'b solana_program::account_info::AccountInfo<'a>,
                 
                     
-              pub manager_fee_account: &'b solana_program::account_info::AccountInfo<'a>,
+              pub manager_fee: &'b solana_program::account_info::AccountInfo<'a>,
                 
                     
-              pub referrer_pool_tokens_account: &'b solana_program::account_info::AccountInfo<'a>,
+              pub referrer_fee: &'b solana_program::account_info::AccountInfo<'a>,
                 
                     
               pub pool_mint: &'b solana_program::account_info::AccountInfo<'a>,
@@ -299,22 +297,22 @@ pub struct DepositSolCpi<'a, 'b> {
           pub stake_pool: &'b solana_program::account_info::AccountInfo<'a>,
           
               
-          pub stake_pool_withdraw_authority: &'b solana_program::account_info::AccountInfo<'a>,
+          pub withdraw_authority: &'b solana_program::account_info::AccountInfo<'a>,
           
               
           pub reserve_stake_account: &'b solana_program::account_info::AccountInfo<'a>,
           
               
-          pub lamports_from: &'b solana_program::account_info::AccountInfo<'a>,
+          pub from_user_lamports: &'b solana_program::account_info::AccountInfo<'a>,
           
               
-          pub pool_tokens_to: &'b solana_program::account_info::AccountInfo<'a>,
+          pub dest_user_pool: &'b solana_program::account_info::AccountInfo<'a>,
           
               
-          pub manager_fee_account: &'b solana_program::account_info::AccountInfo<'a>,
+          pub manager_fee: &'b solana_program::account_info::AccountInfo<'a>,
           
               
-          pub referrer_pool_tokens_account: &'b solana_program::account_info::AccountInfo<'a>,
+          pub referrer_fee: &'b solana_program::account_info::AccountInfo<'a>,
           
               
           pub pool_mint: &'b solana_program::account_info::AccountInfo<'a>,
@@ -337,12 +335,12 @@ impl<'a, 'b> DepositSolCpi<'a, 'b> {
     Self {
       __program: program,
               stake_pool: accounts.stake_pool,
-              stake_pool_withdraw_authority: accounts.stake_pool_withdraw_authority,
+              withdraw_authority: accounts.withdraw_authority,
               reserve_stake_account: accounts.reserve_stake_account,
-              lamports_from: accounts.lamports_from,
-              pool_tokens_to: accounts.pool_tokens_to,
-              manager_fee_account: accounts.manager_fee_account,
-              referrer_pool_tokens_account: accounts.referrer_pool_tokens_account,
+              from_user_lamports: accounts.from_user_lamports,
+              dest_user_pool: accounts.dest_user_pool,
+              manager_fee: accounts.manager_fee,
+              referrer_fee: accounts.referrer_fee,
               pool_mint: accounts.pool_mint,
               system_program: accounts.system_program,
               token_program: accounts.token_program,
@@ -375,27 +373,27 @@ impl<'a, 'b> DepositSolCpi<'a, 'b> {
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-            *self.stake_pool_withdraw_authority.key,
+            *self.withdraw_authority.key,
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new(
             *self.reserve_stake_account.key,
             false
           ));
-                                          accounts.push(solana_program::instruction::AccountMeta::new(
-            *self.lamports_from.key,
+                                          accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            *self.from_user_lamports.key,
             true
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new(
-            *self.pool_tokens_to.key,
+            *self.dest_user_pool.key,
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new(
-            *self.manager_fee_account.key,
+            *self.manager_fee.key,
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new(
-            *self.referrer_pool_tokens_account.key,
+            *self.referrer_fee.key,
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new(
@@ -429,12 +427,12 @@ impl<'a, 'b> DepositSolCpi<'a, 'b> {
     let mut account_infos = Vec::with_capacity(11 + remaining_accounts.len());
     account_infos.push(self.__program.clone());
                   account_infos.push(self.stake_pool.clone());
-                        account_infos.push(self.stake_pool_withdraw_authority.clone());
+                        account_infos.push(self.withdraw_authority.clone());
                         account_infos.push(self.reserve_stake_account.clone());
-                        account_infos.push(self.lamports_from.clone());
-                        account_infos.push(self.pool_tokens_to.clone());
-                        account_infos.push(self.manager_fee_account.clone());
-                        account_infos.push(self.referrer_pool_tokens_account.clone());
+                        account_infos.push(self.from_user_lamports.clone());
+                        account_infos.push(self.dest_user_pool.clone());
+                        account_infos.push(self.manager_fee.clone());
+                        account_infos.push(self.referrer_fee.clone());
                         account_infos.push(self.pool_mint.clone());
                         account_infos.push(self.system_program.clone());
                         account_infos.push(self.token_program.clone());
@@ -453,12 +451,12 @@ impl<'a, 'b> DepositSolCpi<'a, 'b> {
 /// ### Accounts:
 ///
                 ///   0. `[writable]` stake_pool
-          ///   1. `[]` stake_pool_withdraw_authority
+          ///   1. `[]` withdraw_authority
                 ///   2. `[writable]` reserve_stake_account
-                      ///   3. `[writable, signer]` lamports_from
-                ///   4. `[writable]` pool_tokens_to
-                ///   5. `[writable]` manager_fee_account
-                ///   6. `[writable]` referrer_pool_tokens_account
+                ///   3. `[signer]` from_user_lamports
+                ///   4. `[writable]` dest_user_pool
+                ///   5. `[writable]` manager_fee
+                ///   6. `[writable]` referrer_fee
                 ///   7. `[writable]` pool_mint
           ///   8. `[]` system_program
           ///   9. `[]` token_program
@@ -472,16 +470,16 @@ impl<'a, 'b> DepositSolCpiBuilder<'a, 'b> {
     let instruction = Box::new(DepositSolCpiBuilderInstruction {
       __program: program,
               stake_pool: None,
-              stake_pool_withdraw_authority: None,
+              withdraw_authority: None,
               reserve_stake_account: None,
-              lamports_from: None,
-              pool_tokens_to: None,
-              manager_fee_account: None,
-              referrer_pool_tokens_account: None,
+              from_user_lamports: None,
+              dest_user_pool: None,
+              manager_fee: None,
+              referrer_fee: None,
               pool_mint: None,
               system_program: None,
               token_program: None,
-                                            arg: None,
+                                            args: None,
                     __remaining_accounts: Vec::new(),
     });
     Self { instruction }
@@ -492,8 +490,8 @@ impl<'a, 'b> DepositSolCpiBuilder<'a, 'b> {
                     self
     }
       #[inline(always)]
-    pub fn stake_pool_withdraw_authority(&mut self, stake_pool_withdraw_authority: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
-                        self.instruction.stake_pool_withdraw_authority = Some(stake_pool_withdraw_authority);
+    pub fn withdraw_authority(&mut self, withdraw_authority: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+                        self.instruction.withdraw_authority = Some(withdraw_authority);
                     self
     }
       #[inline(always)]
@@ -502,23 +500,23 @@ impl<'a, 'b> DepositSolCpiBuilder<'a, 'b> {
                     self
     }
       #[inline(always)]
-    pub fn lamports_from(&mut self, lamports_from: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
-                        self.instruction.lamports_from = Some(lamports_from);
+    pub fn from_user_lamports(&mut self, from_user_lamports: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+                        self.instruction.from_user_lamports = Some(from_user_lamports);
                     self
     }
       #[inline(always)]
-    pub fn pool_tokens_to(&mut self, pool_tokens_to: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
-                        self.instruction.pool_tokens_to = Some(pool_tokens_to);
+    pub fn dest_user_pool(&mut self, dest_user_pool: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+                        self.instruction.dest_user_pool = Some(dest_user_pool);
                     self
     }
       #[inline(always)]
-    pub fn manager_fee_account(&mut self, manager_fee_account: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
-                        self.instruction.manager_fee_account = Some(manager_fee_account);
+    pub fn manager_fee(&mut self, manager_fee: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+                        self.instruction.manager_fee = Some(manager_fee);
                     self
     }
       #[inline(always)]
-    pub fn referrer_pool_tokens_account(&mut self, referrer_pool_tokens_account: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
-                        self.instruction.referrer_pool_tokens_account = Some(referrer_pool_tokens_account);
+    pub fn referrer_fee(&mut self, referrer_fee: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+                        self.instruction.referrer_fee = Some(referrer_fee);
                     self
     }
       #[inline(always)]
@@ -537,8 +535,8 @@ impl<'a, 'b> DepositSolCpiBuilder<'a, 'b> {
                     self
     }
                     #[inline(always)]
-      pub fn arg(&mut self, arg: u64) -> &mut Self {
-        self.instruction.arg = Some(arg);
+      pub fn args(&mut self, args: u64) -> &mut Self {
+        self.instruction.args = Some(args);
         self
       }
         /// Add an additional account to the instruction.
@@ -564,24 +562,24 @@ impl<'a, 'b> DepositSolCpiBuilder<'a, 'b> {
   #[allow(clippy::vec_init_then_push)]
   pub fn invoke_signed(&self, signers_seeds: &[&[&[u8]]]) -> solana_program::entrypoint::ProgramResult {
           let args = DepositSolInstructionArgs {
-                                                              arg: self.instruction.arg.clone().expect("arg is not set"),
+                                                              args: self.instruction.args.clone().expect("args is not set"),
                                     };
         let instruction = DepositSolCpi {
         __program: self.instruction.__program,
                   
           stake_pool: self.instruction.stake_pool.expect("stake_pool is not set"),
                   
-          stake_pool_withdraw_authority: self.instruction.stake_pool_withdraw_authority.expect("stake_pool_withdraw_authority is not set"),
+          withdraw_authority: self.instruction.withdraw_authority.expect("withdraw_authority is not set"),
                   
           reserve_stake_account: self.instruction.reserve_stake_account.expect("reserve_stake_account is not set"),
                   
-          lamports_from: self.instruction.lamports_from.expect("lamports_from is not set"),
+          from_user_lamports: self.instruction.from_user_lamports.expect("from_user_lamports is not set"),
                   
-          pool_tokens_to: self.instruction.pool_tokens_to.expect("pool_tokens_to is not set"),
+          dest_user_pool: self.instruction.dest_user_pool.expect("dest_user_pool is not set"),
                   
-          manager_fee_account: self.instruction.manager_fee_account.expect("manager_fee_account is not set"),
+          manager_fee: self.instruction.manager_fee.expect("manager_fee is not set"),
                   
-          referrer_pool_tokens_account: self.instruction.referrer_pool_tokens_account.expect("referrer_pool_tokens_account is not set"),
+          referrer_fee: self.instruction.referrer_fee.expect("referrer_fee is not set"),
                   
           pool_mint: self.instruction.pool_mint.expect("pool_mint is not set"),
                   
@@ -598,16 +596,16 @@ impl<'a, 'b> DepositSolCpiBuilder<'a, 'b> {
 struct DepositSolCpiBuilderInstruction<'a, 'b> {
   __program: &'b solana_program::account_info::AccountInfo<'a>,
             stake_pool: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-                stake_pool_withdraw_authority: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+                withdraw_authority: Option<&'b solana_program::account_info::AccountInfo<'a>>,
                 reserve_stake_account: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-                lamports_from: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-                pool_tokens_to: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-                manager_fee_account: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-                referrer_pool_tokens_account: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+                from_user_lamports: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+                dest_user_pool: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+                manager_fee: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+                referrer_fee: Option<&'b solana_program::account_info::AccountInfo<'a>>,
                 pool_mint: Option<&'b solana_program::account_info::AccountInfo<'a>>,
                 system_program: Option<&'b solana_program::account_info::AccountInfo<'a>>,
                 token_program: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-                        arg: Option<u64>,
+                        args: Option<u64>,
         /// Additional instruction accounts `(AccountInfo, is_writable, is_signer)`.
   __remaining_accounts: Vec<(&'b solana_program::account_info::AccountInfo<'a>, bool, bool)>,
 }

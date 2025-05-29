@@ -8,16 +8,14 @@
 
 import {
   combineCodec,
-  fixDecoderSize,
-  fixEncoderSize,
   getAddressDecoder,
   getAddressEncoder,
-  getBytesDecoder,
-  getBytesEncoder,
   getOptionDecoder,
   getOptionEncoder,
   getStructDecoder,
   getStructEncoder,
+  getU8Decoder,
+  getU8Encoder,
   transformEncoder,
   type Address,
   type Codec,
@@ -32,7 +30,6 @@ import {
   type OptionOrNullable,
   type ReadonlyAccount,
   type ReadonlySignerAccount,
-  type ReadonlyUint8Array,
   type TransactionSigner,
   type WritableAccount,
 } from '@solana/kit';
@@ -45,42 +42,38 @@ import {
   type PreferredValidatorTypeArgs,
 } from '../types';
 
-export const SET_PREFERRED_VALIDATOR_DISCRIMINATOR = new Uint8Array([
-  114, 42, 19, 98, 212, 97, 109, 13,
-]);
+export const SET_PREFERRED_VALIDATOR_DISCRIMINATOR = 5;
 
 export function getSetPreferredValidatorDiscriminatorBytes() {
-  return fixEncoderSize(getBytesEncoder(), 8).encode(
-    SET_PREFERRED_VALIDATOR_DISCRIMINATOR
-  );
+  return getU8Encoder().encode(SET_PREFERRED_VALIDATOR_DISCRIMINATOR);
 }
 
 export type SetPreferredValidatorInstruction<
   TProgram extends string = typeof SPL_STAKE_POOL_PROGRAM_ADDRESS,
-  TAccountStakePoolAddress extends string | IAccountMeta<string> = string,
+  TAccountStakePool extends string | IAccountMeta<string> = string,
   TAccountStaker extends string | IAccountMeta<string> = string,
-  TAccountValidatorListAddress extends string | IAccountMeta<string> = string,
+  TAccountValidatorList extends string | IAccountMeta<string> = string,
   TRemainingAccounts extends readonly IAccountMeta<string>[] = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
   IInstructionWithAccounts<
     [
-      TAccountStakePoolAddress extends string
-        ? WritableAccount<TAccountStakePoolAddress>
-        : TAccountStakePoolAddress,
+      TAccountStakePool extends string
+        ? WritableAccount<TAccountStakePool>
+        : TAccountStakePool,
       TAccountStaker extends string
         ? ReadonlySignerAccount<TAccountStaker> &
             IAccountSignerMeta<TAccountStaker>
         : TAccountStaker,
-      TAccountValidatorListAddress extends string
-        ? ReadonlyAccount<TAccountValidatorListAddress>
-        : TAccountValidatorListAddress,
+      TAccountValidatorList extends string
+        ? ReadonlyAccount<TAccountValidatorList>
+        : TAccountValidatorList,
       ...TRemainingAccounts,
     ]
   >;
 
 export type SetPreferredValidatorInstructionData = {
-  discriminator: ReadonlyUint8Array;
+  discriminator: number;
   validatorType: PreferredValidatorType;
   validatorVoteAddress: Option<Address>;
 };
@@ -93,7 +86,7 @@ export type SetPreferredValidatorInstructionDataArgs = {
 export function getSetPreferredValidatorInstructionDataEncoder(): Encoder<SetPreferredValidatorInstructionDataArgs> {
   return transformEncoder(
     getStructEncoder([
-      ['discriminator', fixEncoderSize(getBytesEncoder(), 8)],
+      ['discriminator', getU8Encoder()],
       ['validatorType', getPreferredValidatorTypeEncoder()],
       ['validatorVoteAddress', getOptionEncoder(getAddressEncoder())],
     ]),
@@ -106,7 +99,7 @@ export function getSetPreferredValidatorInstructionDataEncoder(): Encoder<SetPre
 
 export function getSetPreferredValidatorInstructionDataDecoder(): Decoder<SetPreferredValidatorInstructionData> {
   return getStructDecoder([
-    ['discriminator', fixDecoderSize(getBytesDecoder(), 8)],
+    ['discriminator', getU8Decoder()],
     ['validatorType', getPreferredValidatorTypeDecoder()],
     ['validatorVoteAddress', getOptionDecoder(getAddressDecoder())],
   ]);
@@ -123,34 +116,34 @@ export function getSetPreferredValidatorInstructionDataCodec(): Codec<
 }
 
 export type SetPreferredValidatorInput<
-  TAccountStakePoolAddress extends string = string,
+  TAccountStakePool extends string = string,
   TAccountStaker extends string = string,
-  TAccountValidatorListAddress extends string = string,
+  TAccountValidatorList extends string = string,
 > = {
-  stakePoolAddress: Address<TAccountStakePoolAddress>;
+  stakePool: Address<TAccountStakePool>;
   staker: TransactionSigner<TAccountStaker>;
-  validatorListAddress: Address<TAccountValidatorListAddress>;
+  validatorList: Address<TAccountValidatorList>;
   validatorType: SetPreferredValidatorInstructionDataArgs['validatorType'];
   validatorVoteAddress: SetPreferredValidatorInstructionDataArgs['validatorVoteAddress'];
 };
 
 export function getSetPreferredValidatorInstruction<
-  TAccountStakePoolAddress extends string,
+  TAccountStakePool extends string,
   TAccountStaker extends string,
-  TAccountValidatorListAddress extends string,
+  TAccountValidatorList extends string,
   TProgramAddress extends Address = typeof SPL_STAKE_POOL_PROGRAM_ADDRESS,
 >(
   input: SetPreferredValidatorInput<
-    TAccountStakePoolAddress,
+    TAccountStakePool,
     TAccountStaker,
-    TAccountValidatorListAddress
+    TAccountValidatorList
   >,
   config?: { programAddress?: TProgramAddress }
 ): SetPreferredValidatorInstruction<
   TProgramAddress,
-  TAccountStakePoolAddress,
+  TAccountStakePool,
   TAccountStaker,
-  TAccountValidatorListAddress
+  TAccountValidatorList
 > {
   // Program address.
   const programAddress =
@@ -158,15 +151,9 @@ export function getSetPreferredValidatorInstruction<
 
   // Original accounts.
   const originalAccounts = {
-    stakePoolAddress: {
-      value: input.stakePoolAddress ?? null,
-      isWritable: true,
-    },
+    stakePool: { value: input.stakePool ?? null, isWritable: true },
     staker: { value: input.staker ?? null, isWritable: false },
-    validatorListAddress: {
-      value: input.validatorListAddress ?? null,
-      isWritable: false,
-    },
+    validatorList: { value: input.validatorList ?? null, isWritable: false },
   };
   const accounts = originalAccounts as Record<
     keyof typeof originalAccounts,
@@ -179,9 +166,9 @@ export function getSetPreferredValidatorInstruction<
   const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');
   const instruction = {
     accounts: [
-      getAccountMeta(accounts.stakePoolAddress),
+      getAccountMeta(accounts.stakePool),
       getAccountMeta(accounts.staker),
-      getAccountMeta(accounts.validatorListAddress),
+      getAccountMeta(accounts.validatorList),
     ],
     programAddress,
     data: getSetPreferredValidatorInstructionDataEncoder().encode(
@@ -189,9 +176,9 @@ export function getSetPreferredValidatorInstruction<
     ),
   } as SetPreferredValidatorInstruction<
     TProgramAddress,
-    TAccountStakePoolAddress,
+    TAccountStakePool,
     TAccountStaker,
-    TAccountValidatorListAddress
+    TAccountValidatorList
   >;
 
   return instruction;
@@ -203,9 +190,9 @@ export type ParsedSetPreferredValidatorInstruction<
 > = {
   programAddress: Address<TProgram>;
   accounts: {
-    stakePoolAddress: TAccountMetas[0];
+    stakePool: TAccountMetas[0];
     staker: TAccountMetas[1];
-    validatorListAddress: TAccountMetas[2];
+    validatorList: TAccountMetas[2];
   };
   data: SetPreferredValidatorInstructionData;
 };
@@ -231,9 +218,9 @@ export function parseSetPreferredValidatorInstruction<
   return {
     programAddress: instruction.programAddress,
     accounts: {
-      stakePoolAddress: getNextAccount(),
+      stakePool: getNextAccount(),
       staker: getNextAccount(),
-      validatorListAddress: getNextAccount(),
+      validatorList: getNextAccount(),
     },
     data: getSetPreferredValidatorInstructionDataDecoder().decode(
       instruction.data

@@ -19,22 +19,22 @@ pub struct IncreaseValidatorStake {
           pub staker: solana_program::pubkey::Pubkey,
           
               
-          pub stake_pool_withdraw_authority: solana_program::pubkey::Pubkey,
+          pub withdraw_authority: solana_program::pubkey::Pubkey,
           
               
           pub validator_list: solana_program::pubkey::Pubkey,
           
               
-          pub reserve_stake: solana_program::pubkey::Pubkey,
+          pub reserve_stake_account: solana_program::pubkey::Pubkey,
           
               
-          pub transient_stake: solana_program::pubkey::Pubkey,
+          pub transient_stake_account: solana_program::pubkey::Pubkey,
           
               
-          pub validator_stake: solana_program::pubkey::Pubkey,
+          pub validator_stake_account: solana_program::pubkey::Pubkey,
           
               
-          pub validator: solana_program::pubkey::Pubkey,
+          pub validator_vote_account: solana_program::pubkey::Pubkey,
           
               
           pub clock: solana_program::pubkey::Pubkey,
@@ -43,7 +43,7 @@ pub struct IncreaseValidatorStake {
           pub rent: solana_program::pubkey::Pubkey,
           
               
-          pub sysvar_stake_history: solana_program::pubkey::Pubkey,
+          pub stake_history: solana_program::pubkey::Pubkey,
           
               
           pub stake_config: solana_program::pubkey::Pubkey,
@@ -72,7 +72,7 @@ impl IncreaseValidatorStake {
             true
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-            self.stake_pool_withdraw_authority,
+            self.withdraw_authority,
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new(
@@ -80,19 +80,19 @@ impl IncreaseValidatorStake {
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new(
-            self.reserve_stake,
+            self.reserve_stake_account,
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new(
-            self.transient_stake,
+            self.transient_stake_account,
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-            self.validator_stake,
+            self.validator_stake_account,
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-            self.validator,
+            self.validator_vote_account,
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new_readonly(
@@ -104,7 +104,7 @@ impl IncreaseValidatorStake {
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-            self.sysvar_stake_history,
+            self.stake_history,
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new_readonly(
@@ -135,13 +135,13 @@ impl IncreaseValidatorStake {
 #[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
  pub struct IncreaseValidatorStakeInstructionData {
-            discriminator: [u8; 8],
+            discriminator: u8,
                   }
 
 impl IncreaseValidatorStakeInstructionData {
   pub fn new() -> Self {
     Self {
-                        discriminator: [5, 121, 50, 243, 14, 159, 97, 6],
+                        discriminator: 4,
                                               }
   }
 }
@@ -166,31 +166,31 @@ impl Default for IncreaseValidatorStakeInstructionData {
 ///
           ///   0. `[]` stake_pool
                 ///   1. `[signer]` staker
-          ///   2. `[]` stake_pool_withdraw_authority
+          ///   2. `[]` withdraw_authority
                 ///   3. `[writable]` validator_list
-                ///   4. `[writable]` reserve_stake
-                ///   5. `[writable]` transient_stake
-          ///   6. `[]` validator_stake
-          ///   7. `[]` validator
+                ///   4. `[writable]` reserve_stake_account
+                ///   5. `[writable]` transient_stake_account
+          ///   6. `[]` validator_stake_account
+          ///   7. `[]` validator_vote_account
           ///   8. `[]` clock
-                ///   9. `[optional]` rent (default to `SysvarRent111111111111111111111111111111111`)
-                ///   10. `[optional]` sysvar_stake_history (default to `SysvarStakeHistory1111111111111111111111111`)
+          ///   9. `[]` rent
+          ///   10. `[]` stake_history
           ///   11. `[]` stake_config
-                ///   12. `[optional]` system_program (default to `11111111111111111111111111111111`)
+          ///   12. `[]` system_program
           ///   13. `[]` stake_program
 #[derive(Clone, Debug, Default)]
 pub struct IncreaseValidatorStakeBuilder {
             stake_pool: Option<solana_program::pubkey::Pubkey>,
                 staker: Option<solana_program::pubkey::Pubkey>,
-                stake_pool_withdraw_authority: Option<solana_program::pubkey::Pubkey>,
+                withdraw_authority: Option<solana_program::pubkey::Pubkey>,
                 validator_list: Option<solana_program::pubkey::Pubkey>,
-                reserve_stake: Option<solana_program::pubkey::Pubkey>,
-                transient_stake: Option<solana_program::pubkey::Pubkey>,
-                validator_stake: Option<solana_program::pubkey::Pubkey>,
-                validator: Option<solana_program::pubkey::Pubkey>,
+                reserve_stake_account: Option<solana_program::pubkey::Pubkey>,
+                transient_stake_account: Option<solana_program::pubkey::Pubkey>,
+                validator_stake_account: Option<solana_program::pubkey::Pubkey>,
+                validator_vote_account: Option<solana_program::pubkey::Pubkey>,
                 clock: Option<solana_program::pubkey::Pubkey>,
                 rent: Option<solana_program::pubkey::Pubkey>,
-                sysvar_stake_history: Option<solana_program::pubkey::Pubkey>,
+                stake_history: Option<solana_program::pubkey::Pubkey>,
                 stake_config: Option<solana_program::pubkey::Pubkey>,
                 system_program: Option<solana_program::pubkey::Pubkey>,
                 stake_program: Option<solana_program::pubkey::Pubkey>,
@@ -214,8 +214,8 @@ impl IncreaseValidatorStakeBuilder {
                     self
     }
             #[inline(always)]
-    pub fn stake_pool_withdraw_authority(&mut self, stake_pool_withdraw_authority: solana_program::pubkey::Pubkey) -> &mut Self {
-                        self.stake_pool_withdraw_authority = Some(stake_pool_withdraw_authority);
+    pub fn withdraw_authority(&mut self, withdraw_authority: solana_program::pubkey::Pubkey) -> &mut Self {
+                        self.withdraw_authority = Some(withdraw_authority);
                     self
     }
             #[inline(always)]
@@ -224,23 +224,23 @@ impl IncreaseValidatorStakeBuilder {
                     self
     }
             #[inline(always)]
-    pub fn reserve_stake(&mut self, reserve_stake: solana_program::pubkey::Pubkey) -> &mut Self {
-                        self.reserve_stake = Some(reserve_stake);
+    pub fn reserve_stake_account(&mut self, reserve_stake_account: solana_program::pubkey::Pubkey) -> &mut Self {
+                        self.reserve_stake_account = Some(reserve_stake_account);
                     self
     }
             #[inline(always)]
-    pub fn transient_stake(&mut self, transient_stake: solana_program::pubkey::Pubkey) -> &mut Self {
-                        self.transient_stake = Some(transient_stake);
+    pub fn transient_stake_account(&mut self, transient_stake_account: solana_program::pubkey::Pubkey) -> &mut Self {
+                        self.transient_stake_account = Some(transient_stake_account);
                     self
     }
             #[inline(always)]
-    pub fn validator_stake(&mut self, validator_stake: solana_program::pubkey::Pubkey) -> &mut Self {
-                        self.validator_stake = Some(validator_stake);
+    pub fn validator_stake_account(&mut self, validator_stake_account: solana_program::pubkey::Pubkey) -> &mut Self {
+                        self.validator_stake_account = Some(validator_stake_account);
                     self
     }
             #[inline(always)]
-    pub fn validator(&mut self, validator: solana_program::pubkey::Pubkey) -> &mut Self {
-                        self.validator = Some(validator);
+    pub fn validator_vote_account(&mut self, validator_vote_account: solana_program::pubkey::Pubkey) -> &mut Self {
+                        self.validator_vote_account = Some(validator_vote_account);
                     self
     }
             #[inline(always)]
@@ -248,16 +248,14 @@ impl IncreaseValidatorStakeBuilder {
                         self.clock = Some(clock);
                     self
     }
-            /// `[optional account, default to 'SysvarRent111111111111111111111111111111111']`
-#[inline(always)]
+            #[inline(always)]
     pub fn rent(&mut self, rent: solana_program::pubkey::Pubkey) -> &mut Self {
                         self.rent = Some(rent);
                     self
     }
-            /// `[optional account, default to 'SysvarStakeHistory1111111111111111111111111']`
-#[inline(always)]
-    pub fn sysvar_stake_history(&mut self, sysvar_stake_history: solana_program::pubkey::Pubkey) -> &mut Self {
-                        self.sysvar_stake_history = Some(sysvar_stake_history);
+            #[inline(always)]
+    pub fn stake_history(&mut self, stake_history: solana_program::pubkey::Pubkey) -> &mut Self {
+                        self.stake_history = Some(stake_history);
                     self
     }
             #[inline(always)]
@@ -265,8 +263,7 @@ impl IncreaseValidatorStakeBuilder {
                         self.stake_config = Some(stake_config);
                     self
     }
-            /// `[optional account, default to '11111111111111111111111111111111']`
-#[inline(always)]
+            #[inline(always)]
     pub fn system_program(&mut self, system_program: solana_program::pubkey::Pubkey) -> &mut Self {
                         self.system_program = Some(system_program);
                     self
@@ -303,17 +300,17 @@ impl IncreaseValidatorStakeBuilder {
     let accounts = IncreaseValidatorStake {
                               stake_pool: self.stake_pool.expect("stake_pool is not set"),
                                         staker: self.staker.expect("staker is not set"),
-                                        stake_pool_withdraw_authority: self.stake_pool_withdraw_authority.expect("stake_pool_withdraw_authority is not set"),
+                                        withdraw_authority: self.withdraw_authority.expect("withdraw_authority is not set"),
                                         validator_list: self.validator_list.expect("validator_list is not set"),
-                                        reserve_stake: self.reserve_stake.expect("reserve_stake is not set"),
-                                        transient_stake: self.transient_stake.expect("transient_stake is not set"),
-                                        validator_stake: self.validator_stake.expect("validator_stake is not set"),
-                                        validator: self.validator.expect("validator is not set"),
+                                        reserve_stake_account: self.reserve_stake_account.expect("reserve_stake_account is not set"),
+                                        transient_stake_account: self.transient_stake_account.expect("transient_stake_account is not set"),
+                                        validator_stake_account: self.validator_stake_account.expect("validator_stake_account is not set"),
+                                        validator_vote_account: self.validator_vote_account.expect("validator_vote_account is not set"),
                                         clock: self.clock.expect("clock is not set"),
-                                        rent: self.rent.unwrap_or(solana_program::pubkey!("SysvarRent111111111111111111111111111111111")),
-                                        sysvar_stake_history: self.sysvar_stake_history.unwrap_or(solana_program::pubkey!("SysvarStakeHistory1111111111111111111111111")),
+                                        rent: self.rent.expect("rent is not set"),
+                                        stake_history: self.stake_history.expect("stake_history is not set"),
                                         stake_config: self.stake_config.expect("stake_config is not set"),
-                                        system_program: self.system_program.unwrap_or(solana_program::pubkey!("11111111111111111111111111111111")),
+                                        system_program: self.system_program.expect("system_program is not set"),
                                         stake_program: self.stake_program.expect("stake_program is not set"),
                       };
           let args = IncreaseValidatorStakeInstructionArgs {
@@ -335,22 +332,22 @@ impl IncreaseValidatorStakeBuilder {
               pub staker: &'b solana_program::account_info::AccountInfo<'a>,
                 
                     
-              pub stake_pool_withdraw_authority: &'b solana_program::account_info::AccountInfo<'a>,
+              pub withdraw_authority: &'b solana_program::account_info::AccountInfo<'a>,
                 
                     
               pub validator_list: &'b solana_program::account_info::AccountInfo<'a>,
                 
                     
-              pub reserve_stake: &'b solana_program::account_info::AccountInfo<'a>,
+              pub reserve_stake_account: &'b solana_program::account_info::AccountInfo<'a>,
                 
                     
-              pub transient_stake: &'b solana_program::account_info::AccountInfo<'a>,
+              pub transient_stake_account: &'b solana_program::account_info::AccountInfo<'a>,
                 
                     
-              pub validator_stake: &'b solana_program::account_info::AccountInfo<'a>,
+              pub validator_stake_account: &'b solana_program::account_info::AccountInfo<'a>,
                 
                     
-              pub validator: &'b solana_program::account_info::AccountInfo<'a>,
+              pub validator_vote_account: &'b solana_program::account_info::AccountInfo<'a>,
                 
                     
               pub clock: &'b solana_program::account_info::AccountInfo<'a>,
@@ -359,7 +356,7 @@ impl IncreaseValidatorStakeBuilder {
               pub rent: &'b solana_program::account_info::AccountInfo<'a>,
                 
                     
-              pub sysvar_stake_history: &'b solana_program::account_info::AccountInfo<'a>,
+              pub stake_history: &'b solana_program::account_info::AccountInfo<'a>,
                 
                     
               pub stake_config: &'b solana_program::account_info::AccountInfo<'a>,
@@ -383,22 +380,22 @@ pub struct IncreaseValidatorStakeCpi<'a, 'b> {
           pub staker: &'b solana_program::account_info::AccountInfo<'a>,
           
               
-          pub stake_pool_withdraw_authority: &'b solana_program::account_info::AccountInfo<'a>,
+          pub withdraw_authority: &'b solana_program::account_info::AccountInfo<'a>,
           
               
           pub validator_list: &'b solana_program::account_info::AccountInfo<'a>,
           
               
-          pub reserve_stake: &'b solana_program::account_info::AccountInfo<'a>,
+          pub reserve_stake_account: &'b solana_program::account_info::AccountInfo<'a>,
           
               
-          pub transient_stake: &'b solana_program::account_info::AccountInfo<'a>,
+          pub transient_stake_account: &'b solana_program::account_info::AccountInfo<'a>,
           
               
-          pub validator_stake: &'b solana_program::account_info::AccountInfo<'a>,
+          pub validator_stake_account: &'b solana_program::account_info::AccountInfo<'a>,
           
               
-          pub validator: &'b solana_program::account_info::AccountInfo<'a>,
+          pub validator_vote_account: &'b solana_program::account_info::AccountInfo<'a>,
           
               
           pub clock: &'b solana_program::account_info::AccountInfo<'a>,
@@ -407,7 +404,7 @@ pub struct IncreaseValidatorStakeCpi<'a, 'b> {
           pub rent: &'b solana_program::account_info::AccountInfo<'a>,
           
               
-          pub sysvar_stake_history: &'b solana_program::account_info::AccountInfo<'a>,
+          pub stake_history: &'b solana_program::account_info::AccountInfo<'a>,
           
               
           pub stake_config: &'b solana_program::account_info::AccountInfo<'a>,
@@ -431,15 +428,15 @@ impl<'a, 'b> IncreaseValidatorStakeCpi<'a, 'b> {
       __program: program,
               stake_pool: accounts.stake_pool,
               staker: accounts.staker,
-              stake_pool_withdraw_authority: accounts.stake_pool_withdraw_authority,
+              withdraw_authority: accounts.withdraw_authority,
               validator_list: accounts.validator_list,
-              reserve_stake: accounts.reserve_stake,
-              transient_stake: accounts.transient_stake,
-              validator_stake: accounts.validator_stake,
-              validator: accounts.validator,
+              reserve_stake_account: accounts.reserve_stake_account,
+              transient_stake_account: accounts.transient_stake_account,
+              validator_stake_account: accounts.validator_stake_account,
+              validator_vote_account: accounts.validator_vote_account,
               clock: accounts.clock,
               rent: accounts.rent,
-              sysvar_stake_history: accounts.sysvar_stake_history,
+              stake_history: accounts.stake_history,
               stake_config: accounts.stake_config,
               system_program: accounts.system_program,
               stake_program: accounts.stake_program,
@@ -476,7 +473,7 @@ impl<'a, 'b> IncreaseValidatorStakeCpi<'a, 'b> {
             true
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-            *self.stake_pool_withdraw_authority.key,
+            *self.withdraw_authority.key,
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new(
@@ -484,19 +481,19 @@ impl<'a, 'b> IncreaseValidatorStakeCpi<'a, 'b> {
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new(
-            *self.reserve_stake.key,
+            *self.reserve_stake_account.key,
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new(
-            *self.transient_stake.key,
+            *self.transient_stake_account.key,
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-            *self.validator_stake.key,
+            *self.validator_stake_account.key,
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-            *self.validator.key,
+            *self.validator_vote_account.key,
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new_readonly(
@@ -508,7 +505,7 @@ impl<'a, 'b> IncreaseValidatorStakeCpi<'a, 'b> {
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new_readonly(
-            *self.sysvar_stake_history.key,
+            *self.stake_history.key,
             false
           ));
                                           accounts.push(solana_program::instruction::AccountMeta::new_readonly(
@@ -543,15 +540,15 @@ impl<'a, 'b> IncreaseValidatorStakeCpi<'a, 'b> {
     account_infos.push(self.__program.clone());
                   account_infos.push(self.stake_pool.clone());
                         account_infos.push(self.staker.clone());
-                        account_infos.push(self.stake_pool_withdraw_authority.clone());
+                        account_infos.push(self.withdraw_authority.clone());
                         account_infos.push(self.validator_list.clone());
-                        account_infos.push(self.reserve_stake.clone());
-                        account_infos.push(self.transient_stake.clone());
-                        account_infos.push(self.validator_stake.clone());
-                        account_infos.push(self.validator.clone());
+                        account_infos.push(self.reserve_stake_account.clone());
+                        account_infos.push(self.transient_stake_account.clone());
+                        account_infos.push(self.validator_stake_account.clone());
+                        account_infos.push(self.validator_vote_account.clone());
                         account_infos.push(self.clock.clone());
                         account_infos.push(self.rent.clone());
-                        account_infos.push(self.sysvar_stake_history.clone());
+                        account_infos.push(self.stake_history.clone());
                         account_infos.push(self.stake_config.clone());
                         account_infos.push(self.system_program.clone());
                         account_infos.push(self.stake_program.clone());
@@ -571,15 +568,15 @@ impl<'a, 'b> IncreaseValidatorStakeCpi<'a, 'b> {
 ///
           ///   0. `[]` stake_pool
                 ///   1. `[signer]` staker
-          ///   2. `[]` stake_pool_withdraw_authority
+          ///   2. `[]` withdraw_authority
                 ///   3. `[writable]` validator_list
-                ///   4. `[writable]` reserve_stake
-                ///   5. `[writable]` transient_stake
-          ///   6. `[]` validator_stake
-          ///   7. `[]` validator
+                ///   4. `[writable]` reserve_stake_account
+                ///   5. `[writable]` transient_stake_account
+          ///   6. `[]` validator_stake_account
+          ///   7. `[]` validator_vote_account
           ///   8. `[]` clock
           ///   9. `[]` rent
-          ///   10. `[]` sysvar_stake_history
+          ///   10. `[]` stake_history
           ///   11. `[]` stake_config
           ///   12. `[]` system_program
           ///   13. `[]` stake_program
@@ -594,15 +591,15 @@ impl<'a, 'b> IncreaseValidatorStakeCpiBuilder<'a, 'b> {
       __program: program,
               stake_pool: None,
               staker: None,
-              stake_pool_withdraw_authority: None,
+              withdraw_authority: None,
               validator_list: None,
-              reserve_stake: None,
-              transient_stake: None,
-              validator_stake: None,
-              validator: None,
+              reserve_stake_account: None,
+              transient_stake_account: None,
+              validator_stake_account: None,
+              validator_vote_account: None,
               clock: None,
               rent: None,
-              sysvar_stake_history: None,
+              stake_history: None,
               stake_config: None,
               system_program: None,
               stake_program: None,
@@ -623,8 +620,8 @@ impl<'a, 'b> IncreaseValidatorStakeCpiBuilder<'a, 'b> {
                     self
     }
       #[inline(always)]
-    pub fn stake_pool_withdraw_authority(&mut self, stake_pool_withdraw_authority: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
-                        self.instruction.stake_pool_withdraw_authority = Some(stake_pool_withdraw_authority);
+    pub fn withdraw_authority(&mut self, withdraw_authority: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+                        self.instruction.withdraw_authority = Some(withdraw_authority);
                     self
     }
       #[inline(always)]
@@ -633,23 +630,23 @@ impl<'a, 'b> IncreaseValidatorStakeCpiBuilder<'a, 'b> {
                     self
     }
       #[inline(always)]
-    pub fn reserve_stake(&mut self, reserve_stake: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
-                        self.instruction.reserve_stake = Some(reserve_stake);
+    pub fn reserve_stake_account(&mut self, reserve_stake_account: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+                        self.instruction.reserve_stake_account = Some(reserve_stake_account);
                     self
     }
       #[inline(always)]
-    pub fn transient_stake(&mut self, transient_stake: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
-                        self.instruction.transient_stake = Some(transient_stake);
+    pub fn transient_stake_account(&mut self, transient_stake_account: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+                        self.instruction.transient_stake_account = Some(transient_stake_account);
                     self
     }
       #[inline(always)]
-    pub fn validator_stake(&mut self, validator_stake: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
-                        self.instruction.validator_stake = Some(validator_stake);
+    pub fn validator_stake_account(&mut self, validator_stake_account: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+                        self.instruction.validator_stake_account = Some(validator_stake_account);
                     self
     }
       #[inline(always)]
-    pub fn validator(&mut self, validator: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
-                        self.instruction.validator = Some(validator);
+    pub fn validator_vote_account(&mut self, validator_vote_account: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+                        self.instruction.validator_vote_account = Some(validator_vote_account);
                     self
     }
       #[inline(always)]
@@ -663,8 +660,8 @@ impl<'a, 'b> IncreaseValidatorStakeCpiBuilder<'a, 'b> {
                     self
     }
       #[inline(always)]
-    pub fn sysvar_stake_history(&mut self, sysvar_stake_history: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
-                        self.instruction.sysvar_stake_history = Some(sysvar_stake_history);
+    pub fn stake_history(&mut self, stake_history: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+                        self.instruction.stake_history = Some(stake_history);
                     self
     }
       #[inline(always)]
@@ -725,23 +722,23 @@ impl<'a, 'b> IncreaseValidatorStakeCpiBuilder<'a, 'b> {
                   
           staker: self.instruction.staker.expect("staker is not set"),
                   
-          stake_pool_withdraw_authority: self.instruction.stake_pool_withdraw_authority.expect("stake_pool_withdraw_authority is not set"),
+          withdraw_authority: self.instruction.withdraw_authority.expect("withdraw_authority is not set"),
                   
           validator_list: self.instruction.validator_list.expect("validator_list is not set"),
                   
-          reserve_stake: self.instruction.reserve_stake.expect("reserve_stake is not set"),
+          reserve_stake_account: self.instruction.reserve_stake_account.expect("reserve_stake_account is not set"),
                   
-          transient_stake: self.instruction.transient_stake.expect("transient_stake is not set"),
+          transient_stake_account: self.instruction.transient_stake_account.expect("transient_stake_account is not set"),
                   
-          validator_stake: self.instruction.validator_stake.expect("validator_stake is not set"),
+          validator_stake_account: self.instruction.validator_stake_account.expect("validator_stake_account is not set"),
                   
-          validator: self.instruction.validator.expect("validator is not set"),
+          validator_vote_account: self.instruction.validator_vote_account.expect("validator_vote_account is not set"),
                   
           clock: self.instruction.clock.expect("clock is not set"),
                   
           rent: self.instruction.rent.expect("rent is not set"),
                   
-          sysvar_stake_history: self.instruction.sysvar_stake_history.expect("sysvar_stake_history is not set"),
+          stake_history: self.instruction.stake_history.expect("stake_history is not set"),
                   
           stake_config: self.instruction.stake_config.expect("stake_config is not set"),
                   
@@ -759,15 +756,15 @@ struct IncreaseValidatorStakeCpiBuilderInstruction<'a, 'b> {
   __program: &'b solana_program::account_info::AccountInfo<'a>,
             stake_pool: Option<&'b solana_program::account_info::AccountInfo<'a>>,
                 staker: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-                stake_pool_withdraw_authority: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+                withdraw_authority: Option<&'b solana_program::account_info::AccountInfo<'a>>,
                 validator_list: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-                reserve_stake: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-                transient_stake: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-                validator_stake: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-                validator: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+                reserve_stake_account: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+                transient_stake_account: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+                validator_stake_account: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+                validator_vote_account: Option<&'b solana_program::account_info::AccountInfo<'a>>,
                 clock: Option<&'b solana_program::account_info::AccountInfo<'a>>,
                 rent: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-                sysvar_stake_history: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+                stake_history: Option<&'b solana_program::account_info::AccountInfo<'a>>,
                 stake_config: Option<&'b solana_program::account_info::AccountInfo<'a>>,
                 system_program: Option<&'b solana_program::account_info::AccountInfo<'a>>,
                 stake_program: Option<&'b solana_program::account_info::AccountInfo<'a>>,

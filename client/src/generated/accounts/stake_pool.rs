@@ -9,6 +9,7 @@ use crate::generated::types::AccountType;
 use solana_program::pubkey::Pubkey;
 use crate::generated::types::Lockup;
 use crate::generated::types::Fee;
+use crate::generated::types::FutureEpoch;
 use borsh::BorshSerialize;
 use borsh::BorshDeserialize;
 
@@ -16,7 +17,6 @@ use borsh::BorshDeserialize;
 #[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct StakePool {
-pub discriminator: [u8; 8],
 pub account_type: AccountType,
 #[cfg_attr(feature = "serde", serde(with = "serde_with::As::<serde_with::DisplayFromStr>"))]
 pub manager: Pubkey,
@@ -40,19 +40,19 @@ pub pool_token_supply: u64,
 pub last_update_epoch: u64,
 pub lockup: Lockup,
 pub epoch_fee: Fee,
-pub next_epoch_fee: Option<Fee>,
+pub next_epoch_fee: FutureEpoch,
 pub preferred_deposit_validator_vote_address: Option<Pubkey>,
 pub preferred_withdraw_validator_vote_address: Option<Pubkey>,
 pub stake_deposit_fee: Fee,
 pub stake_withdrawal_fee: Fee,
-pub next_stake_withdrawal_fee: Option<Fee>,
+pub next_stake_withdrawal_fee: FutureEpoch,
 pub stake_referral_fee: u8,
 pub sol_deposit_authority: Option<Pubkey>,
 pub sol_deposit_fee: Fee,
 pub sol_referral_fee: u8,
 pub sol_withdraw_authority: Option<Pubkey>,
 pub sol_withdrawal_fee: Fee,
-pub next_sol_withdrawal_fee: Option<Fee>,
+pub next_sol_withdrawal_fee: FutureEpoch,
 pub last_epoch_pool_token_supply: u64,
 pub last_epoch_total_lamports: u64,
 }

@@ -8,11 +8,17 @@
   pub(crate) mod r#add_validator_to_pool;
   pub(crate) mod r#cleanup_removed_validator_entries;
   pub(crate) mod r#create_token_metadata;
+  pub(crate) mod r#decrease_additional_validator_stake;
   pub(crate) mod r#decrease_validator_stake;
+  pub(crate) mod r#decrease_validator_stake_with_reserve;
   pub(crate) mod r#deposit_sol;
+  pub(crate) mod r#deposit_sol_with_slippage;
   pub(crate) mod r#deposit_stake;
+  pub(crate) mod r#deposit_stake_with_slippage;
+  pub(crate) mod r#increase_additional_validator_stake;
   pub(crate) mod r#increase_validator_stake;
   pub(crate) mod r#initialize;
+  pub(crate) mod r#redelegate;
   pub(crate) mod r#remove_validator_from_pool;
   pub(crate) mod r#set_fee;
   pub(crate) mod r#set_funding_authority;
@@ -23,16 +29,24 @@
   pub(crate) mod r#update_token_metadata;
   pub(crate) mod r#update_validator_list_balance;
   pub(crate) mod r#withdraw_sol;
+  pub(crate) mod r#withdraw_sol_with_slippage;
   pub(crate) mod r#withdraw_stake;
+  pub(crate) mod r#withdraw_stake_with_slippage;
 
   pub use self::r#add_validator_to_pool::*;
   pub use self::r#cleanup_removed_validator_entries::*;
   pub use self::r#create_token_metadata::*;
+  pub use self::r#decrease_additional_validator_stake::*;
   pub use self::r#decrease_validator_stake::*;
+  pub use self::r#decrease_validator_stake_with_reserve::*;
   pub use self::r#deposit_sol::*;
+  pub use self::r#deposit_sol_with_slippage::*;
   pub use self::r#deposit_stake::*;
+  pub use self::r#deposit_stake_with_slippage::*;
+  pub use self::r#increase_additional_validator_stake::*;
   pub use self::r#increase_validator_stake::*;
   pub use self::r#initialize::*;
+  pub use self::r#redelegate::*;
   pub use self::r#remove_validator_from_pool::*;
   pub use self::r#set_fee::*;
   pub use self::r#set_funding_authority::*;
@@ -43,5 +57,7 @@
   pub use self::r#update_token_metadata::*;
   pub use self::r#update_validator_list_balance::*;
   pub use self::r#withdraw_sol::*;
+  pub use self::r#withdraw_sol_with_slippage::*;
   pub use self::r#withdraw_stake::*;
+  pub use self::r#withdraw_stake_with_slippage::*;
 

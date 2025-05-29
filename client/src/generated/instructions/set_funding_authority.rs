@@ -18,6 +18,9 @@ pub struct SetFundingAuthority {
           
               
           pub manager: solana_program::pubkey::Pubkey,
+          
+              
+          pub new_authority: solana_program::pubkey::Pubkey,
       }
 
 impl SetFundingAuthority {
@@ -27,7 +30,7 @@ impl SetFundingAuthority {
   #[allow(clippy::arithmetic_side_effects)]
   #[allow(clippy::vec_init_then_push)]
   pub fn instruction_with_remaining_accounts(&self, args: SetFundingAuthorityInstructionArgs, remaining_accounts: &[solana_program::instruction::AccountMeta]) -> solana_program::instruction::Instruction {
-    let mut accounts = Vec::with_capacity(2+ remaining_accounts.len());
+    let mut accounts = Vec::with_capacity(3+ remaining_accounts.len());
                             accounts.push(solana_program::instruction::AccountMeta::new(
             self.stake_pool,
             false
@@ -35,6 +38,10 @@ impl SetFundingAuthority {
                                           accounts.push(solana_program::instruction::AccountMeta::new_readonly(
             self.manager,
             true
+          ));
+                                          accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            self.new_authority,
+            false
           ));
                       accounts.extend_from_slice(remaining_accounts);
     let mut data = borsh::to_vec(&SetFundingAuthorityInstructionData::new()).unwrap();
@@ -52,13 +59,13 @@ impl SetFundingAuthority {
 #[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
  pub struct SetFundingAuthorityInstructionData {
-            discriminator: [u8; 8],
+            discriminator: u8,
             }
 
 impl SetFundingAuthorityInstructionData {
   pub fn new() -> Self {
     Self {
-                        discriminator: [48, 2, 114, 83, 165, 222, 71, 233],
+                        discriminator: 15,
                                 }
   }
 }
@@ -72,7 +79,7 @@ impl Default for SetFundingAuthorityInstructionData {
 #[derive(BorshSerialize, BorshDeserialize, Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
  pub struct SetFundingAuthorityInstructionArgs {
-                  pub arg: FundingType,
+                  pub args: FundingType,
       }
 
 
@@ -82,11 +89,13 @@ impl Default for SetFundingAuthorityInstructionData {
 ///
                 ///   0. `[writable]` stake_pool
                 ///   1. `[signer]` manager
+          ///   2. `[]` new_authority
 #[derive(Clone, Debug, Default)]
 pub struct SetFundingAuthorityBuilder {
             stake_pool: Option<solana_program::pubkey::Pubkey>,
                 manager: Option<solana_program::pubkey::Pubkey>,
-                        arg: Option<FundingType>,
+                new_authority: Option<solana_program::pubkey::Pubkey>,
+                        args: Option<FundingType>,
         __remaining_accounts: Vec<solana_program::instruction::AccountMeta>,
 }
 
@@ -104,9 +113,14 @@ impl SetFundingAuthorityBuilder {
                         self.manager = Some(manager);
                     self
     }
+            #[inline(always)]
+    pub fn new_authority(&mut self, new_authority: solana_program::pubkey::Pubkey) -> &mut Self {
+                        self.new_authority = Some(new_authority);
+                    self
+    }
                     #[inline(always)]
-      pub fn arg(&mut self, arg: FundingType) -> &mut Self {
-        self.arg = Some(arg);
+      pub fn args(&mut self, args: FundingType) -> &mut Self {
+        self.args = Some(args);
         self
       }
         /// Add an additional account to the instruction.
@@ -126,9 +140,10 @@ impl SetFundingAuthorityBuilder {
     let accounts = SetFundingAuthority {
                               stake_pool: self.stake_pool.expect("stake_pool is not set"),
                                         manager: self.manager.expect("manager is not set"),
+                                        new_authority: self.new_authority.expect("new_authority is not set"),
                       };
           let args = SetFundingAuthorityInstructionArgs {
-                                                              arg: self.arg.clone().expect("arg is not set"),
+                                                              args: self.args.clone().expect("args is not set"),
                                     };
     
     accounts.instruction_with_remaining_accounts(args, &self.__remaining_accounts)
@@ -143,6 +158,9 @@ impl SetFundingAuthorityBuilder {
                 
                     
               pub manager: &'b solana_program::account_info::AccountInfo<'a>,
+                
+                    
+              pub new_authority: &'b solana_program::account_info::AccountInfo<'a>,
             }
 
 /// `set_funding_authority` CPI instruction.
@@ -155,6 +173,9 @@ pub struct SetFundingAuthorityCpi<'a, 'b> {
           
               
           pub manager: &'b solana_program::account_info::AccountInfo<'a>,
+          
+              
+          pub new_authority: &'b solana_program::account_info::AccountInfo<'a>,
             /// The arguments for the instruction.
     pub __args: SetFundingAuthorityInstructionArgs,
   }
@@ -169,6 +190,7 @@ impl<'a, 'b> SetFundingAuthorityCpi<'a, 'b> {
       __program: program,
               stake_pool: accounts.stake_pool,
               manager: accounts.manager,
+              new_authority: accounts.new_authority,
                     __args: args,
           }
   }
@@ -192,7 +214,7 @@ impl<'a, 'b> SetFundingAuthorityCpi<'a, 'b> {
     signers_seeds: &[&[&[u8]]],
     remaining_accounts: &[(&'b solana_program::account_info::AccountInfo<'a>, bool, bool)]
   ) -> solana_program::entrypoint::ProgramResult {
-    let mut accounts = Vec::with_capacity(2+ remaining_accounts.len());
+    let mut accounts = Vec::with_capacity(3+ remaining_accounts.len());
                             accounts.push(solana_program::instruction::AccountMeta::new(
             *self.stake_pool.key,
             false
@@ -200,6 +222,10 @@ impl<'a, 'b> SetFundingAuthorityCpi<'a, 'b> {
                                           accounts.push(solana_program::instruction::AccountMeta::new_readonly(
             *self.manager.key,
             true
+          ));
+                                          accounts.push(solana_program::instruction::AccountMeta::new_readonly(
+            *self.new_authority.key,
+            false
           ));
                       remaining_accounts.iter().for_each(|remaining_account| {
       accounts.push(solana_program::instruction::AccountMeta {
@@ -217,10 +243,11 @@ impl<'a, 'b> SetFundingAuthorityCpi<'a, 'b> {
       accounts,
       data,
     };
-    let mut account_infos = Vec::with_capacity(3 + remaining_accounts.len());
+    let mut account_infos = Vec::with_capacity(4 + remaining_accounts.len());
     account_infos.push(self.__program.clone());
                   account_infos.push(self.stake_pool.clone());
                         account_infos.push(self.manager.clone());
+                        account_infos.push(self.new_authority.clone());
               remaining_accounts.iter().for_each(|remaining_account| account_infos.push(remaining_account.0.clone()));
 
     if signers_seeds.is_empty() {
@@ -237,6 +264,7 @@ impl<'a, 'b> SetFundingAuthorityCpi<'a, 'b> {
 ///
                 ///   0. `[writable]` stake_pool
                 ///   1. `[signer]` manager
+          ///   2. `[]` new_authority
 #[derive(Clone, Debug)]
 pub struct SetFundingAuthorityCpiBuilder<'a, 'b> {
   instruction: Box<SetFundingAuthorityCpiBuilderInstruction<'a, 'b>>,
@@ -248,7 +276,8 @@ impl<'a, 'b> SetFundingAuthorityCpiBuilder<'a, 'b> {
       __program: program,
               stake_pool: None,
               manager: None,
-                                            arg: None,
+              new_authority: None,
+                                            args: None,
                     __remaining_accounts: Vec::new(),
     });
     Self { instruction }
@@ -263,9 +292,14 @@ impl<'a, 'b> SetFundingAuthorityCpiBuilder<'a, 'b> {
                         self.instruction.manager = Some(manager);
                     self
     }
+      #[inline(always)]
+    pub fn new_authority(&mut self, new_authority: &'b solana_program::account_info::AccountInfo<'a>) -> &mut Self {
+                        self.instruction.new_authority = Some(new_authority);
+                    self
+    }
                     #[inline(always)]
-      pub fn arg(&mut self, arg: FundingType) -> &mut Self {
-        self.instruction.arg = Some(arg);
+      pub fn args(&mut self, args: FundingType) -> &mut Self {
+        self.instruction.args = Some(args);
         self
       }
         /// Add an additional account to the instruction.
@@ -291,7 +325,7 @@ impl<'a, 'b> SetFundingAuthorityCpiBuilder<'a, 'b> {
   #[allow(clippy::vec_init_then_push)]
   pub fn invoke_signed(&self, signers_seeds: &[&[&[u8]]]) -> solana_program::entrypoint::ProgramResult {
           let args = SetFundingAuthorityInstructionArgs {
-                                                              arg: self.instruction.arg.clone().expect("arg is not set"),
+                                                              args: self.instruction.args.clone().expect("args is not set"),
                                     };
         let instruction = SetFundingAuthorityCpi {
         __program: self.instruction.__program,
@@ -299,6 +333,8 @@ impl<'a, 'b> SetFundingAuthorityCpiBuilder<'a, 'b> {
           stake_pool: self.instruction.stake_pool.expect("stake_pool is not set"),
                   
           manager: self.instruction.manager.expect("manager is not set"),
+                  
+          new_authority: self.instruction.new_authority.expect("new_authority is not set"),
                           __args: args,
             };
     instruction.invoke_signed_with_remaining_accounts(signers_seeds, &self.instruction.__remaining_accounts)
@@ -310,7 +346,8 @@ struct SetFundingAuthorityCpiBuilderInstruction<'a, 'b> {
   __program: &'b solana_program::account_info::AccountInfo<'a>,
             stake_pool: Option<&'b solana_program::account_info::AccountInfo<'a>>,
                 manager: Option<&'b solana_program::account_info::AccountInfo<'a>>,
-                        arg: Option<FundingType>,
+                new_authority: Option<&'b solana_program::account_info::AccountInfo<'a>>,
+                        args: Option<FundingType>,
         /// Additional instruction accounts `(AccountInfo, is_writable, is_signer)`.
   __remaining_accounts: Vec<(&'b solana_program::account_info::AccountInfo<'a>, bool, bool)>,
 }

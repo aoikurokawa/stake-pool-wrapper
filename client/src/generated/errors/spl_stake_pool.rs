@@ -43,9 +43,9 @@ pub enum SplStakePoolError {
     /// 10 - WrongPoolMint
     #[error("WrongPoolMint")]
     WrongPoolMint = 0xA,
-    /// 11 - WrongStakeState
-    #[error("WrongStakeState")]
-    WrongStakeState = 0xB,
+    /// 11 - WrongStakeStake
+    #[error("WrongStakeStake")]
+    WrongStakeStake = 0xB,
     /// 12 - UserStakeNotActive
     #[error("UserStakeNotActive")]
     UserStakeNotActive = 0xC,
@@ -121,6 +121,24 @@ pub enum SplStakePoolError {
     /// 36 - InvalidMetadataAccount
     #[error("InvalidMetadataAccount")]
     InvalidMetadataAccount = 0x24,
+    /// 37 - UnsupportedMintExtension
+    #[error("UnsupportedMintExtension")]
+    UnsupportedMintExtension = 0x25,
+    /// 38 - UnsupportedFeeAccountExtension
+    #[error("UnsupportedFeeAccountExtension")]
+    UnsupportedFeeAccountExtension = 0x26,
+    /// 39 - Instruction exceeds desired slippage limit
+    #[error("Instruction exceeds desired slippage limit")]
+    ExceededSlippage = 0x27,
+    /// 40 - IncorrectMintDecimals
+    #[error("IncorrectMintDecimals")]
+    IncorrectMintDecimals = 0x28,
+    /// 41 - ReserveDepleted
+    #[error("ReserveDepleted")]
+    ReserveDepleted = 0x29,
+    /// 42 - Missing required sysvar account
+    #[error("Missing required sysvar account")]
+    MissingRequiredSysvar = 0x2A,
 }
 
 impl solana_program::program_error::PrintProgramError for SplStakePoolError {

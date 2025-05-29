@@ -8,14 +8,12 @@
 
 import {
   combineCodec,
-  fixDecoderSize,
-  fixEncoderSize,
-  getBytesDecoder,
-  getBytesEncoder,
   getStructDecoder,
   getStructEncoder,
   getU64Decoder,
   getU64Encoder,
+  getU8Decoder,
+  getU8Encoder,
   transformEncoder,
   type Address,
   type Codec,
@@ -28,39 +26,33 @@ import {
   type IInstructionWithData,
   type ReadonlyAccount,
   type ReadonlySignerAccount,
-  type ReadonlyUint8Array,
   type TransactionSigner,
   type WritableAccount,
 } from '@solana/kit';
 import { SPL_STAKE_POOL_PROGRAM_ADDRESS } from '../programs';
 import { getAccountMetaFactory, type ResolvedAccount } from '../shared';
 
-export const WITHDRAW_STAKE_DISCRIMINATOR = new Uint8Array([
-  153, 8, 22, 138, 105, 176, 87, 66,
-]);
+export const WITHDRAW_STAKE_DISCRIMINATOR = 10;
 
 export function getWithdrawStakeDiscriminatorBytes() {
-  return fixEncoderSize(getBytesEncoder(), 8).encode(
-    WITHDRAW_STAKE_DISCRIMINATOR
-  );
+  return getU8Encoder().encode(WITHDRAW_STAKE_DISCRIMINATOR);
 }
 
 export type WithdrawStakeInstruction<
   TProgram extends string = typeof SPL_STAKE_POOL_PROGRAM_ADDRESS,
   TAccountStakePool extends string | IAccountMeta<string> = string,
-  TAccountValidatorListStorage extends string | IAccountMeta<string> = string,
-  TAccountStakePoolWithdraw extends string | IAccountMeta<string> = string,
-  TAccountStakeToSplit extends string | IAccountMeta<string> = string,
-  TAccountStakeToReceive extends string | IAccountMeta<string> = string,
+  TAccountValidatorList extends string | IAccountMeta<string> = string,
+  TAccountWithdrawAuthority extends string | IAccountMeta<string> = string,
+  TAccountStakeSplitFrom extends string | IAccountMeta<string> = string,
+  TAccountStakeSplitTo extends string | IAccountMeta<string> = string,
   TAccountUserStakeAuthority extends string | IAccountMeta<string> = string,
   TAccountUserTransferAuthority extends string | IAccountMeta<string> = string,
-  TAccountUserPoolTokenAccount extends string | IAccountMeta<string> = string,
-  TAccountManagerFeeAccount extends string | IAccountMeta<string> = string,
+  TAccountBurnFromPool extends string | IAccountMeta<string> = string,
+  TAccountManagerFee extends string | IAccountMeta<string> = string,
   TAccountPoolMint extends string | IAccountMeta<string> = string,
   TAccountClock extends string | IAccountMeta<string> = string,
-  TAccountTokenProgram extends
-    | string
-    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+  TAccountTokenProgram extends string | IAccountMeta<string> = string,
+  TAccountStakeProgram extends string | IAccountMeta<string> = string,
   TAccountStakeProgram extends string | IAccountMeta<string> = string,
   TRemainingAccounts extends readonly IAccountMeta<string>[] = [],
 > = IInstruction<TProgram> &
@@ -70,18 +62,18 @@ export type WithdrawStakeInstruction<
       TAccountStakePool extends string
         ? WritableAccount<TAccountStakePool>
         : TAccountStakePool,
-      TAccountValidatorListStorage extends string
-        ? WritableAccount<TAccountValidatorListStorage>
-        : TAccountValidatorListStorage,
-      TAccountStakePoolWithdraw extends string
-        ? ReadonlyAccount<TAccountStakePoolWithdraw>
-        : TAccountStakePoolWithdraw,
-      TAccountStakeToSplit extends string
-        ? WritableAccount<TAccountStakeToSplit>
-        : TAccountStakeToSplit,
-      TAccountStakeToReceive extends string
-        ? WritableAccount<TAccountStakeToReceive>
-        : TAccountStakeToReceive,
+      TAccountValidatorList extends string
+        ? WritableAccount<TAccountValidatorList>
+        : TAccountValidatorList,
+      TAccountWithdrawAuthority extends string
+        ? ReadonlyAccount<TAccountWithdrawAuthority>
+        : TAccountWithdrawAuthority,
+      TAccountStakeSplitFrom extends string
+        ? WritableAccount<TAccountStakeSplitFrom>
+        : TAccountStakeSplitFrom,
+      TAccountStakeSplitTo extends string
+        ? WritableAccount<TAccountStakeSplitTo>
+        : TAccountStakeSplitTo,
       TAccountUserStakeAuthority extends string
         ? ReadonlyAccount<TAccountUserStakeAuthority>
         : TAccountUserStakeAuthority,
@@ -89,12 +81,12 @@ export type WithdrawStakeInstruction<
         ? ReadonlySignerAccount<TAccountUserTransferAuthority> &
             IAccountSignerMeta<TAccountUserTransferAuthority>
         : TAccountUserTransferAuthority,
-      TAccountUserPoolTokenAccount extends string
-        ? WritableAccount<TAccountUserPoolTokenAccount>
-        : TAccountUserPoolTokenAccount,
-      TAccountManagerFeeAccount extends string
-        ? WritableAccount<TAccountManagerFeeAccount>
-        : TAccountManagerFeeAccount,
+      TAccountBurnFromPool extends string
+        ? WritableAccount<TAccountBurnFromPool>
+        : TAccountBurnFromPool,
+      TAccountManagerFee extends string
+        ? WritableAccount<TAccountManagerFee>
+        : TAccountManagerFee,
       TAccountPoolMint extends string
         ? WritableAccount<TAccountPoolMint>
         : TAccountPoolMint,
@@ -107,22 +99,25 @@ export type WithdrawStakeInstruction<
       TAccountStakeProgram extends string
         ? ReadonlyAccount<TAccountStakeProgram>
         : TAccountStakeProgram,
+      TAccountStakeProgram extends string
+        ? ReadonlyAccount<TAccountStakeProgram>
+        : TAccountStakeProgram,
       ...TRemainingAccounts,
     ]
   >;
 
 export type WithdrawStakeInstructionData = {
-  discriminator: ReadonlyUint8Array;
-  arg: bigint;
+  discriminator: number;
+  args: bigint;
 };
 
-export type WithdrawStakeInstructionDataArgs = { arg: number | bigint };
+export type WithdrawStakeInstructionDataArgs = { args: number | bigint };
 
 export function getWithdrawStakeInstructionDataEncoder(): Encoder<WithdrawStakeInstructionDataArgs> {
   return transformEncoder(
     getStructEncoder([
-      ['discriminator', fixEncoderSize(getBytesEncoder(), 8)],
-      ['arg', getU64Encoder()],
+      ['discriminator', getU8Encoder()],
+      ['args', getU64Encoder()],
     ]),
     (value) => ({ ...value, discriminator: WITHDRAW_STAKE_DISCRIMINATOR })
   );
@@ -130,8 +125,8 @@ export function getWithdrawStakeInstructionDataEncoder(): Encoder<WithdrawStakeI
 
 export function getWithdrawStakeInstructionDataDecoder(): Decoder<WithdrawStakeInstructionData> {
   return getStructDecoder([
-    ['discriminator', fixDecoderSize(getBytesDecoder(), 8)],
-    ['arg', getU64Decoder()],
+    ['discriminator', getU8Decoder()],
+    ['args', getU64Decoder()],
   ]);
 }
 
@@ -147,81 +142,86 @@ export function getWithdrawStakeInstructionDataCodec(): Codec<
 
 export type WithdrawStakeInput<
   TAccountStakePool extends string = string,
-  TAccountValidatorListStorage extends string = string,
-  TAccountStakePoolWithdraw extends string = string,
-  TAccountStakeToSplit extends string = string,
-  TAccountStakeToReceive extends string = string,
+  TAccountValidatorList extends string = string,
+  TAccountWithdrawAuthority extends string = string,
+  TAccountStakeSplitFrom extends string = string,
+  TAccountStakeSplitTo extends string = string,
   TAccountUserStakeAuthority extends string = string,
   TAccountUserTransferAuthority extends string = string,
-  TAccountUserPoolTokenAccount extends string = string,
-  TAccountManagerFeeAccount extends string = string,
+  TAccountBurnFromPool extends string = string,
+  TAccountManagerFee extends string = string,
   TAccountPoolMint extends string = string,
   TAccountClock extends string = string,
   TAccountTokenProgram extends string = string,
   TAccountStakeProgram extends string = string,
+  TAccountStakeProgram extends string = string,
 > = {
   stakePool: Address<TAccountStakePool>;
-  validatorListStorage: Address<TAccountValidatorListStorage>;
-  stakePoolWithdraw: Address<TAccountStakePoolWithdraw>;
-  stakeToSplit: Address<TAccountStakeToSplit>;
-  stakeToReceive: Address<TAccountStakeToReceive>;
+  validatorList: Address<TAccountValidatorList>;
+  withdrawAuthority: Address<TAccountWithdrawAuthority>;
+  stakeSplitFrom: Address<TAccountStakeSplitFrom>;
+  stakeSplitTo: Address<TAccountStakeSplitTo>;
   userStakeAuthority: Address<TAccountUserStakeAuthority>;
   userTransferAuthority: TransactionSigner<TAccountUserTransferAuthority>;
-  userPoolTokenAccount: Address<TAccountUserPoolTokenAccount>;
-  managerFeeAccount: Address<TAccountManagerFeeAccount>;
+  burnFromPool: Address<TAccountBurnFromPool>;
+  managerFee: Address<TAccountManagerFee>;
   poolMint: Address<TAccountPoolMint>;
   clock: Address<TAccountClock>;
-  tokenProgram?: Address<TAccountTokenProgram>;
+  tokenProgram: Address<TAccountTokenProgram>;
   stakeProgram: Address<TAccountStakeProgram>;
-  arg: WithdrawStakeInstructionDataArgs['arg'];
+  stakeProgram: Address<TAccountStakeProgram>;
+  args: WithdrawStakeInstructionDataArgs['args'];
 };
 
 export function getWithdrawStakeInstruction<
   TAccountStakePool extends string,
-  TAccountValidatorListStorage extends string,
-  TAccountStakePoolWithdraw extends string,
-  TAccountStakeToSplit extends string,
-  TAccountStakeToReceive extends string,
+  TAccountValidatorList extends string,
+  TAccountWithdrawAuthority extends string,
+  TAccountStakeSplitFrom extends string,
+  TAccountStakeSplitTo extends string,
   TAccountUserStakeAuthority extends string,
   TAccountUserTransferAuthority extends string,
-  TAccountUserPoolTokenAccount extends string,
-  TAccountManagerFeeAccount extends string,
+  TAccountBurnFromPool extends string,
+  TAccountManagerFee extends string,
   TAccountPoolMint extends string,
   TAccountClock extends string,
   TAccountTokenProgram extends string,
+  TAccountStakeProgram extends string,
   TAccountStakeProgram extends string,
   TProgramAddress extends Address = typeof SPL_STAKE_POOL_PROGRAM_ADDRESS,
 >(
   input: WithdrawStakeInput<
     TAccountStakePool,
-    TAccountValidatorListStorage,
-    TAccountStakePoolWithdraw,
-    TAccountStakeToSplit,
-    TAccountStakeToReceive,
+    TAccountValidatorList,
+    TAccountWithdrawAuthority,
+    TAccountStakeSplitFrom,
+    TAccountStakeSplitTo,
     TAccountUserStakeAuthority,
     TAccountUserTransferAuthority,
-    TAccountUserPoolTokenAccount,
-    TAccountManagerFeeAccount,
+    TAccountBurnFromPool,
+    TAccountManagerFee,
     TAccountPoolMint,
     TAccountClock,
     TAccountTokenProgram,
+    TAccountStakeProgram,
     TAccountStakeProgram
   >,
   config?: { programAddress?: TProgramAddress }
 ): WithdrawStakeInstruction<
   TProgramAddress,
   TAccountStakePool,
-  TAccountValidatorListStorage,
-  TAccountStakePoolWithdraw,
-  TAccountStakeToSplit,
-  TAccountStakeToReceive,
+  TAccountValidatorList,
+  TAccountWithdrawAuthority,
+  TAccountStakeSplitFrom,
+  TAccountStakeSplitTo,
   TAccountUserStakeAuthority,
   TAccountUserTransferAuthority,
-  TAccountUserPoolTokenAccount,
-  TAccountManagerFeeAccount,
+  TAccountBurnFromPool,
+  TAccountManagerFee,
   TAccountPoolMint,
   TAccountClock,
   TAccountTokenProgram,
+  TAccountStakeProgram,
   TAccountStakeProgram
 > {
   // Program address.
@@ -231,16 +231,13 @@ export function getWithdrawStakeInstruction<
   // Original accounts.
   const originalAccounts = {
     stakePool: { value: input.stakePool ?? null, isWritable: true },
-    validatorListStorage: {
-      value: input.validatorListStorage ?? null,
-      isWritable: true,
-    },
-    stakePoolWithdraw: {
-      value: input.stakePoolWithdraw ?? null,
+    validatorList: { value: input.validatorList ?? null, isWritable: true },
+    withdrawAuthority: {
+      value: input.withdrawAuthority ?? null,
       isWritable: false,
     },
-    stakeToSplit: { value: input.stakeToSplit ?? null, isWritable: true },
-    stakeToReceive: { value: input.stakeToReceive ?? null, isWritable: true },
+    stakeSplitFrom: { value: input.stakeSplitFrom ?? null, isWritable: true },
+    stakeSplitTo: { value: input.stakeSplitTo ?? null, isWritable: true },
     userStakeAuthority: {
       value: input.userStakeAuthority ?? null,
       isWritable: false,
@@ -249,17 +246,12 @@ export function getWithdrawStakeInstruction<
       value: input.userTransferAuthority ?? null,
       isWritable: false,
     },
-    userPoolTokenAccount: {
-      value: input.userPoolTokenAccount ?? null,
-      isWritable: true,
-    },
-    managerFeeAccount: {
-      value: input.managerFeeAccount ?? null,
-      isWritable: true,
-    },
+    burnFromPool: { value: input.burnFromPool ?? null, isWritable: true },
+    managerFee: { value: input.managerFee ?? null, isWritable: true },
     poolMint: { value: input.poolMint ?? null, isWritable: true },
     clock: { value: input.clock ?? null, isWritable: false },
     tokenProgram: { value: input.tokenProgram ?? null, isWritable: false },
+    stakeProgram: { value: input.stakeProgram ?? null, isWritable: false },
     stakeProgram: { value: input.stakeProgram ?? null, isWritable: false },
   };
   const accounts = originalAccounts as Record<
@@ -268,29 +260,24 @@ export function getWithdrawStakeInstruction<
   >;
 
   // Original args.
-  const args = { ...input };
-
-  // Resolve default values.
-  if (!accounts.tokenProgram.value) {
-    accounts.tokenProgram.value =
-      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Address<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>;
-  }
+  const args = { ...input, stakeProgram: input.stakeProgramArg };
 
   const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');
   const instruction = {
     accounts: [
       getAccountMeta(accounts.stakePool),
-      getAccountMeta(accounts.validatorListStorage),
-      getAccountMeta(accounts.stakePoolWithdraw),
-      getAccountMeta(accounts.stakeToSplit),
-      getAccountMeta(accounts.stakeToReceive),
+      getAccountMeta(accounts.validatorList),
+      getAccountMeta(accounts.withdrawAuthority),
+      getAccountMeta(accounts.stakeSplitFrom),
+      getAccountMeta(accounts.stakeSplitTo),
       getAccountMeta(accounts.userStakeAuthority),
       getAccountMeta(accounts.userTransferAuthority),
-      getAccountMeta(accounts.userPoolTokenAccount),
-      getAccountMeta(accounts.managerFeeAccount),
+      getAccountMeta(accounts.burnFromPool),
+      getAccountMeta(accounts.managerFee),
       getAccountMeta(accounts.poolMint),
       getAccountMeta(accounts.clock),
       getAccountMeta(accounts.tokenProgram),
+      getAccountMeta(accounts.stakeProgram),
       getAccountMeta(accounts.stakeProgram),
     ],
     programAddress,
@@ -300,17 +287,18 @@ export function getWithdrawStakeInstruction<
   } as WithdrawStakeInstruction<
     TProgramAddress,
     TAccountStakePool,
-    TAccountValidatorListStorage,
-    TAccountStakePoolWithdraw,
-    TAccountStakeToSplit,
-    TAccountStakeToReceive,
+    TAccountValidatorList,
+    TAccountWithdrawAuthority,
+    TAccountStakeSplitFrom,
+    TAccountStakeSplitTo,
     TAccountUserStakeAuthority,
     TAccountUserTransferAuthority,
-    TAccountUserPoolTokenAccount,
-    TAccountManagerFeeAccount,
+    TAccountBurnFromPool,
+    TAccountManagerFee,
     TAccountPoolMint,
     TAccountClock,
     TAccountTokenProgram,
+    TAccountStakeProgram,
     TAccountStakeProgram
   >;
 
@@ -324,18 +312,19 @@ export type ParsedWithdrawStakeInstruction<
   programAddress: Address<TProgram>;
   accounts: {
     stakePool: TAccountMetas[0];
-    validatorListStorage: TAccountMetas[1];
-    stakePoolWithdraw: TAccountMetas[2];
-    stakeToSplit: TAccountMetas[3];
-    stakeToReceive: TAccountMetas[4];
+    validatorList: TAccountMetas[1];
+    withdrawAuthority: TAccountMetas[2];
+    stakeSplitFrom: TAccountMetas[3];
+    stakeSplitTo: TAccountMetas[4];
     userStakeAuthority: TAccountMetas[5];
     userTransferAuthority: TAccountMetas[6];
-    userPoolTokenAccount: TAccountMetas[7];
-    managerFeeAccount: TAccountMetas[8];
+    burnFromPool: TAccountMetas[7];
+    managerFee: TAccountMetas[8];
     poolMint: TAccountMetas[9];
     clock: TAccountMetas[10];
     tokenProgram: TAccountMetas[11];
     stakeProgram: TAccountMetas[12];
+    stakeProgram: TAccountMetas[13];
   };
   data: WithdrawStakeInstructionData;
 };
@@ -348,7 +337,7 @@ export function parseWithdrawStakeInstruction<
     IInstructionWithAccounts<TAccountMetas> &
     IInstructionWithData<Uint8Array>
 ): ParsedWithdrawStakeInstruction<TProgram, TAccountMetas> {
-  if (instruction.accounts.length < 13) {
+  if (instruction.accounts.length < 14) {
     // TODO: Coded error.
     throw new Error('Not enough accounts');
   }
@@ -362,17 +351,18 @@ export function parseWithdrawStakeInstruction<
     programAddress: instruction.programAddress,
     accounts: {
       stakePool: getNextAccount(),
-      validatorListStorage: getNextAccount(),
-      stakePoolWithdraw: getNextAccount(),
-      stakeToSplit: getNextAccount(),
-      stakeToReceive: getNextAccount(),
+      validatorList: getNextAccount(),
+      withdrawAuthority: getNextAccount(),
+      stakeSplitFrom: getNextAccount(),
+      stakeSplitTo: getNextAccount(),
       userStakeAuthority: getNextAccount(),
       userTransferAuthority: getNextAccount(),
-      userPoolTokenAccount: getNextAccount(),
-      managerFeeAccount: getNextAccount(),
+      burnFromPool: getNextAccount(),
+      managerFee: getNextAccount(),
       poolMint: getNextAccount(),
       clock: getNextAccount(),
       tokenProgram: getNextAccount(),
+      stakeProgram: getNextAccount(),
       stakeProgram: getNextAccount(),
     },
     data: getWithdrawStakeInstructionDataDecoder().decode(instruction.data),
