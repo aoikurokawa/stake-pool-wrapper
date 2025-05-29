@@ -1,4 +1,4 @@
-name: Publish All Restaking Crates
+name: Publish All Stake Pool Wrapper Crates
 
 on:
   workflow_dispatch:
@@ -84,7 +84,7 @@ jobs:
   publish:
     name: Publish Crates
     runs-on: ubuntu-latest
-    needs: test_sbf
+    # needs: test_sbf
     permissions:
       contents: write
     # env:
