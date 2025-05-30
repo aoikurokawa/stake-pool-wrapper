@@ -23,6 +23,9 @@ pub enum StakePoolWrapperActions {
     /// Deposit SOL
     WrapperDepositSol { amount: u64 },
 
+    /// Withdraw SOL
+    WithdrawSol { amount: u64 },
+
     /// Update Stake Pool Balance
     UpdateStakePoolBalance,
 }
