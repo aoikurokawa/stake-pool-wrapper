@@ -17,15 +17,6 @@ on:
           - patch
           - minor
           - major
-          - rc
-          - beta
-          - alpha
-          - release
-          - version
-      version:
-        description: Version (used with level "version")
-        required: false
-        type: string
       dry_run:
         description: Dry run (no actual publishing)
         required: true
