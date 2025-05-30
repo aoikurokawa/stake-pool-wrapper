@@ -6,7 +6,10 @@ use solana_sdk::{
     pubkey::Pubkey,
     signer::Signer,
 };
-use spl_stake_pool::instruction::{deposit_sol, update_stake_pool_balance, StakePoolInstruction};
+use spl_associated_token_account::get_associated_token_address;
+use spl_stake_pool::instruction::{
+    deposit_sol, update_stake_pool_balance, withdraw_sol, StakePoolInstruction,
+};
 use stake_pool_wrapper_sdk::instruction::StakePoolWrapperInstruction;
 
 use crate::{
@@ -46,6 +49,9 @@ impl StakePoolWrapperCliHandler {
             StakePoolWrapperCommands::StakePoolWrapper {
                 action: StakePoolWrapperActions::WrapperDepositSol { amount },
             } => self.wrapper_deposit_sol(amount),
+            StakePoolWrapperCommands::StakePoolWrapper {
+                action: StakePoolWrapperActions::WithdrawSol { amount },
+            } => self.withdraw_sol(amount),
             StakePoolWrapperCommands::StakePoolWrapper {
                 action: StakePoolWrapperActions::UpdateStakePoolBalance,
             } => self.update_stake_pool_balance(),
@@ -106,7 +112,7 @@ impl StakePoolWrapperCliHandler {
     }
 
     /// Deposit SOL
-    pub fn deposit_sol(&self, amount: u64) -> anyhow::Result<()> {
+    fn deposit_sol(&self, amount: u64) -> anyhow::Result<()> {
         let signer = self.signer()?;
         let admin = signer.pubkey();
 
@@ -148,7 +154,7 @@ impl StakePoolWrapperCliHandler {
     }
 
     /// Fail Depositing SOL
-    pub fn fail_deposit_sol(&self, amount: u64) -> anyhow::Result<()> {
+    fn fail_deposit_sol(&self, amount: u64) -> anyhow::Result<()> {
         let signer = self.signer()?;
         let admin = signer.pubkey();
 
@@ -190,7 +196,7 @@ impl StakePoolWrapperCliHandler {
     }
 
     /// Wrapper Deposit SOL
-    pub fn wrapper_deposit_sol(&self, amount: u64) -> anyhow::Result<()> {
+    fn wrapper_deposit_sol(&self, amount: u64) -> anyhow::Result<()> {
         let signer = self.signer()?;
         let admin = signer.pubkey();
 
@@ -233,6 +239,47 @@ impl StakePoolWrapperCliHandler {
             ))
             .unwrap(),
         };
+
+        let ixs = [ix];
+        self.process_transaction(&ixs, &signer.pubkey(), &[signer])?;
+
+        Ok(())
+    }
+
+    /// Withdraw SOL
+    fn withdraw_sol(&self, amount: u64) -> anyhow::Result<()> {
+        let signer = self.signer()?;
+        let admin = signer.pubkey();
+
+        let pool_mint = Pubkey::from_str("J1toso1uCk3RLmjorhTtrVwY9HJ7X8V9yYac6Y7kGCPn").unwrap();
+        let stake_pool = Pubkey::from_str("Jito4APyf642JPZPx3hGc6WWJ8zPKtRbRs4P815Awbb").unwrap();
+        let stake_pool_withdraw_authority =
+            Pubkey::from_str("6iQKfEyhr3bZMotVkW6beNZz5CPAkiwvgV2CTje9pVSS").unwrap();
+        let user_transfer_authority = admin;
+        let pool_tokens_from = get_associated_token_address(&user_transfer_authority, &pool_mint);
+        let reserve_stake_pool =
+            Pubkey::from_str("rrWBQqRqBXYZw3CmPCCcjFxQ2Ds4JFJd7oRQJ997dhz").unwrap();
+        let fee = Pubkey::from_str("DH7tmjoQ5zjqcgfYJU22JqmXhP5EY1tkbYpgVWUS2oNo").unwrap();
+        let pool_mint = Pubkey::from_str("J1toso1uCk3RLmjorhTtrVwY9HJ7X8V9yYac6Y7kGCPn").unwrap();
+        let _system_program = Pubkey::from_str("11111111111111111111111111111111").unwrap();
+        let token_program =
+            Pubkey::from_str("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA").unwrap();
+        let stake_pool_program =
+            Pubkey::from_str("SPoo1Ku8WFXoNDMHPsrGSTSG1Y47rzgn41SLUNakuHy").unwrap();
+
+        let ix = withdraw_sol(
+            &stake_pool_program,
+            &stake_pool,
+            &stake_pool_withdraw_authority,
+            &user_transfer_authority,
+            &pool_tokens_from,
+            &reserve_stake_pool,
+            &user_transfer_authority,
+            &fee,
+            &pool_mint,
+            &token_program,
+            amount * LAMPORTS_PER_SOL,
+        );
 
         let ixs = [ix];
         self.process_transaction(&ixs, &signer.pubkey(), &[signer])?;
