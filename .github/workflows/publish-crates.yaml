@@ -6,7 +6,7 @@ on:
       package_path:
         description: 'Single crate OR comma-separated list. Examples: "core" or "core,program,sdk"'
         required: true
-        default:  'core,sdk,program'
+        default: 'core,sdk,program'
         type: string
       level:
         description: Version increment level for all crates
