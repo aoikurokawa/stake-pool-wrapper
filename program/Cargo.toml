@@ -1,6 +1,6 @@
 [package]
 name = "stake-pool-wrapper-program"
-version = "0.1.5"
+version = "0.1.6"
 edition = "2021"
 description = "Stake Pool Wrapper Program"
 license = "Apache-2.0"
