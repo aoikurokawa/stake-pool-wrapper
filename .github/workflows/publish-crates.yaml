@@ -132,11 +132,7 @@ jobs:
           PUBLISHED_CRATES=""
           
           # Determine the version level to use
-          if [ "${{ inputs.level }}" == "version" ]; then
-            LEVEL="${{ inputs.version }}"
-          else
-            LEVEL="${{ inputs.level }}"
-          fi
+          LEVEL="${{ inputs.level }}"
           
           for crate_path in "${CRATES_TO_PUBLISH[@]}"; do
             echo "========================================="
@@ -182,8 +178,8 @@ jobs:
           echo "🎉 Publishing completed!"
           echo "========================================="
 
-  create_releases:
-    name: Create GitHub Releases
+  create_release:
+    name: Create Combined GitHub Release
     runs-on: ubuntu-latest
     needs: [determine_crates, publish]
     if: inputs.create_release == 'true' && inputs.dry_run != 'true'
@@ -196,55 +192,107 @@ jobs:
           token: ${{ secrets.REPO_PAT }}
           fetch-depth: 0
 
-      - name: Create releases
+      - name: Create combined release
         run: |
           # Convert space-separated string back to array
           read -ra CRATES_TO_PUBLISH <<< "${{ needs.determine_crates.outputs.crates_to_publish }}"
           
-          for crate_path in "${CRATES_TO_PUBLISH[@]}"; do
-            CRATE_NAME=$(basename "$crate_path")
-            cd "$GITHUB_WORKSPACE/$crate_path"
+          # Determine release info based on what was published
+          TIMESTAMP=$(date +%Y%m%d-%H%M%S)
+          CRATE_COUNT=${{ needs.determine_crates.outputs.crate_count }}
+          
+          if [ "${{ needs.determine_crates.outputs.is_single_crate }}" == "true" ]; then
+            # Single crate release
+            CRATE_PATH="${CRATES_TO_PUBLISH[0]}"
+            CRATE_NAME=$(basename "$CRATE_PATH")
+            cd "$GITHUB_WORKSPACE/$CRATE_PATH"
             NEW_VERSION=$(grep -m1 'version =' Cargo.toml | cut -d '"' -f2)
             
-            # Standard tag format for stake pool wrapper crates
             TAG_NAME="stake-pool-wrapper-${CRATE_NAME}-v${NEW_VERSION}"
             RELEASE_TITLE="Stake Pool Wrapper ${CRATE_NAME} v${NEW_VERSION}"
-            
-            echo "Creating release for: $RELEASE_TITLE"
-            
-            # Generate basic changelog
-            CHANGELOG=$(git log --pretty=format:'- %s' --no-merges $(git describe --tags --abbrev=0 2>/dev/null || echo "")..HEAD -- "$crate_path" | head -10)
-            if [ -z "$CHANGELOG" ]; then
-              CHANGELOG="- Published version $NEW_VERSION"
-            fi
-            
-            RELEASE_NOTES="## ${RELEASE_TITLE}
+          else
+            # Multiple crates release
+            TAG_NAME="stake-pool-wrapper-release-$TIMESTAMP"
+            RELEASE_TITLE="Stake Pool Wrapper Release - $(date +%Y-%m-%d)"
+          fi
+          
+          echo "Creating combined release: $RELEASE_TITLE"
+          
+          # Build release notes
+          RELEASE_NOTES="## $RELEASE_TITLE
 
-            ### Installation
-            \`\`\`bash
-            cargo add stake-pool-wrapper-${CRATE_NAME}@${NEW_VERSION}
-            \`\`\`
+          This release publishes $CRATE_COUNT crate(s) in the Stake Pool Wrapper ecosystem.
 
-            ### What's Changed
-            $CHANGELOG
+          ### 📦 Published Crates
 
-            **Full Changelog**: https://github.com/${{ github.repository }}/commits/${TAG_NAME}"
+          ${{ needs.publish.outputs.published_crates }}
+
+          ### 📥 Installation
+
+          Install the crates you need:"
+                    
+                    # Add installation instructions for each published crate
+                    for crate_path in "${CRATES_TO_PUBLISH[@]}"; do
+                      CRATE_NAME=$(basename "$crate_path")
+                      cd "$GITHUB_WORKSPACE/$crate_path"
+                      NEW_VERSION=$(grep -m1 'version =' Cargo.toml | cut -d '"' -f2)
+                      
+                      RELEASE_NOTES="$RELEASE_NOTES
+          \`\`\`bash
+          # $CRATE_NAME
+          cargo add stake-pool-wrapper-${CRATE_NAME}@${NEW_VERSION}
+          \`\`\`"
+                      
+                      cd "$GITHUB_WORKSPACE"
+                    done
+                    
+                    # Add changelog section
+                    RELEASE_NOTES="$RELEASE_NOTES
+
+          ### 📝 What's Changed
+
+          Recent changes across all published crates:"
+                    
+                    # Generate combined changelog
+                    COMBINED_CHANGELOG=""
+                    for crate_path in "${CRATES_TO_PUBLISH[@]}"; do
+                      CRATE_NAME=$(basename "$crate_path")
+                      echo "Generating changelog for $CRATE_NAME..."
+                      
+                      # Get recent commits for this crate
+                      CRATE_CHANGELOG=$(git log --pretty=format:'- %s' --no-merges $(git describe --tags --abbrev=0 2>/dev/null || echo "")..HEAD -- "$crate_path" | head -5)
+                      
+                      if [ -n "$CRATE_CHANGELOG" ]; then
+                        COMBINED_CHANGELOG="$COMBINED_CHANGELOG
+
+          #### $CRATE_NAME
+          $CRATE_CHANGELOG"
+                      fi
+                    done
+                    
+                    if [ -z "$COMBINED_CHANGELOG" ]; then
+                      COMBINED_CHANGELOG="
+          - Published new versions of selected crates"
+                    fi
+                    
+                    RELEASE_NOTES="$RELEASE_NOTES$COMBINED_CHANGELOG
+
+          **Full Changelog**: https://github.com/${{ github.repository }}/commits/$TAG_NAME"
+          
+          # Create the combined GitHub release
+          gh release create "$TAG_NAME" \
+            --title "$RELEASE_TITLE" \
+            --notes "$RELEASE_NOTES" \
+            --latest=true
             
-            # Create GitHub release
-            gh release create "$TAG_NAME" \
-              --title "$RELEASE_TITLE" \
-              --notes "$RELEASE_NOTES" \
-              --latest=false || echo "⚠️ Failed to create release for $CRATE_NAME"
-            
-            cd "$GITHUB_WORKSPACE"
-          done
+          echo "✅ Created combined release: $TAG_NAME"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   summary:
     name: Publishing Summary
     runs-on: ubuntu-latest
-    needs: [determine_crates, publish, create_releases]
+    needs: [determine_crates, publish, create_release]
     if: always()
     steps:
       - name: Create summary
