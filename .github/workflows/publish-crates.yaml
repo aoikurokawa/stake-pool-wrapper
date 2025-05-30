@@ -244,7 +244,7 @@ jobs:
   summary:
     name: Publishing Summary
     runs-on: ubuntu-latest
-    needs: [determine_crates, publish, create_release]
+    needs: [determine_crates, publish, create_releases]
     if: always()
     steps:
       - name: Create summary
