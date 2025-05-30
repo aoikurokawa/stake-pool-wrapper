@@ -244,7 +244,7 @@ jobs:
   summary:
     name: Publishing Summary
     runs-on: ubuntu-latest
-    needs: [determine_crates, publish, create_releases]
+    needs: [determine_crates, publish, create_release]
     if: always()
     steps:
       - name: Create summary
@@ -264,7 +264,7 @@ jobs:
             echo "✅ **Publishing completed successfully!**" >> $GITHUB_STEP_SUMMARY
             
             if [ "${{ inputs.create_release }}" == "true" ]; then
-              echo "🏷️ **GitHub releases created**" >> $GITHUB_STEP_SUMMARY
+              echo "🏷️ **Combined GitHub release created**" >> $GITHUB_STEP_SUMMARY
             fi
           fi
           
