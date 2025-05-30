@@ -1,4 +1,4 @@
-name: Publish Stake Pool Wrapper Crates
+name: Publish Stake Pool Wrapper Crate
 
 on:
   workflow_dispatch:
