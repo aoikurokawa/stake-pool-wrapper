@@ -2,6 +2,7 @@
 members = [
 	"cli",
 	"core",
+	"examples/stake-pool",
 	"program",
 	"sdk"
 ]
@@ -32,3 +33,10 @@ spl-associated-token-account = { version = "6.0.0", features = ["no-entrypoint"]
 spl-stake-pool = { version = "2.0.1", features = ["no-entrypoint"] }
 spl-token = { version = "7.0.0", features = ["no-entrypoint"] }
 stake-pool-wrapper-sdk = { version = "0.1.7", path = "./sdk" }
+toml = "0.8.22"
+tracing = "0.1.41"
+tracing-appender = "0.2.3"
+tracing-subscriber = "0.3.19"
+yellowstone-vixen = "0.3.0"
+yellowstone-vixen-core = "0.3.0"
+yellowstone-vixen-parser = "0.3.0"
