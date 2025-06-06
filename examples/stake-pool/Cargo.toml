@@ -11,3 +11,4 @@ tracing-subscriber = { workspace = true, features = ["env-filter"] }
 yellowstone-vixen = { git = "https://github.com/aoikurokawa/yellowstone-vixen", branch = "ak/stake_pool" }
 # yellowstone-vixen-parser = { workspace = true, features = ["token-program"] }
 yellowstone-vixen-stake-pool-parser = { git = "https://github.com/aoikurokawa/yellowstone-vixen", branch = "ak/stake_pool" }
+# yellowstone-vixen = "0.3.0"
