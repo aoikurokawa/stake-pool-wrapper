@@ -7,8 +7,9 @@ use solana_sdk::{
     signer::Signer,
 };
 use spl_associated_token_account::get_associated_token_address;
-use spl_stake_pool::instruction::{
-    deposit_sol, update_stake_pool_balance, withdraw_sol, StakePoolInstruction,
+use spl_stake_pool::{
+    instruction::{deposit_sol, update_stake_pool_balance, withdraw_sol, StakePoolInstruction},
+    state::AccountType,
 };
 use stake_pool_wrapper_sdk::instruction::StakePoolWrapperInstruction;
 
@@ -70,8 +71,10 @@ impl StakePoolWrapperCliHandler {
 
         let rpc_client = self.get_rpc_client();
         let acc_data = rpc_client.get_account_data(&stake_pool).unwrap();
-
         println!("Account Data: {acc_data:?}");
+
+        let account_type = AccountType::StakePool;
+        println!("Account Type: {account_type:?}");
 
         let deposit_sol_ix = borsh::to_vec(&StakePoolInstruction::DepositSol(100)).unwrap();
         println!("Instruction: {:?}", deposit_sol_ix);
