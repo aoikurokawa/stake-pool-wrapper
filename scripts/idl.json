@@ -1,3665 +1,2407 @@
 {
-  "kind": "rootNode",
-  "standard": "codama",
-  "version": "1.0.0",
-  "program": {
-    "kind": "programNode",
-    "projectName": "stake-pool",
-    "publicKey": "DPoo15wWDqpPJJtS2MUZ49aRxqz5ZaaJCJP4z8bLuib",
-    "version": "2.0.1",
-    "accounts": [
-      {
-        "kind": "accountNode",
-        "name": "stakePool",
-        "data": {
-          "kind": "structTypeNode",
-          "fields": [
-            {
-              "kind": "structFieldTypeNode",
-              "name": "accountType",
-              "type": {
-                "kind": "definedTypeLinkNode",
-                "name": "accountType"
-              }
-            },
-            {
-              "kind": "structFieldTypeNode",
-              "name": "manager",
-              "type": {
-                "kind": "publicKeyTypeNode"
-              }
-            },
-            {
-              "kind": "structFieldTypeNode",
-              "name": "staker",
-              "type": {
-                "kind": "publicKeyTypeNode"
-              }
-            },
-            {
-              "kind": "structFieldTypeNode",
-              "name": "stakeDepositAuthority",
-              "type": {
-                "kind": "publicKeyTypeNode"
-              }
-            },
-            {
-              "kind": "structFieldTypeNode",
-              "name": "stakeWithdrawBumpSeed",
-              "type": {
-                "kind": "numberTypeNode",
-                "format": "u8",
-                "endian": "le"
-              }
-            },
-            {
-              "kind": "structFieldTypeNode",
-              "name": "validatorList",
-              "type": {
-                "kind": "publicKeyTypeNode"
-              }
-            },
-            {
-              "kind": "structFieldTypeNode",
-              "name": "reserveStake",
-              "type": {
-                "kind": "publicKeyTypeNode"
-              }
-            },
-            {
-              "kind": "structFieldTypeNode",
-              "name": "poolMint",
-              "type": {
-                "kind": "publicKeyTypeNode"
-              }
-            },
-            {
-              "kind": "structFieldTypeNode",
-              "name": "managerFeeAccount",
-              "type": {
-                "kind": "publicKeyTypeNode"
-              }
-            },
-            {
-              "kind": "structFieldTypeNode",
-              "name": "tokenProgramId",
-              "type": {
-                "kind": "publicKeyTypeNode"
-              }
-            },
-            {
-              "kind": "structFieldTypeNode",
-              "name": "totalLamports",
-              "type": {
-                "kind": "numberTypeNode",
-                "format": "u64",
-                "endian": "le"
-              }
-            },
-            {
-              "kind": "structFieldTypeNode",
-              "name": "poolTokenSupply",
-              "type": {
-                "kind": "numberTypeNode",
-                "format": "u64",
-                "endian": "le"
-              }
-            },
-            {
-              "kind": "structFieldTypeNode",
-              "name": "lastUpdateEpoch",
-              "type": {
-                "kind": "numberTypeNode",
-                "format": "u64",
-                "endian": "le"
-              }
-            },
-            {
-              "kind": "structFieldTypeNode",
-              "name": "lockup",
-              "type": {
-                "kind": "definedTypeLinkNode",
-                "name": "lockup"
-              }
-            },
-            {
-              "kind": "structFieldTypeNode",
-              "name": "epochFee",
-              "type": {
-                "kind": "definedTypeLinkNode",
-                "name": "fee"
-              }
-            },
-            {
-              "kind": "structFieldTypeNode",
-              "name": "nextEpochFee",
-              "type": {
-                "kind": "definedTypeLinkNode",
-                "name": "futureEpoch"
-              }
-            },
-            {
-              "kind": "structFieldTypeNode",
-              "name": "preferredDepositValidatorVoteAddress",
-              "type": {
-                "kind": "optionTypeNode",
-                "item": {
-                  "kind": "publicKeyTypeNode"
-                },
-                "prefix": {
-                  "kind": "numberTypeNode",
-                  "format": "u8",
-                  "endian": "le"
-                }
-              }
-            },
-            {
-              "kind": "structFieldTypeNode",
-              "name": "preferredWithdrawValidatorVoteAddress",
-              "type": {
-                "kind": "optionTypeNode",
-                "item": {
-                  "kind": "publicKeyTypeNode"
-                },
-                "prefix": {
-                  "kind": "numberTypeNode",
-                  "format": "u8",
-                  "endian": "le"
-                }
-              }
-            },
-            {
-              "kind": "structFieldTypeNode",
-              "name": "stakeDepositFee",
-              "type": {
-                "kind": "definedTypeLinkNode",
-                "name": "fee"
-              }
-            },
-            {
-              "kind": "structFieldTypeNode",
-              "name": "stakeWithdrawalFee",
-              "type": {
-                "kind": "definedTypeLinkNode",
-                "name": "fee"
-              }
-            },
-            {
-              "kind": "structFieldTypeNode",
-              "name": "nextStakeWithdrawalFee",
-              "type": {
-                "kind": "definedTypeLinkNode",
-                "name": "futureEpoch"
-              }
-            },
-            {
-              "kind": "structFieldTypeNode",
-              "name": "stakeReferralFee",
-              "type": {
-                "kind": "numberTypeNode",
-                "format": "u8",
-                "endian": "le"
-              }
-            },
-            {
-              "kind": "structFieldTypeNode",
-              "name": "solDepositAuthority",
-              "type": {
-                "kind": "optionTypeNode",
-                "item": {
-                  "kind": "publicKeyTypeNode"
-                },
-                "prefix": {
-                  "kind": "numberTypeNode",
-                  "format": "u8",
-                  "endian": "le"
-                }
-              }
-            },
-            {
-              "kind": "structFieldTypeNode",
-              "name": "solDepositFee",
-              "type": {
-                "kind": "definedTypeLinkNode",
-                "name": "fee"
-              }
-            },
-            {
-              "kind": "structFieldTypeNode",
-              "name": "solReferralFee",
-              "type": {
-                "kind": "numberTypeNode",
-                "format": "u8",
-                "endian": "le"
-              }
-            },
-            {
-              "kind": "structFieldTypeNode",
-              "name": "solWithdrawAuthority",
-              "type": {
-                "kind": "optionTypeNode",
-                "item": {
-                  "kind": "publicKeyTypeNode"
-                },
-                "prefix": {
-                  "kind": "numberTypeNode",
-                  "format": "u8",
-                  "endian": "le"
-                }
-              }
-            },
-            {
-              "kind": "structFieldTypeNode",
-              "name": "solWithdrawalFee",
-              "type": {
-                "kind": "definedTypeLinkNode",
-                "name": "fee"
-              }
-            },
-            {
-              "kind": "structFieldTypeNode",
-              "name": "nextSolWithdrawalFee",
-              "type": {
-                "kind": "definedTypeLinkNode",
-                "name": "futureEpoch"
-              }
-            },
-            {
-              "kind": "structFieldTypeNode",
-              "name": "lastEpochPoolTokenSupply",
-              "type": {
-                "kind": "numberTypeNode",
-                "format": "u64",
-                "endian": "le"
-              }
-            },
-            {
-              "kind": "structFieldTypeNode",
-              "name": "lastEpochTotalLamports",
-              "type": {
-                "kind": "numberTypeNode",
-                "format": "u64",
-                "endian": "le"
-              }
-            }
-          ]
+  "version": "0.0.5",
+  "name": "jito_vault",
+  "instructions": [
+    {
+      "name": "InitializeConfig",
+      "accounts": [
+        {
+          "name": "config",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "admin",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "restakingProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "programFeeWallet",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
         }
-      },
-      {
-        "kind": "accountNode",
-        "name": "validatorList",
-        "data": {
-          "kind": "structTypeNode",
-          "fields": [
-            {
-              "kind": "structFieldTypeNode",
-              "name": "header",
-              "type": {
-                "kind": "definedTypeLinkNode",
-                "name": "validatorListHeader"
-              }
-            },
-            {
-              "kind": "structFieldTypeNode",
-              "name": "validators",
-              "type": {
-                "kind": "definedTypeLinkNode",
-                "name": "vec"
-              }
-            }
-          ]
+      ],
+      "args": [
+        {
+          "name": "programFeeBps",
+          "type": "u16"
         }
-      },
-      {
-        "kind": "accountNode",
-        "name": "validatorStakeInfo",
-        "data": {
-          "kind": "structTypeNode",
-          "fields": [
-            {
-              "kind": "structFieldTypeNode",
-              "name": "activeStakeLamports",
-              "type": {
-                "kind": "definedTypeLinkNode",
-                "name": "podU64"
-              }
-            },
-            {
-              "kind": "structFieldTypeNode",
-              "name": "transientStakeLamports",
-              "type": {
-                "kind": "definedTypeLinkNode",
-                "name": "podU64"
-              }
-            },
-            {
-              "kind": "structFieldTypeNode",
-              "name": "lastUpdateEpoch",
-              "type": {
-                "kind": "definedTypeLinkNode",
-                "name": "podU64"
-              }
-            },
-            {
-              "kind": "structFieldTypeNode",
-              "name": "transientSeedSuffix",
-              "type": {
-                "kind": "definedTypeLinkNode",
-                "name": "podU64"
-              }
-            },
-            {
-              "kind": "structFieldTypeNode",
-              "name": "unused",
-              "type": {
-                "kind": "definedTypeLinkNode",
-                "name": "podU32"
-              }
-            },
-            {
-              "kind": "structFieldTypeNode",
-              "name": "validatorSeedSuffix",
-              "type": {
-                "kind": "definedTypeLinkNode",
-                "name": "podU32"
-              }
-            },
-            {
-              "kind": "structFieldTypeNode",
-              "name": "status",
-              "type": {
-                "kind": "definedTypeLinkNode",
-                "name": "podStakeStatus"
-              }
-            },
-            {
-              "kind": "structFieldTypeNode",
-              "name": "voteAccountAddress",
-              "type": {
-                "kind": "publicKeyTypeNode"
-              }
-            }
-          ]
-        }
+      ],
+      "discriminant": {
+        "type": "u8",
+        "value": 0
       }
-    ],
-    "instructions": [
-      {
-        "kind": "instructionNode",
-        "name": "initialize",
-        "accounts": [
-          {
-            "kind": "instructionAccountNode",
-            "name": "stakePool",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "manager",
-            "isWritable": false,
-            "isSigner": true
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "staker",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "withdrawAuthority",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "validatorList",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "reserveStake",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "poolMint",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "managerFee",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "tokenProgram",
-            "isWritable": false,
-            "isSigner": false
+    },
+    {
+      "name": "InitializeVault",
+      "accounts": [
+        {
+          "name": "config",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vrtMint",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "stMint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "adminStTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vaultStTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "burnVault",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "burnVaultVrtTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "admin",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "base",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "associatedTokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "depositFeeBps",
+          "type": "u16"
+        },
+        {
+          "name": "withdrawalFeeBps",
+          "type": "u16"
+        },
+        {
+          "name": "rewardFeeBps",
+          "type": "u16"
+        },
+        {
+          "name": "decimals",
+          "type": "u8"
+        },
+        {
+          "name": "initializeTokenAmount",
+          "type": "u64"
+        }
+      ],
+      "discriminant": {
+        "type": "u8",
+        "value": 1
+      }
+    },
+    {
+      "name": "InitializeVaultWithMint",
+      "accounts": [],
+      "args": [],
+      "discriminant": {
+        "type": "u8",
+        "value": 2
+      }
+    },
+    {
+      "name": "InitializeVaultOperatorDelegation",
+      "accounts": [
+        {
+          "name": "config",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "vault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "operator",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "operatorVaultTicket",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "vaultOperatorDelegation",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "admin",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [],
+      "discriminant": {
+        "type": "u8",
+        "value": 3
+      }
+    },
+    {
+      "name": "InitializeVaultNcnTicket",
+      "accounts": [
+        {
+          "name": "config",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "vault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "ncn",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "ncnVaultTicket",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "vaultNcnTicket",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "admin",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [],
+      "discriminant": {
+        "type": "u8",
+        "value": 4
+      }
+    },
+    {
+      "name": "InitializeVaultNcnSlasherOperatorTicket",
+      "accounts": [
+        {
+          "name": "config",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "vault",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "ncn",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "slasher",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "operator",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "vaultNcnSlasherTicket",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "vaultNcnSlasherOperatorTicket",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [],
+      "discriminant": {
+        "type": "u8",
+        "value": 5
+      }
+    },
+    {
+      "name": "InitializeVaultNcnSlasherTicket",
+      "accounts": [
+        {
+          "name": "config",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "vault",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "ncn",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "slasher",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "ncnSlasherTicket",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "vaultSlasherTicket",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "admin",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [],
+      "discriminant": {
+        "type": "u8",
+        "value": 6
+      }
+    },
+    {
+      "name": "WarmupVaultNcnTicket",
+      "accounts": [
+        {
+          "name": "config",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "vault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "ncn",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "vaultNcnTicket",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "admin",
+          "isMut": false,
+          "isSigner": true
+        }
+      ],
+      "args": [],
+      "discriminant": {
+        "type": "u8",
+        "value": 7
+      }
+    },
+    {
+      "name": "CooldownVaultNcnTicket",
+      "accounts": [
+        {
+          "name": "config",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "vault",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "ncn",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "vaultNcnTicket",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "admin",
+          "isMut": false,
+          "isSigner": true
+        }
+      ],
+      "args": [],
+      "discriminant": {
+        "type": "u8",
+        "value": 8
+      }
+    },
+    {
+      "name": "WarmupVaultNcnSlasherTicket",
+      "accounts": [
+        {
+          "name": "config",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "vault",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "ncn",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "slasher",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "vaultSlasherTicket",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "admin",
+          "isMut": false,
+          "isSigner": true
+        }
+      ],
+      "args": [],
+      "discriminant": {
+        "type": "u8",
+        "value": 9
+      }
+    },
+    {
+      "name": "CooldownVaultNcnSlasherTicket",
+      "accounts": [
+        {
+          "name": "config",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "vault",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "ncn",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "slasher",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "vaultNcnSlasherTicket",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "admin",
+          "isMut": false,
+          "isSigner": true
+        }
+      ],
+      "args": [],
+      "discriminant": {
+        "type": "u8",
+        "value": 10
+      }
+    },
+    {
+      "name": "MintTo",
+      "accounts": [
+        {
+          "name": "config",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "vault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vrtMint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "depositor",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "depositorTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vaultTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "depositorVrtTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vaultFeeTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "mintSigner",
+          "isMut": false,
+          "isSigner": true,
+          "isOptional": true,
+          "docs": [
+            "Signer for minting"
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "amountIn",
+          "type": "u64"
+        },
+        {
+          "name": "minAmountOut",
+          "type": "u64"
+        }
+      ],
+      "discriminant": {
+        "type": "u8",
+        "value": 11
+      }
+    },
+    {
+      "name": "EnqueueWithdrawal",
+      "accounts": [
+        {
+          "name": "config",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "vault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vaultStakerWithdrawalTicket",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vaultStakerWithdrawalTicketTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "staker",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "stakerVrtTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "base",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "burnSigner",
+          "isMut": false,
+          "isSigner": true,
+          "isOptional": true,
+          "docs": [
+            "Signer for burning"
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ],
+      "discriminant": {
+        "type": "u8",
+        "value": 12
+      }
+    },
+    {
+      "name": "ChangeWithdrawalTicketOwner",
+      "accounts": [
+        {
+          "name": "config",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "vault",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "vaultStakerWithdrawalTicket",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "oldOwner",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "newOwner",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [],
+      "discriminant": {
+        "type": "u8",
+        "value": 13
+      }
+    },
+    {
+      "name": "BurnWithdrawalTicket",
+      "accounts": [
+        {
+          "name": "config",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "vault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vaultTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vrtMint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "staker",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "stakerTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vaultStakerWithdrawalTicket",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vaultStakerWithdrawalTicketTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vaultFeeTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "programFeeTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "burnSigner",
+          "isMut": false,
+          "isSigner": true,
+          "isOptional": true,
+          "docs": [
+            "Signer for burning"
+          ]
+        }
+      ],
+      "args": [],
+      "discriminant": {
+        "type": "u8",
+        "value": 14
+      }
+    },
+    {
+      "name": "SetDepositCapacity",
+      "accounts": [
+        {
+          "name": "config",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "vault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "admin",
+          "isMut": false,
+          "isSigner": true
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ],
+      "discriminant": {
+        "type": "u8",
+        "value": 15
+      }
+    },
+    {
+      "name": "SetFees",
+      "accounts": [
+        {
+          "name": "config",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "vault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "admin",
+          "isMut": false,
+          "isSigner": true
+        }
+      ],
+      "args": [
+        {
+          "name": "depositFeeBps",
+          "type": {
+            "option": "u16"
           }
-        ],
-        "arguments": [
-          {
-            "kind": "instructionArgumentNode",
-            "name": "discriminator",
-            "defaultValueStrategy": "omitted",
-            "type": {
-              "kind": "numberTypeNode",
-              "format": "u8",
-              "endian": "le"
-            },
-            "defaultValue": {
-              "kind": "numberValueNode",
-              "number": 0
-            }
-          },
-          {
-            "kind": "instructionArgumentNode",
-            "name": "fee",
-            "type": {
-              "kind": "definedTypeLinkNode",
-              "name": "fee"
-            }
-          },
-          {
-            "kind": "instructionArgumentNode",
-            "name": "withdrawalFee",
-            "type": {
-              "kind": "definedTypeLinkNode",
-              "name": "fee"
-            }
-          },
-          {
-            "kind": "instructionArgumentNode",
-            "name": "depositFee",
-            "type": {
-              "kind": "definedTypeLinkNode",
-              "name": "fee"
-            }
-          },
-          {
-            "kind": "instructionArgumentNode",
-            "name": "referralFee",
-            "type": {
-              "kind": "numberTypeNode",
-              "format": "u8",
-              "endian": "le"
-            }
-          },
-          {
-            "kind": "instructionArgumentNode",
-            "name": "maxValidators",
-            "type": {
-              "kind": "numberTypeNode",
-              "format": "u32",
-              "endian": "le"
-            }
+        },
+        {
+          "name": "withdrawalFeeBps",
+          "type": {
+            "option": "u16"
           }
-        ],
-        "discriminators": [
+        },
+        {
+          "name": "rewardFeeBps",
+          "type": {
+            "option": "u16"
+          }
+        }
+      ],
+      "discriminant": {
+        "type": "u8",
+        "value": 16
+      }
+    },
+    {
+      "name": "SetProgramFee",
+      "accounts": [
+        {
+          "name": "config",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "admin",
+          "isMut": false,
+          "isSigner": true
+        }
+      ],
+      "args": [
+        {
+          "name": "newFeeBps",
+          "type": "u16"
+        }
+      ],
+      "discriminant": {
+        "type": "u8",
+        "value": 17
+      }
+    },
+    {
+      "name": "SetProgramFeeWallet",
+      "accounts": [
+        {
+          "name": "config",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "programFeeAdmin",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "newFeeWallet",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [],
+      "discriminant": {
+        "type": "u8",
+        "value": 18
+      }
+    },
+    {
+      "name": "SetIsPaused",
+      "accounts": [
+        {
+          "name": "config",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "vault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "admin",
+          "isMut": false,
+          "isSigner": true
+        }
+      ],
+      "args": [
+        {
+          "name": "isPaused",
+          "type": "bool"
+        }
+      ],
+      "discriminant": {
+        "type": "u8",
+        "value": 19
+      }
+    },
+    {
+      "name": "DelegateTokenAccount",
+      "accounts": [
+        {
+          "name": "config",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "vault",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "delegateAssetAdmin",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "tokenMint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "delegate",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [],
+      "discriminant": {
+        "type": "u8",
+        "value": 20
+      }
+    },
+    {
+      "name": "SetAdmin",
+      "accounts": [
+        {
+          "name": "config",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "vault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "oldAdmin",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "newAdmin",
+          "isMut": false,
+          "isSigner": true
+        }
+      ],
+      "args": [],
+      "discriminant": {
+        "type": "u8",
+        "value": 21
+      }
+    },
+    {
+      "name": "SetSecondaryAdmin",
+      "accounts": [
+        {
+          "name": "config",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "vault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "admin",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "newAdmin",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "vaultAdminRole",
+          "type": {
+            "defined": "VaultAdminRole"
+          }
+        }
+      ],
+      "discriminant": {
+        "type": "u8",
+        "value": 22
+      }
+    },
+    {
+      "name": "AddDelegation",
+      "accounts": [
+        {
+          "name": "config",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "vault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "operator",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "vaultOperatorDelegation",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "admin",
+          "isMut": false,
+          "isSigner": true
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ],
+      "discriminant": {
+        "type": "u8",
+        "value": 23
+      }
+    },
+    {
+      "name": "CooldownDelegation",
+      "accounts": [
+        {
+          "name": "config",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "vault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "operator",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "vaultOperatorDelegation",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "admin",
+          "isMut": false,
+          "isSigner": true
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ],
+      "discriminant": {
+        "type": "u8",
+        "value": 24
+      }
+    },
+    {
+      "name": "UpdateVaultBalance",
+      "accounts": [
+        {
+          "name": "config",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "vault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vaultTokenAccount",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "vrtMint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vaultFeeTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [],
+      "discriminant": {
+        "type": "u8",
+        "value": 25
+      }
+    },
+    {
+      "name": "InitializeVaultUpdateStateTracker",
+      "accounts": [
+        {
+          "name": "config",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "vault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vaultUpdateStateTracker",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "withdrawalAllocationMethod",
+          "type": {
+            "defined": "WithdrawalAllocationMethod"
+          }
+        }
+      ],
+      "discriminant": {
+        "type": "u8",
+        "value": 26
+      }
+    },
+    {
+      "name": "CrankVaultUpdateStateTracker",
+      "accounts": [
+        {
+          "name": "config",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "vault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "operator",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "vaultOperatorDelegation",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vaultUpdateStateTracker",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": [],
+      "discriminant": {
+        "type": "u8",
+        "value": 27
+      }
+    },
+    {
+      "name": "CloseVaultUpdateStateTracker",
+      "accounts": [
+        {
+          "name": "config",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "vault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vaultUpdateStateTracker",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": true
+        }
+      ],
+      "args": [
+        {
+          "name": "ncnEpoch",
+          "type": "u64"
+        }
+      ],
+      "discriminant": {
+        "type": "u8",
+        "value": 28
+      }
+    },
+    {
+      "name": "CreateTokenMetadata",
+      "accounts": [
+        {
+          "name": "vault",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "admin",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "vrtMint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "metadata",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "mplTokenMetadataProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "symbol",
+          "type": "string"
+        },
+        {
+          "name": "uri",
+          "type": "string"
+        }
+      ],
+      "discriminant": {
+        "type": "u8",
+        "value": 29
+      }
+    },
+    {
+      "name": "UpdateTokenMetadata",
+      "accounts": [
+        {
+          "name": "vault",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "admin",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "vrtMint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "metadata",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "mplTokenMetadataProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "symbol",
+          "type": "string"
+        },
+        {
+          "name": "uri",
+          "type": "string"
+        }
+      ],
+      "discriminant": {
+        "type": "u8",
+        "value": 30
+      }
+    },
+    {
+      "name": "SetConfigAdmin",
+      "accounts": [
+        {
+          "name": "config",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "oldAdmin",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "newAdmin",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [],
+      "discriminant": {
+        "type": "u8",
+        "value": 31
+      }
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Config",
+      "type": {
+        "kind": "struct",
+        "fields": [
           {
-            "kind": "fieldDiscriminatorNode",
-            "name": "discriminator",
-            "offset": 0
+            "name": "admin",
+            "type": "publicKey"
+          },
+          {
+            "name": "restakingProgram",
+            "type": "publicKey"
+          },
+          {
+            "name": "epochLength",
+            "type": "u64"
+          },
+          {
+            "name": "numVaults",
+            "type": "u64"
+          },
+          {
+            "name": "depositWithdrawalFeeCapBps",
+            "type": "u16"
+          },
+          {
+            "name": "feeRateOfChangeBps",
+            "type": "u16"
+          },
+          {
+            "name": "feeBumpBps",
+            "type": "u16"
+          },
+          {
+            "name": "programFeeBps",
+            "type": "u16"
+          },
+          {
+            "name": "programFeeWallet",
+            "type": "publicKey"
+          },
+          {
+            "name": "feeAdmin",
+            "type": "publicKey"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "u8",
+                229
+              ]
+            }
           }
         ]
-      },
-      {
-        "kind": "instructionNode",
-        "name": "addValidatorToPool",
-        "accounts": [
+      }
+    },
+    {
+      "name": "Vault",
+      "type": {
+        "kind": "struct",
+        "fields": [
           {
-            "kind": "instructionAccountNode",
-            "name": "stakePool",
-            "isWritable": true,
-            "isSigner": false
+            "name": "base",
+            "type": "publicKey"
           },
           {
-            "kind": "instructionAccountNode",
-            "name": "staker",
-            "isWritable": false,
-            "isSigner": true
+            "name": "vrtMint",
+            "type": "publicKey"
           },
           {
-            "kind": "instructionAccountNode",
-            "name": "reserveStake",
-            "isWritable": true,
-            "isSigner": false
+            "name": "supportedMint",
+            "type": "publicKey"
           },
           {
-            "kind": "instructionAccountNode",
-            "name": "withdrawAuthority",
-            "isWritable": false,
-            "isSigner": false
+            "name": "vrtSupply",
+            "type": "u64"
           },
           {
-            "kind": "instructionAccountNode",
-            "name": "validatorList",
-            "isWritable": true,
-            "isSigner": false
+            "name": "tokensDeposited",
+            "type": "u64"
           },
           {
-            "kind": "instructionAccountNode",
-            "name": "stake",
-            "isWritable": true,
-            "isSigner": false
+            "name": "depositCapacity",
+            "type": "u64"
           },
           {
-            "kind": "instructionAccountNode",
-            "name": "validatorVote",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "rent",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "clock",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "stakeHistory",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "stakeConfig",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "systemProgram",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "stakeProgram",
-            "isWritable": false,
-            "isSigner": false
-          }
-        ],
-        "arguments": [
-          {
-            "kind": "instructionArgumentNode",
-            "name": "discriminator",
-            "defaultValueStrategy": "omitted",
+            "name": "delegationState",
             "type": {
-              "kind": "numberTypeNode",
-              "format": "u8",
-              "endian": "le"
-            },
-            "defaultValue": {
-              "kind": "numberValueNode",
-              "number": 1
+              "defined": "DelegationState"
             }
           },
           {
-            "kind": "instructionArgumentNode",
-            "name": "args",
-            "type": {
-              "kind": "numberTypeNode",
-              "format": "u32",
-              "endian": "le"
-            }
-          }
-        ],
-        "discriminators": [
+            "name": "additionalAssetsNeedUnstaking",
+            "type": "u64"
+          },
           {
-            "kind": "fieldDiscriminatorNode",
-            "name": "discriminator",
-            "offset": 0
+            "name": "vrtEnqueuedForCooldownAmount",
+            "type": "u64"
+          },
+          {
+            "name": "vrtCoolingDownAmount",
+            "type": "u64"
+          },
+          {
+            "name": "vrtReadyToClaimAmount",
+            "type": "u64"
+          },
+          {
+            "name": "admin",
+            "type": "publicKey"
+          },
+          {
+            "name": "delegationAdmin",
+            "type": "publicKey"
+          },
+          {
+            "name": "operatorAdmin",
+            "type": "publicKey"
+          },
+          {
+            "name": "ncnAdmin",
+            "type": "publicKey"
+          },
+          {
+            "name": "slasherAdmin",
+            "type": "publicKey"
+          },
+          {
+            "name": "capacityAdmin",
+            "type": "publicKey"
+          },
+          {
+            "name": "feeAdmin",
+            "type": "publicKey"
+          },
+          {
+            "name": "delegateAssetAdmin",
+            "type": "publicKey"
+          },
+          {
+            "name": "feeWallet",
+            "type": "publicKey"
+          },
+          {
+            "name": "mintBurnAdmin",
+            "type": "publicKey"
+          },
+          {
+            "name": "metadataAdmin",
+            "type": "publicKey"
+          },
+          {
+            "name": "vaultIndex",
+            "type": "u64"
+          },
+          {
+            "name": "ncnCount",
+            "type": "u64"
+          },
+          {
+            "name": "operatorCount",
+            "type": "u64"
+          },
+          {
+            "name": "slasherCount",
+            "type": "u64"
+          },
+          {
+            "name": "lastFeeChangeSlot",
+            "type": "u64"
+          },
+          {
+            "name": "lastFullStateUpdateSlot",
+            "type": "u64"
+          },
+          {
+            "name": "depositFeeBps",
+            "type": "u16"
+          },
+          {
+            "name": "withdrawalFeeBps",
+            "type": "u16"
+          },
+          {
+            "name": "nextWithdrawalFeeBps",
+            "type": "u16"
+          },
+          {
+            "name": "rewardFeeBps",
+            "type": "u16"
+          },
+          {
+            "name": "programFeeBps",
+            "type": "u16"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "isPaused",
+             "type": "bool"
+          },
+          {
+            "name": "lastStartStateUpdateSlot",
+            "type": "u64"
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "u8",
+                251
+              ]
+            }
           }
         ]
-      },
-      {
-        "kind": "instructionNode",
-        "name": "removeValidatorFromPool",
-        "accounts": [
+      }
+    },
+    {
+      "name": "VaultNcnSlasherOperatorTicket",
+      "type": {
+        "kind": "struct",
+        "fields": [
           {
-            "kind": "instructionAccountNode",
-            "name": "stakePool",
-            "isWritable": true,
-            "isSigner": false
+            "name": "vault",
+            "type": "publicKey"
           },
           {
-            "kind": "instructionAccountNode",
-            "name": "staker",
-            "isWritable": false,
-            "isSigner": true
+            "name": "ncn",
+            "type": "publicKey"
           },
           {
-            "kind": "instructionAccountNode",
-            "name": "withdrawAuthority",
-            "isWritable": false,
-            "isSigner": false
+            "name": "slasher",
+            "type": "publicKey"
           },
           {
-            "kind": "instructionAccountNode",
-            "name": "validatorList",
-            "isWritable": true,
-            "isSigner": false
+            "name": "operator",
+            "type": "publicKey"
           },
           {
-            "kind": "instructionAccountNode",
-            "name": "stakeAccount",
-            "isWritable": true,
-            "isSigner": false
+            "name": "epoch",
+            "type": "u64"
           },
           {
-            "kind": "instructionAccountNode",
-            "name": "transientStakeAccount",
-            "isWritable": true,
-            "isSigner": false
+            "name": "slashed",
+            "type": "u64"
           },
           {
-            "kind": "instructionAccountNode",
-            "name": "clock",
-            "isWritable": false,
-            "isSigner": false
+            "name": "bump",
+            "type": "u8"
           },
           {
-            "kind": "instructionAccountNode",
-            "name": "stakeProgram",
-            "isWritable": false,
-            "isSigner": false
-          }
-        ],
-        "arguments": [
-          {
-            "kind": "instructionArgumentNode",
-            "name": "discriminator",
-            "defaultValueStrategy": "omitted",
+            "name": "reserved",
             "type": {
-              "kind": "numberTypeNode",
-              "format": "u8",
-              "endian": "le"
-            },
-            "defaultValue": {
-              "kind": "numberValueNode",
-              "number": 2
+              "array": [
+                "u8",
+                263
+              ]
             }
-          }
-        ],
-        "discriminators": [
-          {
-            "kind": "fieldDiscriminatorNode",
-            "name": "discriminator",
-            "offset": 0
           }
         ]
-      },
-      {
-        "kind": "instructionNode",
-        "name": "decreaseValidatorStake",
-        "accounts": [
+      }
+    },
+    {
+      "name": "VaultNcnSlasherTicket",
+      "type": {
+        "kind": "struct",
+        "fields": [
           {
-            "kind": "instructionAccountNode",
-            "name": "stakePool",
-            "isWritable": false,
-            "isSigner": false
+            "name": "vault",
+            "type": "publicKey"
           },
           {
-            "kind": "instructionAccountNode",
-            "name": "staker",
-            "isWritable": false,
-            "isSigner": true
+            "name": "ncn",
+            "type": "publicKey"
           },
           {
-            "kind": "instructionAccountNode",
-            "name": "withdrawAuthority",
-            "isWritable": false,
-            "isSigner": false
+            "name": "slasher",
+            "type": "publicKey"
           },
           {
-            "kind": "instructionAccountNode",
-            "name": "validatorList",
-            "isWritable": true,
-            "isSigner": false
+            "name": "maxSlashablePerEpoch",
+            "type": "u64"
           },
           {
-            "kind": "instructionAccountNode",
-            "name": "validatorStakeAccount",
-            "isWritable": true,
-            "isSigner": false
+            "name": "index",
+            "type": "u64"
           },
           {
-            "kind": "instructionAccountNode",
-            "name": "transientStakeAccount",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "clock",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "rent",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "systemProgram",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "stakeProgram",
-            "isWritable": false,
-            "isSigner": false
-          }
-        ],
-        "arguments": [
-          {
-            "kind": "instructionArgumentNode",
-            "name": "discriminator",
-            "defaultValueStrategy": "omitted",
+            "name": "state",
             "type": {
-              "kind": "numberTypeNode",
-              "format": "u8",
-              "endian": "le"
-            },
-            "defaultValue": {
-              "kind": "numberValueNode",
-              "number": 3
+              "defined": "SlotToggle"
             }
           },
           {
-            "kind": "instructionArgumentNode",
-            "name": "lamports",
-            "type": {
-              "kind": "numberTypeNode",
-              "format": "u64",
-              "endian": "le"
-            }
+            "name": "bump",
+            "type": "u8"
           },
           {
-            "kind": "instructionArgumentNode",
-            "name": "transientStakeSeed",
+            "name": "reserved",
             "type": {
-              "kind": "numberTypeNode",
-              "format": "u64",
-              "endian": "le"
+              "array": [
+                "u8",
+                263
+              ]
             }
-          }
-        ],
-        "discriminators": [
-          {
-            "kind": "fieldDiscriminatorNode",
-            "name": "discriminator",
-            "offset": 0
           }
         ]
-      },
-      {
-        "kind": "instructionNode",
-        "name": "increaseValidatorStake",
-        "accounts": [
+      }
+    },
+    {
+      "name": "VaultNcnTicket",
+      "type": {
+        "kind": "struct",
+        "fields": [
           {
-            "kind": "instructionAccountNode",
-            "name": "stakePool",
-            "isWritable": false,
-            "isSigner": false
+            "name": "vault",
+            "type": "publicKey"
           },
           {
-            "kind": "instructionAccountNode",
-            "name": "staker",
-            "isWritable": false,
-            "isSigner": true
+            "name": "ncn",
+            "type": "publicKey"
           },
           {
-            "kind": "instructionAccountNode",
-            "name": "withdrawAuthority",
-            "isWritable": false,
-            "isSigner": false
+            "name": "index",
+            "type": "u64"
           },
           {
-            "kind": "instructionAccountNode",
-            "name": "validatorList",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "reserveStakeAccount",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "transientStakeAccount",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "validatorStakeAccount",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "validatorVoteAccount",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "clock",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "rent",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "stakeHistory",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "stakeConfig",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "systemProgram",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "stakeProgram",
-            "isWritable": false,
-            "isSigner": false
-          }
-        ],
-        "arguments": [
-          {
-            "kind": "instructionArgumentNode",
-            "name": "discriminator",
-            "defaultValueStrategy": "omitted",
+            "name": "state",
             "type": {
-              "kind": "numberTypeNode",
-              "format": "u8",
-              "endian": "le"
-            },
-            "defaultValue": {
-              "kind": "numberValueNode",
-              "number": 4
+              "defined": "SlotToggle"
             }
           },
           {
-            "kind": "instructionArgumentNode",
-            "name": "lamports",
-            "type": {
-              "kind": "numberTypeNode",
-              "format": "u64",
-              "endian": "le"
-            }
+            "name": "bump",
+            "type": "u8"
           },
           {
-            "kind": "instructionArgumentNode",
-            "name": "transientStakeSeed",
+            "name": "reserved",
             "type": {
-              "kind": "numberTypeNode",
-              "format": "u64",
-              "endian": "le"
+              "array": [
+                "u8",
+                263
+              ]
             }
-          }
-        ],
-        "discriminators": [
-          {
-            "kind": "fieldDiscriminatorNode",
-            "name": "discriminator",
-            "offset": 0
           }
         ]
-      },
-      {
-        "kind": "instructionNode",
-        "name": "setPreferredValidator",
-        "accounts": [
+      }
+    },
+    {
+      "name": "VaultOperatorDelegation",
+      "type": {
+        "kind": "struct",
+        "fields": [
           {
-            "kind": "instructionAccountNode",
-            "name": "stakePool",
-            "isWritable": true,
-            "isSigner": false
+            "name": "vault",
+            "type": "publicKey"
           },
           {
-            "kind": "instructionAccountNode",
-            "name": "staker",
-            "isWritable": false,
-            "isSigner": true
+            "name": "operator",
+            "type": "publicKey"
           },
           {
-            "kind": "instructionAccountNode",
-            "name": "validatorList",
-            "isWritable": false,
-            "isSigner": false
+            "name": "delegationState",
+            "type": {
+              "defined": "DelegationState"
+            }
+          },
+          {
+            "name": "lastUpdateSlot",
+            "type": "u64"
+          },
+          {
+            "name": "index",
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "u8",
+                263
+              ]
+            }
           }
-        ],
-        "arguments": [
+        ]
+      }
+    },
+    {
+      "name": "VaultStakerWithdrawalTicket",
+      "type": {
+        "kind": "struct",
+        "fields": [
           {
-            "kind": "instructionArgumentNode",
-            "name": "discriminator",
-            "defaultValueStrategy": "omitted",
+            "name": "vault",
+            "type": "publicKey"
+          },
+          {
+            "name": "staker",
+            "type": "publicKey"
+          },
+          {
+            "name": "base",
+            "type": "publicKey"
+          },
+          {
+            "name": "vrtAmount",
+            "type": "u64"
+          },
+          {
+            "name": "slotUnstaked",
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "reserved",
             "type": {
-              "kind": "numberTypeNode",
-              "format": "u8",
-              "endian": "le"
-            },
-            "defaultValue": {
-              "kind": "numberValueNode",
-              "number": 5
+              "array": [
+                "u8",
+                263
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "VaultUpdateStateTracker",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "vault",
+            "type": "publicKey"
+          },
+          {
+            "name": "ncnEpoch",
+            "type": "u64"
+          },
+          {
+            "name": "lastUpdatedIndex",
+            "type": "u64"
+          },
+          {
+            "name": "delegationState",
+            "type": {
+              "defined": "DelegationState"
             }
           },
           {
-            "kind": "instructionArgumentNode",
-            "name": "validatorType",
+            "name": "withdrawalAllocationMethod",
+            "type": "u8"
+          },
+          {
+            "name": "reserved",
             "type": {
-              "kind": "definedTypeLinkNode",
-              "name": "preferredValidatorType"
+              "array": [
+                "u8",
+                263
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "types": [
+    {
+      "name": "SlotToggle",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "slotAdded",
+            "type": "u64"
+          },
+          {
+            "name": "slotRemoved",
+            "type": "u64"
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "CreateMetadataAccountArgsV3",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "data",
+            "type": {
+              "defined": "DataV2"
             }
           },
           {
-            "kind": "instructionArgumentNode",
-            "name": "validatorVoteAddress",
+            "name": "isMutable",
+            "type": "bool"
+          },
+          {
+            "name": "collectionDetails",
             "type": {
-              "kind": "optionTypeNode",
-              "item": {
-                "kind": "publicKeyTypeNode"
-              },
-              "prefix": {
-                "kind": "numberTypeNode",
-                "format": "u8",
-                "endian": "le"
+              "option": "u8"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "UpdateMetadataAccountArgsV2",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "data",
+            "type": {
+              "option": {
+                "defined": "DataV2"
               }
             }
-          }
-        ],
-        "discriminators": [
+          },
           {
-            "kind": "fieldDiscriminatorNode",
-            "name": "discriminator",
-            "offset": 0
+            "name": "updateAuthority",
+            "type": {
+              "option": "publicKey"
+            }
+          },
+          {
+            "name": "primarySaleHappened",
+            "type": {
+              "option": "bool"
+            }
+          },
+          {
+            "name": "isMutable",
+            "type": {
+              "option": "bool"
+            }
           }
         ]
-      },
-      {
-        "kind": "instructionNode",
-        "name": "updateValidatorListBalance",
-        "accounts": [
+      }
+    },
+    {
+      "name": "DataV2",
+      "type": {
+        "kind": "struct",
+        "fields": [
           {
-            "kind": "instructionAccountNode",
-            "name": "stakePool",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "withdrawAuthority",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "validatorList",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "reserveStake",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "clock",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "stakeHistory",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "stakeProgram",
-            "isWritable": false,
-            "isSigner": false
-          }
-        ],
-        "arguments": [
-          {
-            "kind": "instructionArgumentNode",
-            "name": "discriminator",
-            "defaultValueStrategy": "omitted",
-            "type": {
-              "kind": "numberTypeNode",
-              "format": "u8",
-              "endian": "le"
-            },
-            "defaultValue": {
-              "kind": "numberValueNode",
-              "number": 6
-            }
-          },
-          {
-            "kind": "instructionArgumentNode",
-            "name": "startIndex",
-            "type": {
-              "kind": "numberTypeNode",
-              "format": "u32",
-              "endian": "le"
-            }
-          },
-          {
-            "kind": "instructionArgumentNode",
-            "name": "noMerge",
-            "type": {
-              "kind": "booleanTypeNode",
-              "size": {
-                "kind": "numberTypeNode",
-                "format": "u8",
-                "endian": "le"
-              }
-            }
-          }
-        ],
-        "discriminators": [
-          {
-            "kind": "fieldDiscriminatorNode",
-            "name": "discriminator",
-            "offset": 0
-          }
-        ]
-      },
-      {
-        "kind": "instructionNode",
-        "name": "updateStakePoolBalance",
-        "accounts": [
-          {
-            "kind": "instructionAccountNode",
-            "name": "stakePool",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "withdraw",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "validatorList",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "reserveStake",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "managerFee",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "poolMint",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "tokenProgram",
-            "isWritable": false,
-            "isSigner": false
-          }
-        ],
-        "arguments": [
-          {
-            "kind": "instructionArgumentNode",
-            "name": "discriminator",
-            "defaultValueStrategy": "omitted",
-            "type": {
-              "kind": "numberTypeNode",
-              "format": "u8",
-              "endian": "le"
-            },
-            "defaultValue": {
-              "kind": "numberValueNode",
-              "number": 7
-            }
-          }
-        ],
-        "discriminators": [
-          {
-            "kind": "fieldDiscriminatorNode",
-            "name": "discriminator",
-            "offset": 0
-          }
-        ]
-      },
-      {
-        "kind": "instructionNode",
-        "name": "cleanupRemovedValidatorEntries",
-        "accounts": [
-          {
-            "kind": "instructionAccountNode",
-            "name": "stakePool",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "validatorList",
-            "isWritable": true,
-            "isSigner": false
-          }
-        ],
-        "arguments": [
-          {
-            "kind": "instructionArgumentNode",
-            "name": "discriminator",
-            "defaultValueStrategy": "omitted",
-            "type": {
-              "kind": "numberTypeNode",
-              "format": "u8",
-              "endian": "le"
-            },
-            "defaultValue": {
-              "kind": "numberValueNode",
-              "number": 8
-            }
-          }
-        ],
-        "discriminators": [
-          {
-            "kind": "fieldDiscriminatorNode",
-            "name": "discriminator",
-            "offset": 0
-          }
-        ]
-      },
-      {
-        "kind": "instructionNode",
-        "name": "depositStake",
-        "accounts": [
-          {
-            "kind": "instructionAccountNode",
-            "name": "stakePool",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "validatorList",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "stakeDepositAuthority",
-            "isWritable": false,
-            "isSigner": true
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "withdrawAuthority",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "stake",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "validatorStakeAccount",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "reserveStakeAccount",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "destUserPool",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "managerFee",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "referrerFee",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "poolMint",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "clock",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "stakeHistory",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "tokenProgram",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "stakeProgram",
-            "isWritable": false,
-            "isSigner": false
-          }
-        ],
-        "arguments": [
-          {
-            "kind": "instructionArgumentNode",
-            "name": "discriminator",
-            "defaultValueStrategy": "omitted",
-            "type": {
-              "kind": "numberTypeNode",
-              "format": "u8",
-              "endian": "le"
-            },
-            "defaultValue": {
-              "kind": "numberValueNode",
-              "number": 9
-            }
-          }
-        ],
-        "discriminators": [
-          {
-            "kind": "fieldDiscriminatorNode",
-            "name": "discriminator",
-            "offset": 0
-          }
-        ]
-      },
-      {
-        "kind": "instructionNode",
-        "name": "withdrawStake",
-        "accounts": [
-          {
-            "kind": "instructionAccountNode",
-            "name": "stakePool",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "validatorList",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "withdrawAuthority",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "stakeSplitFrom",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "stakeSplitTo",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "userStakeAuthority",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "userTransferAuthority",
-            "isWritable": false,
-            "isSigner": true
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "burnFromPool",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "managerFee",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "poolMint",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "clock",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "tokenProgram",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "stakeProgram",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "stakeProgram",
-            "isWritable": false,
-            "isSigner": false
-          }
-        ],
-        "arguments": [
-          {
-            "kind": "instructionArgumentNode",
-            "name": "discriminator",
-            "defaultValueStrategy": "omitted",
-            "type": {
-              "kind": "numberTypeNode",
-              "format": "u8",
-              "endian": "le"
-            },
-            "defaultValue": {
-              "kind": "numberValueNode",
-              "number": 10
-            }
-          },
-          {
-            "kind": "instructionArgumentNode",
-            "name": "args",
-            "type": {
-              "kind": "numberTypeNode",
-              "format": "u64",
-              "endian": "le"
-            }
-          }
-        ],
-        "discriminators": [
-          {
-            "kind": "fieldDiscriminatorNode",
-            "name": "discriminator",
-            "offset": 0
-          }
-        ]
-      },
-      {
-        "kind": "instructionNode",
-        "name": "setManager",
-        "accounts": [
-          {
-            "kind": "instructionAccountNode",
-            "name": "stakePool",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "manager",
-            "isWritable": false,
-            "isSigner": true
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "newManager",
-            "isWritable": false,
-            "isSigner": true
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "newManagerFee",
-            "isWritable": false,
-            "isSigner": false
-          }
-        ],
-        "arguments": [
-          {
-            "kind": "instructionArgumentNode",
-            "name": "discriminator",
-            "defaultValueStrategy": "omitted",
-            "type": {
-              "kind": "numberTypeNode",
-              "format": "u8",
-              "endian": "le"
-            },
-            "defaultValue": {
-              "kind": "numberValueNode",
-              "number": 11
-            }
-          }
-        ],
-        "discriminators": [
-          {
-            "kind": "fieldDiscriminatorNode",
-            "name": "discriminator",
-            "offset": 0
-          }
-        ]
-      },
-      {
-        "kind": "instructionNode",
-        "name": "setFee",
-        "accounts": [
-          {
-            "kind": "instructionAccountNode",
-            "name": "stakePool",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "manager",
-            "isWritable": false,
-            "isSigner": true
-          }
-        ],
-        "arguments": [
-          {
-            "kind": "instructionArgumentNode",
-            "name": "discriminator",
-            "defaultValueStrategy": "omitted",
-            "type": {
-              "kind": "numberTypeNode",
-              "format": "u8",
-              "endian": "le"
-            },
-            "defaultValue": {
-              "kind": "numberValueNode",
-              "number": 12
-            }
-          },
-          {
-            "kind": "instructionArgumentNode",
-            "name": "fee",
-            "type": {
-              "kind": "definedTypeLinkNode",
-              "name": "feeType"
-            }
-          }
-        ],
-        "discriminators": [
-          {
-            "kind": "fieldDiscriminatorNode",
-            "name": "discriminator",
-            "offset": 0
-          }
-        ]
-      },
-      {
-        "kind": "instructionNode",
-        "name": "setStaker",
-        "accounts": [
-          {
-            "kind": "instructionAccountNode",
-            "name": "stakePool",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "manager",
-            "isWritable": false,
-            "isSigner": true
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "newStaker",
-            "isWritable": false,
-            "isSigner": false
-          }
-        ],
-        "arguments": [
-          {
-            "kind": "instructionArgumentNode",
-            "name": "discriminator",
-            "defaultValueStrategy": "omitted",
-            "type": {
-              "kind": "numberTypeNode",
-              "format": "u8",
-              "endian": "le"
-            },
-            "defaultValue": {
-              "kind": "numberValueNode",
-              "number": 13
-            }
-          }
-        ],
-        "discriminators": [
-          {
-            "kind": "fieldDiscriminatorNode",
-            "name": "discriminator",
-            "offset": 0
-          }
-        ]
-      },
-      {
-        "kind": "instructionNode",
-        "name": "depositSol",
-        "accounts": [
-          {
-            "kind": "instructionAccountNode",
-            "name": "stakePool",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "withdrawAuthority",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "reserveStakeAccount",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "fromUserLamports",
-            "isWritable": false,
-            "isSigner": true
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "destUserPool",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "managerFee",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "referrerFee",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "poolMint",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "systemProgram",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "tokenProgram",
-            "isWritable": false,
-            "isSigner": false
-          }
-        ],
-        "arguments": [
-          {
-            "kind": "instructionArgumentNode",
-            "name": "discriminator",
-            "defaultValueStrategy": "omitted",
-            "type": {
-              "kind": "numberTypeNode",
-              "format": "u8",
-              "endian": "le"
-            },
-            "defaultValue": {
-              "kind": "numberValueNode",
-              "number": 14
-            }
-          },
-          {
-            "kind": "instructionArgumentNode",
-            "name": "args",
-            "type": {
-              "kind": "numberTypeNode",
-              "format": "u64",
-              "endian": "le"
-            }
-          }
-        ],
-        "discriminators": [
-          {
-            "kind": "fieldDiscriminatorNode",
-            "name": "discriminator",
-            "offset": 0
-          }
-        ]
-      },
-      {
-        "kind": "instructionNode",
-        "name": "setFundingAuthority",
-        "accounts": [
-          {
-            "kind": "instructionAccountNode",
-            "name": "stakePool",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "manager",
-            "isWritable": false,
-            "isSigner": true
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "newAuthority",
-            "isWritable": false,
-            "isSigner": false
-          }
-        ],
-        "arguments": [
-          {
-            "kind": "instructionArgumentNode",
-            "name": "discriminator",
-            "defaultValueStrategy": "omitted",
-            "type": {
-              "kind": "numberTypeNode",
-              "format": "u8",
-              "endian": "le"
-            },
-            "defaultValue": {
-              "kind": "numberValueNode",
-              "number": 15
-            }
-          },
-          {
-            "kind": "instructionArgumentNode",
-            "name": "args",
-            "type": {
-              "kind": "definedTypeLinkNode",
-              "name": "fundingType"
-            }
-          }
-        ],
-        "discriminators": [
-          {
-            "kind": "fieldDiscriminatorNode",
-            "name": "discriminator",
-            "offset": 0
-          }
-        ]
-      },
-      {
-        "kind": "instructionNode",
-        "name": "withdrawSol",
-        "accounts": [
-          {
-            "kind": "instructionAccountNode",
-            "name": "stakePool",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "withdrawAuthority",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "userTransferAuthority",
-            "isWritable": false,
-            "isSigner": true
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "burnFromPool",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "reserveStake",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "destinationLamports",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "managerFee",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "poolMint",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "clock",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "stakeHistory",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "stakeProgram",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "tokenProgram",
-            "isWritable": false,
-            "isSigner": false
-          }
-        ],
-        "arguments": [
-          {
-            "kind": "instructionArgumentNode",
-            "name": "discriminator",
-            "defaultValueStrategy": "omitted",
-            "type": {
-              "kind": "numberTypeNode",
-              "format": "u8",
-              "endian": "le"
-            },
-            "defaultValue": {
-              "kind": "numberValueNode",
-              "number": 16
-            }
-          },
-          {
-            "kind": "instructionArgumentNode",
-            "name": "args",
-            "type": {
-              "kind": "numberTypeNode",
-              "format": "u64",
-              "endian": "le"
-            }
-          }
-        ],
-        "discriminators": [
-          {
-            "kind": "fieldDiscriminatorNode",
-            "name": "discriminator",
-            "offset": 0
-          }
-        ]
-      },
-      {
-        "kind": "instructionNode",
-        "name": "createTokenMetadata",
-        "accounts": [
-          {
-            "kind": "instructionAccountNode",
-            "name": "stakePool",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "manager",
-            "isWritable": false,
-            "isSigner": true
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "withdrawAuthority",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "poolMint",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "payer",
-            "isWritable": true,
-            "isSigner": true
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "metadata",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "mplTokenMetadataProgram",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "systemProgram",
-            "isWritable": false,
-            "isSigner": false
-          }
-        ],
-        "arguments": [
-          {
-            "kind": "instructionArgumentNode",
-            "name": "discriminator",
-            "defaultValueStrategy": "omitted",
-            "type": {
-              "kind": "numberTypeNode",
-              "format": "u8",
-              "endian": "le"
-            },
-            "defaultValue": {
-              "kind": "numberValueNode",
-              "number": 17
-            }
-          },
-          {
-            "kind": "instructionArgumentNode",
             "name": "name",
-            "type": {
-              "kind": "sizePrefixTypeNode",
-              "type": {
-                "kind": "stringTypeNode",
-                "encoding": "utf8"
-              },
-              "prefix": {
-                "kind": "numberTypeNode",
-                "format": "u32",
-                "endian": "le"
-              }
-            }
+            "type": "string"
           },
           {
-            "kind": "instructionArgumentNode",
             "name": "symbol",
-            "type": {
-              "kind": "sizePrefixTypeNode",
-              "type": {
-                "kind": "stringTypeNode",
-                "encoding": "utf8"
-              },
-              "prefix": {
-                "kind": "numberTypeNode",
-                "format": "u32",
-                "endian": "le"
-              }
-            }
+            "type": "string"
           },
           {
-            "kind": "instructionArgumentNode",
             "name": "uri",
+            "type": "string"
+          },
+          {
+            "name": "sellerFeeBasisPoints",
+            "type": "u16"
+          },
+          {
+            "name": "creators",
             "type": {
-              "kind": "sizePrefixTypeNode",
-              "type": {
-                "kind": "stringTypeNode",
-                "encoding": "utf8"
-              },
-              "prefix": {
-                "kind": "numberTypeNode",
-                "format": "u32",
-                "endian": "le"
-              }
-            }
-          }
-        ],
-        "discriminators": [
-          {
-            "kind": "fieldDiscriminatorNode",
-            "name": "discriminator",
-            "offset": 0
-          }
-        ]
-      },
-      {
-        "kind": "instructionNode",
-        "name": "updateTokenMetadata",
-        "accounts": [
-          {
-            "kind": "instructionAccountNode",
-            "name": "stakePool",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "manager",
-            "isWritable": false,
-            "isSigner": true
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "withdrawAuthority",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "metadata",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "mplTokenMetadataProgram",
-            "isWritable": false,
-            "isSigner": false
-          }
-        ],
-        "arguments": [
-          {
-            "kind": "instructionArgumentNode",
-            "name": "discriminator",
-            "defaultValueStrategy": "omitted",
-            "type": {
-              "kind": "numberTypeNode",
-              "format": "u8",
-              "endian": "le"
-            },
-            "defaultValue": {
-              "kind": "numberValueNode",
-              "number": 18
+              "option": "u8"
             }
           },
           {
-            "kind": "instructionArgumentNode",
-            "name": "name",
+            "name": "collection",
             "type": {
-              "kind": "sizePrefixTypeNode",
-              "type": {
-                "kind": "stringTypeNode",
-                "encoding": "utf8"
-              },
-              "prefix": {
-                "kind": "numberTypeNode",
-                "format": "u32",
-                "endian": "le"
-              }
+              "option": "u8"
             }
           },
           {
-            "kind": "instructionArgumentNode",
-            "name": "symbol",
+            "name": "uses",
             "type": {
-              "kind": "sizePrefixTypeNode",
-              "type": {
-                "kind": "stringTypeNode",
-                "encoding": "utf8"
-              },
-              "prefix": {
-                "kind": "numberTypeNode",
-                "format": "u32",
-                "endian": "le"
-              }
+              "option": "u8"
             }
-          },
-          {
-            "kind": "instructionArgumentNode",
-            "name": "uri",
-            "type": {
-              "kind": "sizePrefixTypeNode",
-              "type": {
-                "kind": "stringTypeNode",
-                "encoding": "utf8"
-              },
-              "prefix": {
-                "kind": "numberTypeNode",
-                "format": "u32",
-                "endian": "le"
-              }
-            }
-          }
-        ],
-        "discriminators": [
-          {
-            "kind": "fieldDiscriminatorNode",
-            "name": "discriminator",
-            "offset": 0
-          }
-        ]
-      },
-      {
-        "kind": "instructionNode",
-        "name": "increaseAdditionalValidatorStake",
-        "accounts": [
-          {
-            "kind": "instructionAccountNode",
-            "name": "stakePool",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "staker",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "withdrawAuthority",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "validatorList",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "reserveStakeAccount",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "ephemeralStakeAccount",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "transientStakeAccount",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "validatorStakeAccount",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "validatorVoteAccount",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "clock",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "stakeHistory",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "stakeConfig",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "systemProgram",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "stakeProgram",
-            "isWritable": false,
-            "isSigner": false
-          }
-        ],
-        "arguments": [
-          {
-            "kind": "instructionArgumentNode",
-            "name": "discriminator",
-            "defaultValueStrategy": "omitted",
-            "type": {
-              "kind": "numberTypeNode",
-              "format": "u8",
-              "endian": "le"
-            },
-            "defaultValue": {
-              "kind": "numberValueNode",
-              "number": 19
-            }
-          },
-          {
-            "kind": "instructionArgumentNode",
-            "name": "lamports",
-            "type": {
-              "kind": "numberTypeNode",
-              "format": "u64",
-              "endian": "le"
-            }
-          },
-          {
-            "kind": "instructionArgumentNode",
-            "name": "transientStakeSeed",
-            "type": {
-              "kind": "numberTypeNode",
-              "format": "u64",
-              "endian": "le"
-            }
-          },
-          {
-            "kind": "instructionArgumentNode",
-            "name": "ephemeralStakeSeed",
-            "type": {
-              "kind": "numberTypeNode",
-              "format": "u64",
-              "endian": "le"
-            }
-          }
-        ],
-        "discriminators": [
-          {
-            "kind": "fieldDiscriminatorNode",
-            "name": "discriminator",
-            "offset": 0
-          }
-        ]
-      },
-      {
-        "kind": "instructionNode",
-        "name": "decreaseAdditionalValidatorStake",
-        "accounts": [
-          {
-            "kind": "instructionAccountNode",
-            "name": "stakePool",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "staker",
-            "isWritable": false,
-            "isSigner": true
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "withdrawAuthority",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "validatorList",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "reserveStake",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "validatorStakeAccount",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "ephemeralStakeAccount",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "transientStakeAccount",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "clock",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "stakeHistory",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "systemProgram",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "stakeProgram",
-            "isWritable": false,
-            "isSigner": false
-          }
-        ],
-        "arguments": [
-          {
-            "kind": "instructionArgumentNode",
-            "name": "discriminator",
-            "defaultValueStrategy": "omitted",
-            "type": {
-              "kind": "numberTypeNode",
-              "format": "u8",
-              "endian": "le"
-            },
-            "defaultValue": {
-              "kind": "numberValueNode",
-              "number": 20
-            }
-          },
-          {
-            "kind": "instructionArgumentNode",
-            "name": "lamports",
-            "type": {
-              "kind": "numberTypeNode",
-              "format": "u64",
-              "endian": "le"
-            }
-          },
-          {
-            "kind": "instructionArgumentNode",
-            "name": "transientStakeSeed",
-            "type": {
-              "kind": "numberTypeNode",
-              "format": "u64",
-              "endian": "le"
-            }
-          },
-          {
-            "kind": "instructionArgumentNode",
-            "name": "ephemeralStakeSeed",
-            "type": {
-              "kind": "numberTypeNode",
-              "format": "u64",
-              "endian": "le"
-            }
-          }
-        ],
-        "discriminators": [
-          {
-            "kind": "fieldDiscriminatorNode",
-            "name": "discriminator",
-            "offset": 0
-          }
-        ]
-      },
-      {
-        "kind": "instructionNode",
-        "name": "decreaseValidatorStakeWithReserve",
-        "accounts": [
-          {
-            "kind": "instructionAccountNode",
-            "name": "stakePool",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "staker",
-            "isWritable": false,
-            "isSigner": true
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "withdrawAuthority",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "validatorList",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "reserveStakeAccount",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "validatorStakeAccount",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "transientStakeAccount",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "clock",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "stakeHistory",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "systemProgram",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "stakeProgram",
-            "isWritable": false,
-            "isSigner": false
-          }
-        ],
-        "arguments": [
-          {
-            "kind": "instructionArgumentNode",
-            "name": "discriminator",
-            "defaultValueStrategy": "omitted",
-            "type": {
-              "kind": "numberTypeNode",
-              "format": "u8",
-              "endian": "le"
-            },
-            "defaultValue": {
-              "kind": "numberValueNode",
-              "number": 21
-            }
-          },
-          {
-            "kind": "instructionArgumentNode",
-            "name": "lamports",
-            "type": {
-              "kind": "numberTypeNode",
-              "format": "u64",
-              "endian": "le"
-            }
-          },
-          {
-            "kind": "instructionArgumentNode",
-            "name": "transientStakeSeed",
-            "type": {
-              "kind": "numberTypeNode",
-              "format": "u64",
-              "endian": "le"
-            }
-          }
-        ],
-        "discriminators": [
-          {
-            "kind": "fieldDiscriminatorNode",
-            "name": "discriminator",
-            "offset": 0
-          }
-        ]
-      },
-      {
-        "kind": "instructionNode",
-        "name": "redelegate",
-        "accounts": [],
-        "arguments": [
-          {
-            "kind": "instructionArgumentNode",
-            "name": "discriminator",
-            "defaultValueStrategy": "omitted",
-            "type": {
-              "kind": "numberTypeNode",
-              "format": "u8",
-              "endian": "le"
-            },
-            "defaultValue": {
-              "kind": "numberValueNode",
-              "number": 22
-            }
-          },
-          {
-            "kind": "instructionArgumentNode",
-            "name": "lamports",
-            "type": {
-              "kind": "numberTypeNode",
-              "format": "u64",
-              "endian": "le"
-            }
-          },
-          {
-            "kind": "instructionArgumentNode",
-            "name": "sourceTransientStakeSeed",
-            "type": {
-              "kind": "numberTypeNode",
-              "format": "u64",
-              "endian": "le"
-            }
-          },
-          {
-            "kind": "instructionArgumentNode",
-            "name": "ephemeralStakeSeed",
-            "type": {
-              "kind": "numberTypeNode",
-              "format": "u64",
-              "endian": "le"
-            }
-          },
-          {
-            "kind": "instructionArgumentNode",
-            "name": "destinationTransientStakeSeed",
-            "type": {
-              "kind": "numberTypeNode",
-              "format": "u64",
-              "endian": "le"
-            }
-          }
-        ],
-        "discriminators": [
-          {
-            "kind": "fieldDiscriminatorNode",
-            "name": "discriminator",
-            "offset": 0
-          }
-        ]
-      },
-      {
-        "kind": "instructionNode",
-        "name": "depositStakeWithSlippage",
-        "accounts": [
-          {
-            "kind": "instructionAccountNode",
-            "name": "stakePool",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "validatorList",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "stakeDepositAuthority",
-            "isWritable": false,
-            "isSigner": true
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "withdrawAuthority",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "stake",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "validatorStakeAccount",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "reserveStakeAccount",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "destUserPool",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "managerFee",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "referrerFee",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "poolMint",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "clock",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "stakeHistory",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "tokenProgram",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "stakeProgram",
-            "isWritable": false,
-            "isSigner": false
-          }
-        ],
-        "arguments": [
-          {
-            "kind": "instructionArgumentNode",
-            "name": "discriminator",
-            "defaultValueStrategy": "omitted",
-            "type": {
-              "kind": "numberTypeNode",
-              "format": "u8",
-              "endian": "le"
-            },
-            "defaultValue": {
-              "kind": "numberValueNode",
-              "number": 23
-            }
-          },
-          {
-            "kind": "instructionArgumentNode",
-            "name": "minimumPoolTokensOut",
-            "type": {
-              "kind": "numberTypeNode",
-              "format": "u64",
-              "endian": "le"
-            }
-          }
-        ],
-        "discriminators": [
-          {
-            "kind": "fieldDiscriminatorNode",
-            "name": "discriminator",
-            "offset": 0
-          }
-        ]
-      },
-      {
-        "kind": "instructionNode",
-        "name": "withdrawStakeWithSlippage",
-        "accounts": [
-          {
-            "kind": "instructionAccountNode",
-            "name": "stakePool",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "validatorList",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "withdrawAuthority",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "stakeSplitFrom",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "stakeSplitTo",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "userStakeAuthority",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "userTransferAuthority",
-            "isWritable": false,
-            "isSigner": true
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "burnFromPool",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "managerFee",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "poolMint",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "clock",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "tokenProgram",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "stakeProgram",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "stakeProgram",
-            "isWritable": false,
-            "isSigner": false
-          }
-        ],
-        "arguments": [
-          {
-            "kind": "instructionArgumentNode",
-            "name": "discriminator",
-            "defaultValueStrategy": "omitted",
-            "type": {
-              "kind": "numberTypeNode",
-              "format": "u8",
-              "endian": "le"
-            },
-            "defaultValue": {
-              "kind": "numberValueNode",
-              "number": 24
-            }
-          },
-          {
-            "kind": "instructionArgumentNode",
-            "name": "poolTokensIn",
-            "type": {
-              "kind": "numberTypeNode",
-              "format": "u64",
-              "endian": "le"
-            }
-          },
-          {
-            "kind": "instructionArgumentNode",
-            "name": "minimumLamportsOut",
-            "type": {
-              "kind": "numberTypeNode",
-              "format": "u64",
-              "endian": "le"
-            }
-          }
-        ],
-        "discriminators": [
-          {
-            "kind": "fieldDiscriminatorNode",
-            "name": "discriminator",
-            "offset": 0
-          }
-        ]
-      },
-      {
-        "kind": "instructionNode",
-        "name": "depositSolWithSlippage",
-        "accounts": [
-          {
-            "kind": "instructionAccountNode",
-            "name": "stakePool",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "withdrawAuthority",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "reserveStakeAccount",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "fromUserLamports",
-            "isWritable": false,
-            "isSigner": true
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "destUserPool",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "managerFee",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "referrerFee",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "poolMint",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "systemProgram",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "tokenProgram",
-            "isWritable": false,
-            "isSigner": false
-          }
-        ],
-        "arguments": [
-          {
-            "kind": "instructionArgumentNode",
-            "name": "discriminator",
-            "defaultValueStrategy": "omitted",
-            "type": {
-              "kind": "numberTypeNode",
-              "format": "u8",
-              "endian": "le"
-            },
-            "defaultValue": {
-              "kind": "numberValueNode",
-              "number": 25
-            }
-          },
-          {
-            "kind": "instructionArgumentNode",
-            "name": "lamportsIn",
-            "type": {
-              "kind": "numberTypeNode",
-              "format": "u64",
-              "endian": "le"
-            }
-          },
-          {
-            "kind": "instructionArgumentNode",
-            "name": "minimumPoolTokensOut",
-            "type": {
-              "kind": "numberTypeNode",
-              "format": "u64",
-              "endian": "le"
-            }
-          }
-        ],
-        "discriminators": [
-          {
-            "kind": "fieldDiscriminatorNode",
-            "name": "discriminator",
-            "offset": 0
-          }
-        ]
-      },
-      {
-        "kind": "instructionNode",
-        "name": "withdrawSolWithSlippage",
-        "accounts": [
-          {
-            "kind": "instructionAccountNode",
-            "name": "stakePool",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "withdrawAuthority",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "userTransferAuthority",
-            "isWritable": false,
-            "isSigner": true
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "burnFromPool",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "reserveStake",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "destinationLamports",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "managerFee",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "poolMint",
-            "isWritable": true,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "clock",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "stakeHistory",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "stakeProgram",
-            "isWritable": false,
-            "isSigner": false
-          },
-          {
-            "kind": "instructionAccountNode",
-            "name": "tokenProgram",
-            "isWritable": false,
-            "isSigner": false
-          }
-        ],
-        "arguments": [
-          {
-            "kind": "instructionArgumentNode",
-            "name": "discriminator",
-            "defaultValueStrategy": "omitted",
-            "type": {
-              "kind": "numberTypeNode",
-              "format": "u8",
-              "endian": "le"
-            },
-            "defaultValue": {
-              "kind": "numberValueNode",
-              "number": 26
-            }
-          },
-          {
-            "kind": "instructionArgumentNode",
-            "name": "poolTokensIn",
-            "type": {
-              "kind": "numberTypeNode",
-              "format": "u64",
-              "endian": "le"
-            }
-          },
-          {
-            "kind": "instructionArgumentNode",
-            "name": "minimumLamportsOut",
-            "type": {
-              "kind": "numberTypeNode",
-              "format": "u64",
-              "endian": "le"
-            }
-          }
-        ],
-        "discriminators": [
-          {
-            "kind": "fieldDiscriminatorNode",
-            "name": "discriminator",
-            "offset": 0
           }
         ]
       }
-    ],
-    "definedTypes": [
-      {
-        "kind": "definedTypeNode",
-        "name": "preferredValidatorType",
-        "type": {
-          "kind": "enumTypeNode",
-          "variants": [
-            {
-              "kind": "enumEmptyVariantTypeNode",
-              "name": "deposit"
-            },
-            {
-              "kind": "enumEmptyVariantTypeNode",
-              "name": "withdraw"
-            }
-          ],
-          "size": {
-            "kind": "numberTypeNode",
-            "format": "u8",
-            "endian": "le"
+    },
+    {
+      "name": "VaultAdminRole",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "DelegationAdmin"
+          },
+          {
+            "name": "OperatorAdmin"
+          },
+          {
+            "name": "NcnAdmin"
+          },
+          {
+            "name": "SlasherAdmin"
+          },
+          {
+            "name": "CapacityAdmin"
+          },
+          {
+            "name": "FeeWallet"
+          },
+          {
+            "name": "MintBurnAdmin"
+          },
+          {
+            "name": "DelegateAssetAdmin"
+          },
+          {
+            "name": "FeeAdmin"
+          },
+          {
+            "name": "MetadataAdmin"
           }
-        }
-      },
-      {
-        "kind": "definedTypeNode",
-        "name": "fundingType",
-        "type": {
-          "kind": "enumTypeNode",
-          "variants": [
-            {
-              "kind": "enumEmptyVariantTypeNode",
-              "name": "stakeDeposit"
-            },
-            {
-              "kind": "enumEmptyVariantTypeNode",
-              "name": "solDeposit"
-            },
-            {
-              "kind": "enumEmptyVariantTypeNode",
-              "name": "solWithdraw"
-            }
-          ],
-          "size": {
-            "kind": "numberTypeNode",
-            "format": "u8",
-            "endian": "le"
-          }
-        }
-      },
-      {
-        "kind": "definedTypeNode",
-        "name": "accountType",
-        "type": {
-          "kind": "enumTypeNode",
-          "variants": [
-            {
-              "kind": "enumEmptyVariantTypeNode",
-              "name": "uninitialized"
-            },
-            {
-              "kind": "enumEmptyVariantTypeNode",
-              "name": "stakePool"
-            },
-            {
-              "kind": "enumEmptyVariantTypeNode",
-              "name": "validatorList"
-            }
-          ],
-          "size": {
-            "kind": "numberTypeNode",
-            "format": "u8",
-            "endian": "le"
-          }
-        }
-      },
-      {
-        "kind": "definedTypeNode",
-        "name": "validatorListHeader",
-        "type": {
-          "kind": "structTypeNode",
-          "fields": [
-            {
-              "kind": "structFieldTypeNode",
-              "name": "accountType",
-              "type": {
-                "kind": "definedTypeLinkNode",
-                "name": "accountType"
-              }
-            },
-            {
-              "kind": "structFieldTypeNode",
-              "name": "maxValidators",
-              "type": {
-                "kind": "numberTypeNode",
-                "format": "u32",
-                "endian": "le"
-              }
-            }
-          ]
-        }
-      },
-      {
-        "kind": "definedTypeNode",
-        "name": "stakeStatus",
-        "type": {
-          "kind": "enumTypeNode",
-          "variants": [
-            {
-              "kind": "enumEmptyVariantTypeNode",
-              "name": "active"
-            },
-            {
-              "kind": "enumEmptyVariantTypeNode",
-              "name": "deactivatingTransient"
-            },
-            {
-              "kind": "enumEmptyVariantTypeNode",
-              "name": "readyForRemoval"
-            },
-            {
-              "kind": "enumEmptyVariantTypeNode",
-              "name": "deactivatingValidator"
-            },
-            {
-              "kind": "enumEmptyVariantTypeNode",
-              "name": "deactivatingAll"
-            }
-          ],
-          "size": {
-            "kind": "numberTypeNode",
-            "format": "u8",
-            "endian": "le"
-          }
-        }
-      },
-      {
-        "kind": "definedTypeNode",
-        "name": "podStakeStatus",
-        "type": {
-          "kind": "numberTypeNode",
-          "format": "u8",
-          "endian": "le"
-        }
-      },
-      {
-        "kind": "definedTypeNode",
-        "name": "stakeWithdrawSource",
-        "type": {
-          "kind": "enumTypeNode",
-          "variants": [
-            {
-              "kind": "enumEmptyVariantTypeNode",
-              "name": "active"
-            },
-            {
-              "kind": "enumEmptyVariantTypeNode",
-              "name": "transient"
-            },
-            {
-              "kind": "enumEmptyVariantTypeNode",
-              "name": "validatorRemoval"
-            }
-          ],
-          "size": {
-            "kind": "numberTypeNode",
-            "format": "u8",
-            "endian": "le"
-          }
-        }
-      },
-      {
-        "kind": "definedTypeNode",
-        "name": "futureEpoch",
-        "type": {
-          "kind": "enumTypeNode",
-          "variants": [
-            {
-              "kind": "enumEmptyVariantTypeNode",
-              "name": "none"
-            },
-            {
-              "kind": "enumTupleVariantTypeNode",
-              "name": "one",
-              "tuple": {
-                "kind": "tupleTypeNode",
-                "items": [
-                  {
-                    "kind": "definedTypeLinkNode",
-                    "name": "t"
-                  }
-                ]
-              }
-            },
-            {
-              "kind": "enumTupleVariantTypeNode",
-              "name": "two",
-              "tuple": {
-                "kind": "tupleTypeNode",
-                "items": [
-                  {
-                    "kind": "definedTypeLinkNode",
-                    "name": "t"
-                  }
-                ]
-              }
-            }
-          ],
-          "size": {
-            "kind": "numberTypeNode",
-            "format": "u8",
-            "endian": "le"
-          }
-        }
-      },
-      {
-        "kind": "definedTypeNode",
-        "name": "fee",
-        "type": {
-          "kind": "structTypeNode",
-          "fields": [
-            {
-              "kind": "structFieldTypeNode",
-              "name": "denominator",
-              "type": {
-                "kind": "numberTypeNode",
-                "format": "u64",
-                "endian": "le"
-              }
-            },
-            {
-              "kind": "structFieldTypeNode",
-              "name": "numerator",
-              "type": {
-                "kind": "numberTypeNode",
-                "format": "u64",
-                "endian": "le"
-              }
-            }
-          ]
-        }
-      },
-      {
-        "kind": "definedTypeNode",
-        "name": "feeType",
-        "type": {
-          "kind": "enumTypeNode",
-          "variants": [
-            {
-              "kind": "enumTupleVariantTypeNode",
-              "name": "solReferral",
-              "tuple": {
-                "kind": "tupleTypeNode",
-                "items": [
-                  {
-                    "kind": "numberTypeNode",
-                    "format": "u8",
-                    "endian": "le"
-                  }
-                ]
-              }
-            },
-            {
-              "kind": "enumTupleVariantTypeNode",
-              "name": "stakeReferral",
-              "tuple": {
-                "kind": "tupleTypeNode",
-                "items": [
-                  {
-                    "kind": "numberTypeNode",
-                    "format": "u8",
-                    "endian": "le"
-                  }
-                ]
-              }
-            },
-            {
-              "kind": "enumTupleVariantTypeNode",
-              "name": "epoch",
-              "tuple": {
-                "kind": "tupleTypeNode",
-                "items": [
-                  {
-                    "kind": "definedTypeLinkNode",
-                    "name": "fee"
-                  }
-                ]
-              }
-            },
-            {
-              "kind": "enumTupleVariantTypeNode",
-              "name": "stakeWithdrawal",
-              "tuple": {
-                "kind": "tupleTypeNode",
-                "items": [
-                  {
-                    "kind": "definedTypeLinkNode",
-                    "name": "fee"
-                  }
-                ]
-              }
-            },
-            {
-              "kind": "enumTupleVariantTypeNode",
-              "name": "solDeposit",
-              "tuple": {
-                "kind": "tupleTypeNode",
-                "items": [
-                  {
-                    "kind": "definedTypeLinkNode",
-                    "name": "fee"
-                  }
-                ]
-              }
-            },
-            {
-              "kind": "enumTupleVariantTypeNode",
-              "name": "stakeDeposit",
-              "tuple": {
-                "kind": "tupleTypeNode",
-                "items": [
-                  {
-                    "kind": "definedTypeLinkNode",
-                    "name": "fee"
-                  }
-                ]
-              }
-            },
-            {
-              "kind": "enumTupleVariantTypeNode",
-              "name": "solWithdrawal",
-              "tuple": {
-                "kind": "tupleTypeNode",
-                "items": [
-                  {
-                    "kind": "definedTypeLinkNode",
-                    "name": "fee"
-                  }
-                ]
-              }
-            }
-          ],
-          "size": {
-            "kind": "numberTypeNode",
-            "format": "u8",
-            "endian": "le"
-          }
-        }
-      },
-            {
-        "name": "Lockup",
-        "type": {
-          "kind": "struct",
-          "fields": [
-            {
-              "name": "unixTimeStamp",
-              "type": "i64"
-            },
-            {
-              "name": "epoch",
-              "type": "u64"
-            },
-            {
-              "name": "custodian",
-              "type": "publicKey"
-            }
-          ]
-        }
+        ]
       }
-    ],
-    "pdas": [],
-    "errors": [
-      {
-        "kind": "errorNode",
-        "name": "alreadyInUse",
-        "code": 0,
-        "message": "AlreadyInUse"
-      },
-      {
-        "kind": "errorNode",
-        "name": "invalidProgramAddress",
-        "code": 1,
-        "message": "InvalidProgramAddress"
-      },
-      {
-        "kind": "errorNode",
-        "name": "invalidState",
-        "code": 2,
-        "message": "InvalidState"
-      },
-      {
-        "kind": "errorNode",
-        "name": "calculationFailure",
-        "code": 3,
-        "message": "CalculationFailure"
-      },
-      {
-        "kind": "errorNode",
-        "name": "feeTooHigh",
-        "code": 4,
-        "message": "FeeTooHigh"
-      },
-      {
-        "kind": "errorNode",
-        "name": "wrongAccountMint",
-        "code": 5,
-        "message": "WrongAccountMint"
-      },
-      {
-        "kind": "errorNode",
-        "name": "wrongManager",
-        "code": 6,
-        "message": "WrongManager"
-      },
-      {
-        "kind": "errorNode",
-        "name": "signatureMissing",
-        "code": 7,
-        "message": "SignatureMissing"
-      },
-      {
-        "kind": "errorNode",
-        "name": "invalidValidatorStakeList",
-        "code": 8,
-        "message": "InvalidValidatorStakeList"
-      },
-      {
-        "kind": "errorNode",
-        "name": "invalidFeeAccount",
-        "code": 9,
-        "message": "InvalidFeeAccount"
-      },
-      {
-        "kind": "errorNode",
-        "name": "wrongPoolMint",
-        "code": 10,
-        "message": "WrongPoolMint"
-      },
-      {
-        "kind": "errorNode",
-        "name": "wrongStakeStake",
-        "code": 11,
-        "message": "WrongStakeStake"
-      },
-      {
-        "kind": "errorNode",
-        "name": "userStakeNotActive",
-        "code": 12,
-        "message": "UserStakeNotActive"
-      },
-      {
-        "kind": "errorNode",
-        "name": "validatorAlreadyAdded",
-        "code": 13,
-        "message": "ValidatorAlreadyAdded"
-      },
-      {
-        "kind": "errorNode",
-        "name": "validatorNotFound",
-        "code": 14,
-        "message": "ValidatorNotFound"
-      },
-      {
-        "kind": "errorNode",
-        "name": "invalidStakeAccountAddress",
-        "code": 15,
-        "message": "InvalidStakeAccountAddress"
-      },
-      {
-        "kind": "errorNode",
-        "name": "stakeListOutOfDate",
-        "code": 16,
-        "message": "StakeListOutOfDate"
-      },
-      {
-        "kind": "errorNode",
-        "name": "stakeListAndPoolOutOfDate",
-        "code": 17,
-        "message": "StakeListAndPoolOutOfDate"
-      },
-      {
-        "kind": "errorNode",
-        "name": "unknownValidatorStakeAccount",
-        "code": 18,
-        "message": "UnknownValidatorStakeAccount"
-      },
-      {
-        "kind": "errorNode",
-        "name": "wrongMintingAuthority",
-        "code": 19,
-        "message": "WrongMintingAuthority"
-      },
-      {
-        "kind": "errorNode",
-        "name": "unexpectedValidatorListAccountSize",
-        "code": 20,
-        "message": "UnexpectedValidatorListAccountSize"
-      },
-      {
-        "kind": "errorNode",
-        "name": "wrongStaker",
-        "code": 21,
-        "message": "WrongStaker"
-      },
-      {
-        "kind": "errorNode",
-        "name": "nonZeroPoolTokenSupply",
-        "code": 22,
-        "message": "NonZeroPoolTokenSupply"
-      },
-      {
-        "kind": "errorNode",
-        "name": "stakeLamportsNotEqualToMinimum",
-        "code": 23,
-        "message": "StakeLamportsNotEqualToMinimum"
-      },
-      {
-        "kind": "errorNode",
-        "name": "incorrectDepositVoteAddress",
-        "code": 24,
-        "message": "IncorrectDepositVoteAddress"
-      },
-      {
-        "kind": "errorNode",
-        "name": "incorrectWithdrawVoteAddress",
-        "code": 25,
-        "message": "IncorrectWithdrawVoteAddress"
-      },
-      {
-        "kind": "errorNode",
-        "name": "invalidMintFreezeAuthority",
-        "code": 26,
-        "message": "InvalidMintFreezeAuthority"
-      },
-      {
-        "kind": "errorNode",
-        "name": "feeIncreaseTooHigh",
-        "code": 27,
-        "message": "FeeIncreaseTooHigh"
-      },
-      {
-        "kind": "errorNode",
-        "name": "withdrawalTooSmall",
-        "code": 28,
-        "message": "WithdrawalTooSmall"
-      },
-      {
-        "kind": "errorNode",
-        "name": "depositTooSmall",
-        "code": 29,
-        "message": "DepositTooSmall"
-      },
-      {
-        "kind": "errorNode",
-        "name": "invalidStakeDepositAuthority",
-        "code": 30,
-        "message": "InvalidStakeDepositAuthority"
-      },
-      {
-        "kind": "errorNode",
-        "name": "invalidSolDepositAuthority",
-        "code": 31,
-        "message": "InvalidSolDepositAuthority"
-      },
-      {
-        "kind": "errorNode",
-        "name": "invalidPreferredValidator",
-        "code": 32,
-        "message": "InvalidPreferredValidator"
-      },
-      {
-        "kind": "errorNode",
-        "name": "transientAccountInUse",
-        "code": 33,
-        "message": "TransientAccountInUse"
-      },
-      {
-        "kind": "errorNode",
-        "name": "invalidSolWithdrawAuthority",
-        "code": 34,
-        "message": "InvalidSolWithdrawAuthority"
-      },
-      {
-        "kind": "errorNode",
-        "name": "solWithdrawalTooLarge",
-        "code": 35,
-        "message": "SolWithdrawalTooLarge"
-      },
-      {
-        "kind": "errorNode",
-        "name": "invalidMetadataAccount",
-        "code": 36,
-        "message": "InvalidMetadataAccount"
-      },
-      {
-        "kind": "errorNode",
-        "name": "unsupportedMintExtension",
-        "code": 37,
-        "message": "UnsupportedMintExtension"
-      },
-      {
-        "kind": "errorNode",
-        "name": "unsupportedFeeAccountExtension",
-        "code": 38,
-        "message": "UnsupportedFeeAccountExtension"
-      },
-      {
-        "kind": "errorNode",
-        "name": "exceededSlippage",
-        "code": 39,
-        "message": "Instruction exceeds desired slippage limit"
-      },
-      {
-        "kind": "errorNode",
-        "name": "incorrectMintDecimals",
-        "code": 40,
-        "message": "IncorrectMintDecimals"
-      },
-      {
-        "kind": "errorNode",
-        "name": "reserveDepleted",
-        "code": 41,
-        "message": "ReserveDepleted"
-      },
-      {
-        "kind": "errorNode",
-        "name": "missingRequiredSysvar",
-        "code": 42,
-        "message": "Missing required sysvar account"
+    },
+    {
+      "name": "WithdrawalAllocationMethod",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Greedy"
+          }
+        ]
       }
-    ]
-  },
-  "additionalPrograms": []
+    },
+    {
+      "name": "DelegationState",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "stakedAmount",
+            "type": "u64"
+          },
+          {
+            "name": "enqueuedForCooldownAmount",
+            "type": "u64"
+          },
+          {
+            "name": "coolingDownAmount",
+            "type": "u64"
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "u8",
+                256
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [
+    {
+      "code": 0,
+      "name": "BadEpochLength",
+      "msg": "Bad epoch length"
+    },
+    {
+      "code": 1000,
+      "name": "VaultSlashUnderflow",
+      "msg": "VaultSlashUnderflow"
+    },
+    {
+      "code": 1001,
+      "name": "VaultInitialAmountFailed",
+      "msg": "VaultInitialAmountFailed"
+    },
+    {
+      "code": 1002,
+      "name": "VaultInsufficientFunds",
+      "msg": "VaultInsufficientFunds"
+    },
+    {
+      "code": 1003,
+      "name": "VaultOverflow",
+      "msg": "VaultOverflow"
+    },
+    {
+      "code": 1004,
+      "name": "VaultOperatorAdminInvalid",
+      "msg": "VaultOperatorAdminInvalid"
+    },
+    {
+      "code": 1005,
+      "name": "VaultAdminInvalid",
+      "msg": "VaultAdminInvalid"
+    },
+    {
+      "code": 1006,
+      "name": "VaultCapacityAdminInvalid",
+      "msg": "VaultCapacityAdminInvalid"
+    },
+    {
+      "code": 1007,
+      "name": "VaultMintBurnAdminInvalid",
+      "msg": "VaultMintBurnAdminInvalid"
+    },
+    {
+      "code": 1008,
+      "name": "VaultDelegationAdminInvalid",
+      "msg": "VaultDelegationAdminInvalid"
+    },
+    {
+      "code": 1009,
+      "name": "VaultDelegateAssetAdminInvalid",
+      "msg": "VaultDelegateAssetAdminInvalid"
+    },
+    {
+      "code": 1010,
+      "name": "VaultCapacityExceeded",
+      "msg": "VaultCapacityExceeded"
+    },
+    {
+      "code": 1011,
+      "name": "VaultSlasherAdminInvalid",
+      "msg": "VaultSlasherAdminInvalid"
+    },
+    {
+      "code": 1012,
+      "name": "VaultNcnAdminInvalid",
+      "msg": "VaultNcnAdminInvalid"
+    },
+    {
+      "code": 1013,
+      "name": "VaultFeeAdminInvalid",
+      "msg": "VaultFeeAdminInvalid"
+    },
+    {
+      "code": 1014,
+      "name": "ConfigAdminInvalid",
+      "msg": "ConfigAdminInvalid"
+    },
+    {
+      "code": 1015,
+      "name": "ConfigFeeAdminInvalid",
+      "msg": "ConfigFeeAdminInvalid"
+    },
+    {
+      "code": 1016,
+      "name": "VaultFeeCapExceeded",
+      "msg": "VaultFeeCapExceeded"
+    },
+    {
+      "code": 1017,
+      "name": "VaultFeeChangeTooSoon",
+      "msg": "VaultFeeChangeTooSoon"
+    },
+    {
+      "code": 1018,
+      "name": "VaultFeeBumpTooLarge",
+      "msg": "VaultFeeBumpTooLarge"
+    },
+    {
+      "code": 1019,
+      "name": "VaultUnderflow",
+      "msg": "VaultUnderflow"
+    },
+    {
+      "code": 1020,
+      "name": "VaultUpdateNeeded",
+      "msg": "VaultUpdateNeeded"
+    },
+    {
+      "code": 1021,
+      "name": "VaultIsUpdated",
+      "msg": "VaultIsUpdated"
+    },
+    {
+      "code": 1022,
+      "name": "VaultOperatorDelegationUpdateNeeded",
+      "msg": "VaultOperatorDelegationUpdateNeeded"
+    },
+    {
+      "code": 1023,
+      "name": "VaultOperatorDelegationIsUpdated",
+      "msg": "VaultOperatorDelegationIsUpdated"
+    },
+    {
+      "code": 1024,
+      "name": "VaultUpdateIncorrectIndex",
+      "msg": "VaultUpdateIncorrectIndex"
+    },
+    {
+      "code": 1025,
+      "name": "VaultUpdateStateNotFinishedUpdating",
+      "msg": "VaultUpdateStateNotFinishedUpdating"
+    },
+    {
+      "code": 1026,
+      "name": "VaultSecurityOverflow",
+      "msg": "VaultSecurityOverflow"
+    },
+    {
+      "code": 1027,
+      "name": "VaultSlashIncomplete",
+      "msg": "VaultSlashIncomplete"
+    },
+    {
+      "code": 1028,
+      "name": "VaultSecurityUnderflow",
+      "msg": "VaultSecurityUnderflow"
+    },
+    {
+      "code": 1029,
+      "name": "SlippageError",
+      "msg": "SlippageError"
+    },
+    {
+      "code": 1030,
+      "name": "VaultStakerWithdrawalTicketNotWithdrawable",
+      "msg": "VaultStakerWithdrawalTicketNotWithdrawable"
+    },
+    {
+      "code": 1031,
+      "name": "VaultNcnSlasherTicketFailedCooldown",
+      "msg": "VaultNcnSlasherTicketFailedCooldown"
+    },
+    {
+      "code": 1032,
+      "name": "VaultNcnSlasherTicketFailedWarmup",
+      "msg": "VaultNcnSlasherTicketFailedWarmup"
+    },
+    {
+      "code": 1033,
+      "name": "VaultNcnTicketFailedCooldown",
+      "msg": "VaultNcnTicketFailedCooldown"
+    },
+    {
+      "code": 1034,
+      "name": "VaultNcnTicketFailedWarmup",
+      "msg": "VaultNcnTicketFailedWarmup"
+    },
+    {
+      "code": 1035,
+      "name": "VaultNcnTicketUnslashable",
+      "msg": "VaultNcnTicketUnslashable"
+    },
+    {
+      "code": 1036,
+      "name": "OperatorVaultTicketUnslashable",
+      "msg": "OperatorVaultTicketUnslashable"
+    },
+    {
+      "code": 1037,
+      "name": "NcnOperatorStateUnslashable",
+      "msg": "NcnOperatorStateUnslashable"
+    },
+    {
+      "code": 1038,
+      "name": "VaultNcnSlasherTicketUnslashable",
+      "msg": "VaultNcnSlasherTicketUnslashable"
+    },
+    {
+      "code": 1039,
+      "name": "NcnVaultTicketUnslashable",
+      "msg": "NcnVaultTicketUnslashable"
+    },
+    {
+      "code": 1040,
+      "name": "NcnVaultSlasherTicketUnslashable",
+      "msg": "NcnVaultSlasherTicketUnslashable"
+    },
+    {
+      "code": 1041,
+      "name": "VaultMaxSlashedPerOperatorExceeded",
+      "msg": "VaultMaxSlashedPerOperatorExceeded"
+    },
+    {
+      "code": 1042,
+      "name": "VaultStakerWithdrawalTicketInvalidStaker",
+      "msg": "VaultStakerWithdrawalTicketInvalidStaker"
+    },
+    {
+      "code": 1043,
+      "name": "SlasherOverflow",
+      "msg": "SlasherOverflow"
+    },
+    {
+      "code": 1044,
+      "name": "NcnOverflow",
+      "msg": "NcnOverflow"
+    },
+    {
+      "code": 1045,
+      "name": "OperatorOverflow",
+      "msg": "OperatorOverflow"
+    },
+    {
+      "code": 1046,
+      "name": "VaultDelegationZero",
+      "msg": "VaultDelegationZero"
+    },
+    {
+      "code": 1047,
+      "name": "VaultCooldownZero",
+      "msg": "VaultCooldownZero"
+    },
+    {
+      "code": 1048,
+      "name": "VaultBurnZero",
+      "msg": "VaultBurnZero"
+    },
+    {
+      "code": 1049,
+      "name": "VaultEnqueueWithdrawalAmountZero",
+      "msg": "VaultEnqueueWithdrawalAmountZero"
+    },
+    {
+      "code": 1050,
+      "name": "VaultMintZero",
+      "msg": "VaultMintZero"
+    },
+    {
+      "code": 1051,
+      "name": "VaultIsPaused",
+      "msg": "VaultIsPaused"
+    },
+    {
+      "code": 1052,
+      "name": "InvalidDepositor",
+      "msg": "InvalidDepositor"
+    },
+    {
+      "code": 1053,
+      "name": "InvalidDepositTokenAccount",
+      "msg": "InvalidDepositTokenAccount"
+    },
+    {
+      "code": 1054,
+      "name": "NoSupportedMintBalanceChange",
+      "msg": "NoSupportedMintBalanceChange"
+    },
+    {
+      "code": 1055,
+      "name": "InvalidEpochLength",
+      "msg": "InvalidEpochLength"
+    },
+    {
+      "code": 1056,
+      "name": "VaultRewardFeeDeltaTooLarge",
+      "msg": "VaultRewardFeeDeltaTooLarge"
+    },
+    {
+      "code": 1057,
+      "name": "VaultRewardFeeIsZero",
+      "msg": "VaultRewardFeeIsZero"
+    },
+    {
+      "code": 1058,
+      "name": "VrtOutCannotBeZero",
+      "msg": "VrtOutCannotBeZero"
+    },
+    {
+      "code": 1059,
+      "name": "NonZeroAdditionalAssetsNeededForWithdrawalAtEndOfUpdate",
+      "msg": "NonZeroAdditionalAssetsNeededForWithdrawalAtEndOfUpdate"
+    },
+    {
+      "code": 3000,
+      "name": "ArithmeticOverflow",
+      "msg": "ArithmeticOverflow"
+    },
+    {
+      "code": 3001,
+      "name": "ArithmeticUnderflow",
+      "msg": "ArithmeticUnderflow"
+    },
+    {
+      "code": 3002,
+      "name": "DivisionByZero",
+      "msg": "DivisionByZero"
+    }
+  ],
+  "metadata": {
+    "origin": "shank",
+    "address": "Vau1t6sLNxnzB7ZDsef8TLbPLfyZMYXH8WTNqUdm9g8"
+  }
 }

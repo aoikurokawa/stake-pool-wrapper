@@ -5,6 +5,7 @@
 //! <https://github.com/codama-idl/codama>
 //!
 
-
-pub mod instructions_parser;
-
+      pub(crate) mod jito_vault;
+  
+      pub use self::jito_vault::JitoVaultError;
+  
