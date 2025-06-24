@@ -49,6 +49,7 @@ jobs:
         with:
           toolchain: 1.84.1
           targets: ${{ matrix.target }}
+          override: true
       
       - name: Install musl-tools (Linux only)
         if: matrix.os == 'ubuntu-latest'
