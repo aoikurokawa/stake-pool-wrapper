@@ -113,6 +113,9 @@ jobs:
           token: ${{ secrets.REPO_PAT }}
           fetch-depth: 0 # get the whole history for changelog
 
+      - name: Install system dependencies
+        run: sudo apt-get update && sudo apt-get install -y libudev-dev
+
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
 
