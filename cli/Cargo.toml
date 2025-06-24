@@ -2,6 +2,9 @@
 name = "stake-pool-wrapper-cli"
 version = "0.1.0"
 edition = "2021"
+description = "Stake Pool Wrapper CLI"
+license = "Apache-2.0"
+repository = "https://github.com/aoikurokawa/stake-pool-wrapper"
 
 [[bin]]
 name = "stake-pool-wrapper-cli"
