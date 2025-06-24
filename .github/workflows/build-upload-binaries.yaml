@@ -10,10 +10,10 @@ on:
       package_path:
         description: 'Path to the package'
         required: true
-        default: 'stake-pool-wrapper-cli'
+        default: 'cli'
         type: choice
         options:
-          - stake-pool-wrapper-cli
+          - cli
       publish_release:
         description: 'Publish the release after uploading binaries'
         required: true
@@ -62,8 +62,8 @@ jobs:
         id: crate_info
         shell: bash
         run: |
-          CRATE_NAME=$(basename "${{ inputs.package_path }}")
-          VERSION=$(grep -m1 'version =' cli/Cargo.toml | cut -d '"' -f2)
+          CRATE_NAME=$(grep -m1 '^name =' ${{ inputs.package_path }}/Cargo.toml | cut -d '"' -f2)
+          VERSION=$(grep -m1 '^version =' ${{ inputs.package_path }}/Cargo.toml | cut -d '"' -f2)
           echo "crate_name=$CRATE_NAME" >> $GITHUB_OUTPUT
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "Building $CRATE_NAME version $VERSION for ${{ matrix.target }}"
