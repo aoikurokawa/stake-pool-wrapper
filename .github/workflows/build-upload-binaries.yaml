@@ -192,11 +192,11 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           tag: ${{ github.event.inputs.release_tag }}
-          name: "${{ steps.release_info.outputs.crate_name }} v${{ steps.release_info.outputs.version }}"
-          bodyFile: "RELEASE_NOTES.md"
           artifacts: "./release-binaries/*"
           artifactErrorsFailBuild: false
           allowUpdates: true
+          omitBody: true  # Don't update the release body/notes
+          omitName: true  # Don't update the release name
           draft: ${{ github.event.inputs.publish_release != 'true' }}
           
       - name: Publish Release
