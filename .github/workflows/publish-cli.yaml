@@ -34,18 +34,12 @@ jobs:
   #       uses: baptiste0928/cargo-install@v3
   #       with:
   #         crate: solana-verify
-  #     - run: solana-verify build --library-name jito_restaking_program --base-image solanafoundation/solana-verifiable-build:2.2.14
-  #     - run: solana-verify build --library-name jito_vault_program --base-image solanafoundation/solana-verifiable-build:2.2.14
-  #     - name: Upload jito_restaking_program.so
+  #     - run: solana-verify build --library-name stake_pool_wrapper_program --base-image solanafoundation/solana-verifiable-build:2.2.14
+  #     - name: Upload stake_pool_wrapper_program.so
   #       uses: actions/upload-artifact@v4
   #       with:
-  #         name: jito_restaking_program.so
-  #         path: target/deploy/jito_restaking_program.so
-  #     - name: Upload jito_vault_program.so
-  #       uses: actions/upload-artifact@v4
-  #       with:
-  #         name: jito_vault_program.so
-  #         path: target/deploy/jito_vault_program.so
+  #         name: stake_pool_wrapper_program.so
+  #         path: target/deploy/stake_pool_wrapper_program.so
 
   # test_sbf:
   #   name: cargo test
@@ -141,12 +135,12 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           tag: ${{ steps.publish.outputs.git_tag }}
-          name: "Jito Restaking CLI v${{ steps.publish.outputs.new_version }}"
+          name: "Stake Pool Wrapper CLI v${{ steps.publish.outputs.new_version }}"
           body: |
             ## CLI Release v${{ steps.publish.outputs.new_version }}
             
             ### Installation
             ```bash
-            cargo install jito-restaking-cli --version ${{ steps.publish.outputs.new_version }}
+            cargo install stake-pool-wrapper-cli --version ${{ steps.publish.outputs.new_version }}
             ```
           makeLatest: true
