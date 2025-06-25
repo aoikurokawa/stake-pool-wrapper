@@ -157,7 +157,7 @@ jobs:
       - name: Download Linux binary
         uses: actions/download-artifact@v4
         with:
-          name: x86_64-unknown-linux-musl
+          name: x86_64-unknown-linux-gnu
           path: release-binaries
       
       - name: Download macOS binary
@@ -177,7 +177,7 @@ jobs:
         run: |
           echo "" >> RELEASE_NOTES.md
           echo "## Binaries" >> RELEASE_NOTES.md
-          echo "- Linux (x86_64-unknown-linux-musl)" >> RELEASE_NOTES.md
+          echo "- Linux (x86_64-unknown-linux-gnu)" >> RELEASE_NOTES.md
           echo "- macOS (x86_64-apple-darwin)" >> RELEASE_NOTES.md
           echo "- Windows (x86_64-pc-windows-msvc)" >> RELEASE_NOTES.md
           
