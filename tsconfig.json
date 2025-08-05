@@ -5,6 +5,7 @@
       "esModuleInterop": true,
       "skipLibCheck": true,
       "strict": false,
-      "noImplicitAny": false
+      "noImplicitAny": false,
+      "resolveJsonModule": true
     }
 }
