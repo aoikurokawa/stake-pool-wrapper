@@ -22,8 +22,10 @@
     "@codama/renderers-rust": "^1.0.22",
     "@codama/renderers-vixen-parser": "^1.0.14",
     "@codama/visitors-core": "^1.3.0",
+    "@coral-xyz/anchor": "^0.31.1",
     "@types/node": "^22.15.21",
-    "codama": "^1.3.0"
+    "codama": "^1.3.0",
+    "stake-pool-wrapper-idl": "^1.0.0"
   },
   "devDependencies": {
     "ts-node": "^10.9.2",
