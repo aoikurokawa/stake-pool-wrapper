@@ -2,7 +2,6 @@
   "name": "stake-pool-wrapper",
   "version": "1.0.0",
   "description": "",
-  "private": true,
   "workspaces": [
     "packages/idl"
   ],
