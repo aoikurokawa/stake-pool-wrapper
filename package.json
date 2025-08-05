@@ -2,7 +2,10 @@
   "name": "stake-pool-wrapper",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "private": true,
+  "workspaces": [
+    "packages/idl"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "generate-clients": "ts-node scripts/generate-clients.ts",
