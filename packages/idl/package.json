@@ -1,5 +1,5 @@
 {
-  "name": "@stake-pool-wrapper/idl",
+  "name": "stake-pool-wrapper-idl",
   "version": "1.0.0",
   "description": "IDL files for Jito Stakenet programs - Steward and Validator History",
   "main": "dist/index.js",
