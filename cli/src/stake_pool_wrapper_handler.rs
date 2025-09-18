@@ -6,7 +6,7 @@ use solana_program::stake;
 use solana_sdk::{
     borsh1::try_from_slice_unchecked,
     instruction::{AccountMeta, Instruction},
-    native_token::LAMPORTS_PER_SOL,
+    native_token::{sol_to_lamports, LAMPORTS_PER_SOL},
     pubkey::Pubkey,
     signer::Signer,
     system_program, sysvar,
@@ -67,6 +67,9 @@ impl StakePoolWrapperCliHandler {
             StakePoolWrapperCommands::StakePoolWrapper {
                 action: StakePoolWrapperActions::AddValidator,
             } => self.add_validator(),
+            StakePoolWrapperCommands::StakePoolWrapper {
+                action: StakePoolWrapperActions::IncreaseValidatorStake,
+            } => self.increase_validator_stake(),
         }
     }
 }
@@ -407,6 +410,73 @@ impl StakePoolWrapperCliHandler {
 
         Ok(())
     }
+
+    fn increase_validator_stake(&self) -> anyhow::Result<()> {
+        let signer = self.signer()?;
+        // let admin = signer.pubkey();
+        let stake_pool_program =
+            Pubkey::from_str("SPoo1Ku8WFXoNDMHPsrGSTSG1Y47rzgn41SLUNakuHy").unwrap();
+
+        let stake_pool_pubkey =
+            Pubkey::from_str("Jito4APyf642JPZPx3hGc6WWJ8zPKtRbRs4P815Awbb").unwrap();
+        let stake_pool_withdraw_authority =
+            Pubkey::from_str("6iQKfEyhr3bZMotVkW6beNZz5CPAkiwvgV2CTje9pVSS").unwrap();
+        let reserve_stake_pool =
+            Pubkey::from_str("rrWBQqRqBXYZw3CmPCCcjFxQ2Ds4JFJd7oRQJ997dhz").unwrap();
+
+        let validator = Pubkey::from_str("vgcDar2pryHvMgPkKaZfh8pQy4BJxv7SpwUG7zinWjG").unwrap();
+
+        let staker = Pubkey::from_str("aaaDerwdMyzNkoX1aSoTi3UtFe2W45vh5wCgQNhsjF8").unwrap();
+
+        let validator_list_pubkey =
+            Pubkey::from_str("nZ5vUrsJjHcvkJsfKP1b1RgSEZUMJmwFpk7NksTeX5A").unwrap();
+
+        let client = self.get_rpc_client();
+        let validator_list_acc = client.get_account(&validator_list_pubkey).unwrap();
+
+        let validator_list: ValidatorList =
+            try_from_slice_unchecked(&validator_list_acc.data).unwrap();
+        let validator_stake_info = validator_list
+            .find(&validator)
+            .ok_or("Vote account not found in validator list")
+            .unwrap();
+
+        let seed: u64 = validator_stake_info.transient_seed_suffix.into();
+        let transient_stake = Pubkey::find_program_address(
+            &[
+                b"transient",
+                &validator.to_bytes(),
+                &stake_pool_pubkey.to_bytes(),
+                &seed.to_le_bytes(),
+            ],
+            &stake_pool_program,
+        )
+        .0;
+        let ix = increase_validator_stake(
+            &stake_pool_program,
+            &stake_pool_pubkey,
+            &staker,
+            &stake_pool_withdraw_authority,
+            &validator_list_pubkey,
+            &reserve_stake_pool,
+            &transient_stake,
+            &validator,
+            sol_to_lamports(15.0),
+            seed,
+        );
+
+        // let ix = add_validator_to_pool_with_vote(
+        //     &stake_pool_program,
+        //     &stake_pool,
+        //     &stake_pool_pubkey,
+        //     &validator,
+        //     None,
+        // );
+        let ixs = [ix];
+        self.process_transaction(&ixs, &signer.pubkey(), &[signer])?;
+
+        Ok(())
+    }
 }
 
 fn add_validator_to_pool(
@@ -444,5 +514,44 @@ fn add_validator_to_pool(
         data: spl_stake_pool_legacy::instruction::StakePoolInstruction::AddValidatorToPool
             .try_to_vec()
             .unwrap(),
+    }
+}
+
+pub fn increase_validator_stake(
+    program_id: &Pubkey,
+    stake_pool: &Pubkey,
+    staker: &Pubkey,
+    stake_pool_withdraw_authority: &Pubkey,
+    validator_list: &Pubkey,
+    reserve_stake: &Pubkey,
+    transient_stake: &Pubkey,
+    validator: &Pubkey,
+    lamports: u64,
+    transient_stake_seed: u64,
+) -> Instruction {
+    let accounts = vec![
+        AccountMeta::new_readonly(*stake_pool, false),
+        AccountMeta::new_readonly(*staker, true),
+        AccountMeta::new_readonly(*stake_pool_withdraw_authority, false),
+        AccountMeta::new(*validator_list, false),
+        AccountMeta::new(*reserve_stake, false),
+        AccountMeta::new(*transient_stake, false),
+        AccountMeta::new_readonly(*validator, false),
+        AccountMeta::new_readonly(sysvar::clock::id(), false),
+        AccountMeta::new_readonly(sysvar::rent::id(), false),
+        AccountMeta::new_readonly(sysvar::stake_history::id(), false),
+        AccountMeta::new_readonly(stake::config::id(), false),
+        AccountMeta::new_readonly(system_program::id(), false),
+        AccountMeta::new_readonly(stake::program::id(), false),
+    ];
+    Instruction {
+        program_id: *program_id,
+        accounts,
+        data: spl_stake_pool_legacy::instruction::StakePoolInstruction::IncreaseValidatorStake {
+            lamports,
+            transient_stake_seed,
+        }
+        .try_to_vec()
+        .unwrap(),
     }
 }
