@@ -31,4 +31,7 @@ pub enum StakePoolWrapperActions {
 
     /// Add validator
     AddValidator,
+
+    /// Increase validator stake
+    IncreaseValidatorStake,
 }
