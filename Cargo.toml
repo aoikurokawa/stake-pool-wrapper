@@ -12,6 +12,7 @@ resolver = "2"
 [workspace.dependencies]
 anyhow = "1.0.98"
 base64 = "0.22.1"
+borsh-legacy = { package = "borsh", version = "0.9" }
 borsh = { version = "1.5.7", features = ["derive"] }
 bytemuck = { version = "1.16.3", features = ["min_const_generics"] }
 chrono = "0.4.38"
@@ -31,6 +32,7 @@ solana-rpc-client-api = "2.2.1"
 solana-sdk = "2.2.1"
 spl-associated-token-account = { version = "6.0.0", features = ["no-entrypoint"] }
 spl-stake-pool = { version = "2.0.1", features = ["no-entrypoint"] }
+spl-stake-pool-legacy = { package = "spl-stake-pool", version = "0.6.4", features = ["no-entrypoint"] }
 spl-token = { version = "7.0.0", features = ["no-entrypoint"] }
 stake-pool-wrapper-sdk = { version = "0.1.7", path = "./sdk" }
 toml = "0.8.22"

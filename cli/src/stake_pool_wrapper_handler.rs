@@ -1,15 +1,23 @@
 use std::str::FromStr;
 
+use borsh::BorshDeserialize;
+use borsh_legacy::BorshSerialize;
+use solana_program::stake;
 use solana_sdk::{
+    borsh1::try_from_slice_unchecked,
     instruction::{AccountMeta, Instruction},
     native_token::LAMPORTS_PER_SOL,
     pubkey::Pubkey,
     signer::Signer,
+    system_program, sysvar,
 };
 use spl_associated_token_account::get_associated_token_address;
 use spl_stake_pool::{
-    instruction::{deposit_sol, update_stake_pool_balance, withdraw_sol, StakePoolInstruction},
-    state::AccountType,
+    instruction::{
+        add_validator_to_pool_with_vote, deposit_sol, update_stake_pool_balance, withdraw_sol,
+        StakePoolInstruction,
+    },
+    state::{AccountType, StakePool, ValidatorList, ValidatorListHeader},
 };
 use stake_pool_wrapper_sdk::instruction::StakePoolWrapperInstruction;
 
@@ -56,6 +64,9 @@ impl StakePoolWrapperCliHandler {
             StakePoolWrapperCommands::StakePoolWrapper {
                 action: StakePoolWrapperActions::UpdateStakePoolBalance,
             } => self.update_stake_pool_balance(),
+            StakePoolWrapperCommands::StakePoolWrapper {
+                action: StakePoolWrapperActions::AddValidator,
+            } => self.add_validator(),
         }
     }
 }
@@ -73,11 +84,14 @@ impl StakePoolWrapperCliHandler {
         let acc_data = rpc_client.get_account_data(&stake_pool).unwrap();
         println!("Account Data: {acc_data:?}");
 
-        let account_type = AccountType::StakePool;
-        println!("Account Type: {account_type:?}");
+        let stake_pool = try_from_slice_unchecked::<StakePool>(&acc_data).unwrap();
+        println!("Stake Pool: {stake_pool:?}");
 
-        let deposit_sol_ix = borsh::to_vec(&StakePoolInstruction::DepositSol(100)).unwrap();
-        println!("Instruction: {:?}", deposit_sol_ix);
+        // let account_type = AccountType::StakePool;
+        // println!("Account Type: {account_type:?}");
+
+        // let deposit_sol_ix = borsh::to_vec(&StakePoolInstruction::DepositSol(100)).unwrap();
+        // println!("Instruction: {:?}", deposit_sol_ix);
 
         Ok(())
     }
@@ -90,11 +104,15 @@ impl StakePoolWrapperCliHandler {
         let stake_pool = Pubkey::from_str("Jito4APyf642JPZPx3hGc6WWJ8zPKtRbRs4P815Awbb").unwrap();
         let stake_pool_withdraw_authority =
             Pubkey::from_str("6iQKfEyhr3bZMotVkW6beNZz5CPAkiwvgV2CTje9pVSS").unwrap();
+        // let reserve_stake_pool =
+        //     Pubkey::from_str("rrWBQqRqBXYZw3CmPCCcjFxQ2Ds4JFJd7oRQJ997dhz").unwrap();
         let reserve_stake_pool =
             Pubkey::from_str("rrWBQqRqBXYZw3CmPCCcjFxQ2Ds4JFJd7oRQJ997dhz").unwrap();
+
         let depositer = admin;
-        let user = Pubkey::from_str("22Mjmaea25LDrpEQyJonfV6ybkrDcxGDsoCqUH39Cw9m").unwrap();
+        let user = Pubkey::from_str("3XKzfD4NT6Qk1sU9iYnEKKAf8AU8D3YurW1MgjF8bomc").unwrap();
         let fee = Pubkey::from_str("DH7tmjoQ5zjqcgfYJU22JqmXhP5EY1tkbYpgVWUS2oNo").unwrap();
+        // let fee = Pubkey::from_str("9DuzpRvid1HQX8nRwznmu35uUtb92euBNcL12Dk1qTY8").unwrap();
         let referral_fee =
             Pubkey::from_str("22Mjmaea25LDrpEQyJonfV6ybkrDcxGDsoCqUH39Cw9m").unwrap();
         let pool_mint = Pubkey::from_str("J1toso1uCk3RLmjorhTtrVwY9HJ7X8V9yYac6Y7kGCPn").unwrap();
@@ -295,5 +313,136 @@ impl StakePoolWrapperCliHandler {
         self.process_transaction(&ixs, &signer.pubkey(), &[signer])?;
 
         Ok(())
+    }
+
+    fn add_validator(&self) -> anyhow::Result<()> {
+        let signer = self.signer()?;
+        // let admin = signer.pubkey();
+        let stake_pool_program =
+            Pubkey::from_str("SPoo1Ku8WFXoNDMHPsrGSTSG1Y47rzgn41SLUNakuHy").unwrap();
+
+        let stake_pool_pubkey =
+            Pubkey::from_str("Jito4APyf642JPZPx3hGc6WWJ8zPKtRbRs4P815Awbb").unwrap();
+        let stake_pool_withdraw_authority =
+            Pubkey::from_str("6iQKfEyhr3bZMotVkW6beNZz5CPAkiwvgV2CTje9pVSS").unwrap();
+        // let reserve_stake_pool =
+        //     Pubkey::from_str("rrWBQqRqBXYZw3CmPCCcjFxQ2Ds4JFJd7oRQJ997dhz").unwrap();
+        // let reserve_stake_pool =
+        //     Pubkey::from_str("rrWBQqRqBXYZw3CmPCCcjFxQ2Ds4JFJd7oRQJ997dhz").unwrap();
+
+        // let depositer = admin;
+        // let user = Pubkey::from_str("3XKzfD4NT6Qk1sU9iYnEKKAf8AU8D3YurW1MgjF8bomc").unwrap();
+        // let fee = Pubkey::from_str("DH7tmjoQ5zjqcgfYJU22JqmXhP5EY1tkbYpgVWUS2oNo").unwrap();
+        // let fee = Pubkey::from_str("9DuzpRvid1HQX8nRwznmu35uUtb92euBNcL12Dk1qTY8").unwrap();
+        // let referral_fee =
+        //     Pubkey::from_str("22Mjmaea25LDrpEQyJonfV6ybkrDcxGDsoCqUH39Cw9m").unwrap();
+        // let pool_mint = Pubkey::from_str("J1toso1uCk3RLmjorhTtrVwY9HJ7X8V9yYac6Y7kGCPn").unwrap();
+        // let _system_program = Pubkey::from_str("11111111111111111111111111111111").unwrap();
+        // let token_program =
+        //     Pubkey::from_str("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA").unwrap();
+        // let stake_pool_program =
+        //     Pubkey::from_str("SPoo1Ku8WFXoNDMHPsrGSTSG1Y47rzgn41SLUNakuHy").unwrap();
+
+        let validator = Pubkey::from_str("6Tw3Tuv7wbwE2SEw7w3hZPu9dWnQKwPadeNm6v5sVGDZ").unwrap();
+
+        let staker = Pubkey::from_str("aaaDerwdMyzNkoX1aSoTi3UtFe2W45vh5wCgQNhsjF8").unwrap();
+
+        let validator_list_pubkey =
+            Pubkey::from_str("nZ5vUrsJjHcvkJsfKP1b1RgSEZUMJmwFpk7NksTeX5A").unwrap();
+
+        // let client = self.get_rpc_client();
+        // let validator_list_acc = client.get_account(&validator_list_pubkey).unwrap();
+
+        // let mut validator_list_acc_data = validator_list_acc.data;
+        // let (header, validator_list) =
+        //     ValidatorListHeader::deserialize_vec(&mut validator_list_acc_data).unwrap();
+
+        // let stake_pool_acc = client.get_account(&stake_pool_pubkey).unwrap();
+        // let mut stake_pool_acc_data = stake_pool_acc.data;
+        // let stake_pool: StakePool = try_from_slice_unchecked(&mut stake_pool_acc_data).unwrap();
+
+        // let validator_list: ValidatorList =
+        //     try_from_slice_unchecked(&validator_list_acc.data).unwrap();
+
+        // println!("Validator List: {header:?}");
+
+        let stake = Pubkey::find_program_address(
+            &[&validator.to_bytes(), &stake_pool_pubkey.to_bytes()],
+            &stake_pool_program,
+        )
+        .0;
+        // let (stake_account_address, _) = find_stake_program_address(
+        //     &solana_program::pubkey::Pubkey::from_str(
+        //         "SPoo1Ku8WFXoNDMHPsrGSTSG1Y47rzgn41SLUNakuHy",
+        //     )
+        //     .unwrap(),
+        //     &solana_program::pubkey::Pubkey::from_str(
+        //         "SPoo1Ku8WFXoNDMHPsrGSTSG1Y47rzgn41SLUNakuHy",
+        //     )
+        //     .unwrap(),
+        //     stake_pool_address,
+        // );
+        // let stake = Pubkey::from_str("nZ5vUrsJjHcvkJsfKP1b1RgSEZUMJmwFpk7NksTeX5B").unwrap();
+
+        let ix = add_validator_to_pool(
+            &stake_pool_program,
+            &stake_pool_pubkey,
+            &staker,
+            &signer.pubkey(),
+            &stake_pool_withdraw_authority,
+            &validator_list_pubkey,
+            &stake,
+            &validator,
+        );
+
+        // let ix = add_validator_to_pool_with_vote(
+        //     &stake_pool_program,
+        //     &stake_pool,
+        //     &stake_pool_pubkey,
+        //     &validator,
+        //     None,
+        // );
+        let ixs = [ix];
+        self.process_transaction(&ixs, &signer.pubkey(), &[signer])?;
+
+        Ok(())
+    }
+}
+
+fn add_validator_to_pool(
+    program_id: &Pubkey,
+    stake_pool: &Pubkey,
+    staker: &Pubkey,
+    reserve: &Pubkey,
+    stake_pool_withdraw: &Pubkey,
+    validator_list: &Pubkey,
+    stake: &Pubkey,
+    validator: &Pubkey,
+) -> Instruction {
+    let accounts = vec![
+        AccountMeta::new(*stake_pool, false),
+        AccountMeta::new_readonly(*staker, true),
+        AccountMeta::new(*reserve, false),
+        AccountMeta::new_readonly(*stake_pool_withdraw, false),
+        AccountMeta::new(*validator_list, false),
+        AccountMeta::new(*stake, false),
+        AccountMeta::new_readonly(*validator, false),
+        AccountMeta::new_readonly(sysvar::rent::id(), false),
+        AccountMeta::new_readonly(sysvar::clock::id(), false),
+        AccountMeta::new_readonly(sysvar::stake_history::id(), false),
+        #[allow(deprecated)]
+        AccountMeta::new_readonly(stake::config::id(), false),
+        AccountMeta::new_readonly(system_program::id(), false),
+        AccountMeta::new_readonly(stake::program::id(), false),
+    ];
+    // let data = borsh::to_vec(&StakePoolInstruction::AddValidatorToPool( seed.map(|s| s.get()).unwrap_or(0),
+    // ))
+    // .unwrap();
+    Instruction {
+        program_id: *program_id,
+        accounts,
+        data: spl_stake_pool_legacy::instruction::StakePoolInstruction::AddValidatorToPool
+            .try_to_vec()
+            .unwrap(),
     }
 }

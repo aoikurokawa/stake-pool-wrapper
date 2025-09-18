@@ -28,4 +28,7 @@ pub enum StakePoolWrapperActions {
 
     /// Update Stake Pool Balance
     UpdateStakePoolBalance,
+
+    /// Add validator
+    AddValidator,
 }
