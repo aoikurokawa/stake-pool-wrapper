@@ -343,7 +343,7 @@ impl StakePoolWrapperCliHandler {
         // let stake_pool_program =
         //     Pubkey::from_str("SPoo1Ku8WFXoNDMHPsrGSTSG1Y47rzgn41SLUNakuHy").unwrap();
 
-        let validator = Pubkey::from_str("6Tw3Tuv7wbwE2SEw7w3hZPu9dWnQKwPadeNm6v5sVGDZ").unwrap();
+        let validator = Pubkey::from_str("vgcDar2pryHvMgPkKaZfh8pQy4BJxv7SpwUG7zinWjG").unwrap();
 
         let staker = Pubkey::from_str("aaaDerwdMyzNkoX1aSoTi3UtFe2W45vh5wCgQNhsjF8").unwrap();
 
