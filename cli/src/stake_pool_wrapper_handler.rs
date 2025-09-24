@@ -424,9 +424,9 @@ impl StakePoolWrapperCliHandler {
         let reserve_stake_pool =
             Pubkey::from_str("rrWBQqRqBXYZw3CmPCCcjFxQ2Ds4JFJd7oRQJ997dhz").unwrap();
 
-        let validator = Pubkey::from_str("vgcDar2pryHvMgPkKaZfh8pQy4BJxv7SpwUG7zinWjG").unwrap();
+        let validator = Pubkey::from_str("5a7ETzLjwYdWkJNUiGqoGrw4rYeEuDyy9aqiwJSbGRat").unwrap();
 
-        let staker = Pubkey::from_str("aaaDerwdMyzNkoX1aSoTi3UtFe2W45vh5wCgQNhsjF8").unwrap();
+        let staker = Pubkey::from_str("BBBATax9kikSHQp8UTcyQL3tfU3BmQD9yid5qhC7QEAA").unwrap();
 
         let validator_list_pubkey =
             Pubkey::from_str("nZ5vUrsJjHcvkJsfKP1b1RgSEZUMJmwFpk7NksTeX5A").unwrap();
@@ -461,7 +461,7 @@ impl StakePoolWrapperCliHandler {
             &reserve_stake_pool,
             &transient_stake,
             &validator,
-            sol_to_lamports(15.0),
+            sol_to_lamports(1.0),
             seed,
         );
 
